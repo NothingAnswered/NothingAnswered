@@ -3,6 +3,8 @@ package codepathproject.nothinganswered.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,11 +16,18 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.activities.Adapter.CardsAdapter;
+import codepathproject.nothinganswered.activities.Model.Card;
 
 public class LoginActivity extends AppCompatActivity {
+
+    ArrayList<Card> cards;
+    RecyclerView rvCards;
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
@@ -35,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         loginButton.setReadPermissions("user_friends");
+        populateHomeScreen();
         // Callback registration
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -42,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                 // App code
                 Log.i(TAG, loginResult.toString());
                 Toast.makeText(LoginActivity.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -57,7 +68,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    
+
+    public void populateHomeScreen()
+    {
+        rvCards = (RecyclerView) findViewById(R.id.rvCards);
+
+        cards = Card.createCardsList(20);
+        CardsAdapter adapter = new CardsAdapter(cards);
+        rvCards.setAdapter(adapter);
+        rvCards.setLayoutManager(new LinearLayoutManager(this));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
