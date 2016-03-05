@@ -3,7 +3,9 @@ package codepathproject.nothinganswered.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.andtinder.model.CardModel;
@@ -36,6 +38,12 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_login);
         callbackManager = CallbackManager.Factory.create();
+
+        //Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
 
         ButterKnife.bind(this);
         loginButton.setReadPermissions("user_friends");
@@ -76,6 +84,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Menu icons are inflated just as they were with actionbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
