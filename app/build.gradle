@@ -30,4 +30,6 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.facebook.rebound:rebound:0.3.8'
+    compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
 }

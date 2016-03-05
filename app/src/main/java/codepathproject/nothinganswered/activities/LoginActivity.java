@@ -3,11 +3,13 @@ package codepathproject.nothinganswered.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.andtinder.model.CardModel;
+import com.andtinder.model.Orientations;
+import com.andtinder.view.CardContainer;
+import com.andtinder.view.SimpleCardStackAdapter;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -16,18 +18,11 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.activities.Adapter.CardsAdapter;
-import codepathproject.nothinganswered.activities.Model.Card;
 
 public class LoginActivity extends AppCompatActivity {
-
-    ArrayList<Card> cards;
-    RecyclerView rvCards;
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
@@ -44,7 +39,19 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         loginButton.setReadPermissions("user_friends");
-        populateHomeScreen();
+
+
+        //swipeable cards checking here
+
+        CardContainer mcardContainer = (CardContainer) findViewById(R.id.layoutview);
+        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
+
+        CardModel card = new CardModel("Title 1","Decription Goes there",this.getDrawable(R.drawable.picture1));
+        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
+        adapter.add(card);
+        mcardContainer.setAdapter(adapter);
+
+
         // Callback registration
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -69,15 +76,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void populateHomeScreen()
-    {
-        rvCards = (RecyclerView) findViewById(R.id.rvCards);
-
-        cards = Card.createCardsList(20);
-        CardsAdapter adapter = new CardsAdapter(cards);
-        rvCards.setAdapter(adapter);
-        rvCards.setLayoutManager(new LinearLayoutManager(this));
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
