@@ -2,16 +2,14 @@ package codepathproject.nothinganswered.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.andtinder.model.CardModel;
-import com.andtinder.model.Orientations;
-import com.andtinder.view.CardContainer;
-import com.andtinder.view.SimpleCardStackAdapter;
+import com.astuetz.PagerSlidingTabStrip;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -23,12 +21,14 @@ import com.facebook.login.widget.LoginButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.activities.Adapter.GaffeFragmentPagerAdapter;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     private CallbackManager callbackManager;
+    private ViewPager vpPager;
 
     @Bind(R.id.login_button) LoginButton loginButton;
 
@@ -43,6 +43,19 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Get the viewpager
+        vpPager = (ViewPager) findViewById(R.id.viewpager);
+        // set the viewpager adapter for the pager
+        vpPager.setAdapter(new GaffeFragmentPagerAdapter(getSupportFragmentManager()));
+        // find the pager sliding tabs
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        // Attach the tabstrip to the viewpager
+        tabStrip.setViewPager(vpPager);
+
+        //Fragment
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.replace(R.id.fragment_placeholder, new FragmentVideoResponse());
+//        ft.commit();
 
 
         ButterKnife.bind(this);
@@ -51,13 +64,13 @@ public class LoginActivity extends AppCompatActivity {
 
         //swipeable cards checking here
 
-        CardContainer mcardContainer = (CardContainer) findViewById(R.id.layoutview);
-        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
-
-        CardModel card = new CardModel("Title 1","Decription Goes there",this.getDrawable(R.drawable.picture1));
-        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
-        adapter.add(card);
-        mcardContainer.setAdapter(adapter);
+//        CardContainer mcardContainer = (CardContainer) findViewById(R.id.layoutview);
+//        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
+//
+//        CardModel card = new CardModel("Title 1","Decription Goes there",this.getDrawable(R.drawable.picture1));
+//        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
+//        adapter.add(card);
+//        mcardContainer.setAdapter(adapter);
 
 
         // Callback registration
