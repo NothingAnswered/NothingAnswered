@@ -39,17 +39,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setReadPermissions("user_friends");
 
 
-        //swipeable cards checking here
-
-//        CardContainer mcardContainer = (CardContainer) findViewById(R.id.layoutview);
-//        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
-//
-//        CardModel card = new CardModel("Title 1","Decription Goes there",this.getDrawable(R.drawable.picture1));
-//        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
-//        adapter.add(card);
-//        mcardContainer.setAdapter(adapter);
-
-
         // Callback registration
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
