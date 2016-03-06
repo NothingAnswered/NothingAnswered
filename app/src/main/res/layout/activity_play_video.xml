@@ -9,9 +9,25 @@
 
     <VideoView
         android:id="@+id/vvVideo"
-        android:layout_width="350dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
+
+    <ImageView
+    android:id="@+id/ivImage"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    />
+
+    <ImageView
+        android:id="@+id/ivPlayIcon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@drawable/play_icon"
+        android:onClick="onThumbnailClick"/>
 
 </FrameLayout>
 
