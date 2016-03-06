@@ -24,6 +24,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -38,9 +39,11 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
@@ -58,6 +61,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -602,6 +606,7 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private File getVideoFile(Context context) {
+
         return new File(context.getExternalFilesDir(null), "video.mp4");
     }
 
@@ -649,7 +654,18 @@ public class Camera2VideoFragment extends Fragment
         mTempStopRecordingBtn.setVisibility(View.INVISIBLE);
         stopBackgroundThread();
         closeCamera();
+        StartPlayVideoActivity();
         //startPreview();
+    }
+
+    private void StartPlayVideoActivity() {
+        Uri videoUri;
+        File file = getVideoFile(getActivity());
+        videoUri =  Uri.fromFile(file);
+
+        Intent intent = new Intent(getActivity(), PlayVideoActivity.class);
+        intent.putExtra(PlayVideoActivity.VIDEO_URI, videoUri);
+        startActivity(intent);
     }
 
     /**
