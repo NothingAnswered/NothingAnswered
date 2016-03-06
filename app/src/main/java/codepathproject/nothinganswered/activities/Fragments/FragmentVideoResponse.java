@@ -32,9 +32,12 @@ public class FragmentVideoResponse extends Fragment {
         mcardContainer.setOrientation(Orientations.Orientation.Disordered);
 
         CardModel card = new CardModel("Video Response","Video Response",view.getResources().getDrawable(R.drawable.picture1));
+        CardModel card1 = new CardModel("Video Response","Video Response",view.getResources().getDrawable(R.drawable.picture2));
+
 
         GaffeSimpleCardStackAdapter adapter = new GaffeSimpleCardStackAdapter(getActivity());
         adapter.add(card);
+        adapter.add(card1);
         mcardContainer.setAdapter(adapter);
 
 
