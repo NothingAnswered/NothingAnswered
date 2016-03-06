@@ -29,4 +29,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.parse:parse-android:1.+'
+    compile 'com.parse:parse-android:1.13.0'
+    compile 'com.parse:parseui-login-android:0.0.1'
+    compile 'com.parse:parseui-widget-android:0.0.1'
+    compile 'com.parse:parseinterceptors:0.0.2' // for logging API calls to LogCat
+    compile 'com.parse:parsefacebookutils-v4-android:1.10.4@aar'
 }
