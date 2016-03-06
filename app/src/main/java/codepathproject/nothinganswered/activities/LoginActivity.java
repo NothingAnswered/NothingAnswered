@@ -31,11 +31,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.activities.Activity.HomeScreenActivity;
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
 import codepathproject.nothinganswered.models.Question;
 
 public class LoginActivity extends AppCompatActivity {
+
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
@@ -78,6 +80,18 @@ public class LoginActivity extends AppCompatActivity {
         permissions.add("email");
         permissions.add("user_friends");
     }
+
+
+        //swipeable cards checking here
+
+//        CardContainer mcardContainer = (CardContainer) findViewById(R.id.layoutview);
+//        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
+//
+//        CardModel card = new CardModel("Title 1","Decription Goes there",this.getDrawable(R.drawable.picture1));
+//        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
+//        adapter.add(card);
+//        mcardContainer.setAdapter(adapter);
+
 
     public void parseUploadExample() {
         // Locate the image in res > drawable-hdpi
@@ -148,6 +162,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+        Intent i = new Intent(LoginActivity.this, HomeScreenActivity.class);
+        startActivity(i);
     }
 
     @Override
