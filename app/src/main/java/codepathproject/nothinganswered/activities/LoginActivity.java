@@ -52,11 +52,6 @@ public class LoginActivity extends AppCompatActivity {
         // Attach the tabstrip to the viewpager
         tabStrip.setViewPager(vpPager);
 
-        //Fragment
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.fragment_placeholder, new FragmentVideoResponse());
-//        ft.commit();
-
 
         ButterKnife.bind(this);
         loginButton.setReadPermissions("user_friends");
