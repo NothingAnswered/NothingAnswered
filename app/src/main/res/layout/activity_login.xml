@@ -3,24 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.LoginActivity"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/toolbarLinearLayout">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:minHeight="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:titleTextColor="@android:color/white"
-            android:background="?attr/colorPrimary">
-        </android.support.v7.widget.Toolbar>
+    tools:context=".activities.LoginActivity">
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
@@ -29,9 +12,9 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/toolbarLinearLayout"/>
+           />
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <!--<LinearLayout-->
         <!--android:layout_width="wrap_content"-->
@@ -48,20 +31,5 @@
 
     <!--</LinearLayout>-->
 
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@+id/toolbarLinearLayout"
-        app:pstsShouldExpand="true"
-        app:pstsTextAllCaps="true"
-        android:fillViewport="false" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tabs"
-        android:background="@android:color/white" />
 
 </RelativeLayout>

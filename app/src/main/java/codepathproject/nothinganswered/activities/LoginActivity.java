@@ -2,14 +2,10 @@ package codepathproject.nothinganswered.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.widget.Toast;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -21,14 +17,13 @@ import com.facebook.login.widget.LoginButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.activities.Adapter.GaffeFragmentPagerAdapter;
+import codepathproject.nothinganswered.activities.Activity.HomeScreenActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     private CallbackManager callbackManager;
-    private ViewPager vpPager;
 
     @Bind(R.id.login_button) LoginButton loginButton;
 
@@ -38,20 +33,6 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_login);
         callbackManager = CallbackManager.Factory.create();
-
-        //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Get the viewpager
-        vpPager = (ViewPager) findViewById(R.id.viewpager);
-        // set the viewpager adapter for the pager
-        vpPager.setAdapter(new GaffeFragmentPagerAdapter(getSupportFragmentManager()));
-        // find the pager sliding tabs
-        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        // Attach the tabstrip to the viewpager
-        tabStrip.setViewPager(vpPager);
-
 
         ButterKnife.bind(this);
         loginButton.setReadPermissions("user_friends");
@@ -92,17 +73,15 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // Menu icons are inflated just as they were with actionbar
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        Intent i = new Intent(LoginActivity.this, HomeScreenActivity.class);
+        startActivity(i);
+
     }
 
     @Override
