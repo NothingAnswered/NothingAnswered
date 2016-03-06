@@ -53,6 +53,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -95,7 +96,8 @@ public class Camera2VideoFragment extends Fragment
     /**
      * Button to record video
      */
-    private Button mButtonVideo;
+    private ImageView mButtonVideo;
+    private Button mTempStopRecordingBtn;
 
     /**
      * A refernce to the opened {@link CameraDevice}.
@@ -275,26 +277,36 @@ public class Camera2VideoFragment extends Fragment
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-        mButtonVideo = (Button) view.findViewById(R.id.video);
+        mButtonVideo = (ImageView) view.findViewById(R.id.video);
         mButtonVideo.setOnClickListener(this);
-        view.findViewById(R.id.info).setOnClickListener(this);
+        mTempStopRecordingBtn = (Button) view.findViewById(R.id.stop);
+        mTempStopRecordingBtn.setOnClickListener(this);
+
+        //view.findViewById(R.id.info).setOnClickListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        startBackgroundThread();
-        if (mTextureView.isAvailable()) {
-            openCamera(mTextureView.getWidth(), mTextureView.getHeight());
-        } else {
-            mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+        if(mIsRecordingVideo) {
+            startBackgroundThread();
+            if (mTextureView.isAvailable()) {
+                openCamera(mTextureView.getWidth(), mTextureView.getHeight());
+            } else {
+                mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+            }
+        }
+        else {
+            mTempStopRecordingBtn.setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
     public void onPause() {
-        closeCamera();
-        stopBackgroundThread();
+        if(mIsRecordingVideo) {
+            closeCamera();
+            stopBackgroundThread();
+        }
         super.onPause();
     }
 
@@ -302,6 +314,7 @@ public class Camera2VideoFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.video: {
+                Log.d("DEBUG", "START RECORDING" );
                 if (mIsRecordingVideo) {
                     stopRecordingVideo();
                 } else {
@@ -309,16 +322,14 @@ public class Camera2VideoFragment extends Fragment
                 }
                 break;
             }
-            case R.id.info: {
-                Activity activity = getActivity();
-                if (null != activity) {
-                    new AlertDialog.Builder(activity)
-                            .setMessage(R.string.app_name)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show();
+            case R.id.stop: {
+                if(mIsRecordingVideo) {
+                    stopRecordingVideo();
                 }
-                break;
+                Log.d("DEBUG", "STOP RECORDING" );
+
             }
+            default: Log.d("DEBUG", "DEFAULT");
         }
     }
 
@@ -480,6 +491,7 @@ public class Camera2VideoFragment extends Fragment
         }
         try {
             setUpMediaRecorder();
+            mMediaRecorder.start();
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             assert texture != null;
             texture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
@@ -596,21 +608,35 @@ public class Camera2VideoFragment extends Fragment
     private void startRecordingVideo() {
         try {
             // UI
-            mButtonVideo.setText(R.string.stop);
+            mTextureView.setVisibility(View.VISIBLE);
+            mButtonVideo.setVisibility(View.INVISIBLE);
+            mTempStopRecordingBtn.setVisibility(View.VISIBLE);
+
+            startBackgroundThread();
+            if (mTextureView.isAvailable()) {
+                openCamera(mTextureView.getWidth(), mTextureView.getHeight());
+            } else {
+                mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+            }
+
+            //mButtonVideo.setText(R.string.stop);
             mIsRecordingVideo = true;
 
             // Start recording
-            mMediaRecorder.start();
+            //mMediaRecorder.start();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     private void stopRecordingVideo() {
+
+        Log.d("STOP RECORDING", "STOP RECORDING");
         // UI
         mIsRecordingVideo = false;
-        mButtonVideo.setText(R.string.record);
+        //mButtonVideo.setText(R.string.record);
         // Stop recording
+
         mMediaRecorder.stop();
         mMediaRecorder.reset();
         Activity activity = getActivity();
@@ -618,7 +644,12 @@ public class Camera2VideoFragment extends Fragment
             Toast.makeText(activity, "Video saved: " + getVideoFile(activity),
                     Toast.LENGTH_SHORT).show();
         }
-        startPreview();
+        mTextureView.setVisibility(View.INVISIBLE);
+        mButtonVideo.setVisibility(View.VISIBLE);
+        mTempStopRecordingBtn.setVisibility(View.INVISIBLE);
+        stopBackgroundThread();
+        closeCamera();
+        //startPreview();
     }
 
     /**
