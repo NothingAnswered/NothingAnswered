@@ -21,6 +21,7 @@ import codepathproject.nothinganswered.activities.Activity.HomeScreenActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     private CallbackManager callbackManager;

@@ -8,6 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.andtinder.model.CardModel;
+import com.andtinder.model.Orientations;
+import com.andtinder.view.CardContainer;
+import com.andtinder.view.SimpleCardStackAdapter;
+
 import codepathproject.nothinganswered.R;
 
 public class FragmentVideoResponse extends Fragment {
@@ -21,6 +26,15 @@ public class FragmentVideoResponse extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_video_responses, container, false);
         TextView tvTitle = (TextView) view.findViewById(R.id.textView1);
+
+     //   swipeable cards checking here
+        CardContainer mcardContainer = (CardContainer) view.findViewById(R.id.layoutview);
+        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
+        CardModel card = new CardModel("Video Response","Decription GOes there",view.getResources().getDrawable(R.drawable.picture1));
+        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
+        adapter.add(card);
+        mcardContainer.setAdapter(adapter);
+
         return view;
     }
 
