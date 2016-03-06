@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/flCamera"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingBottom="20dp">
+
+    <VideoView
+        android:id="@+id/vvVideo"
+        android:layout_width="350dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"/>
+
+</FrameLayout>
+
