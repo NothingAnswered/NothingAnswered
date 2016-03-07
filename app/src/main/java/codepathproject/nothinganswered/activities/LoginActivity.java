@@ -81,20 +81,29 @@ public class LoginActivity extends AppCompatActivity {
             public void done(ParseUser user, ParseException e) {
                 if (user == null) { //Cancelled
                     Log.i(TAG, "CANCELLED PARSE");
+                    e.printStackTrace();
                 } else if (user.isNew()) {
                     //First time user
                     Log.i(TAG, "FIRST PARSE");
                     facebookClient.getInfo();
                     facebookClient.getFriendList();
+                    getHomeActivity();
                 } else {
                     //Existing user
                     Log.i(TAG, "EXISTING PARSE");
                     facebookClient.getFriendList();
                     //facebookClient.postOnMyWall();
+                    getHomeActivity();
                 }
             }
         });
     }
+
+    public void getHomeActivity() {
+        Intent i = new Intent(LoginActivity.this, HomeScreenActivity.class);
+        startActivity(i);
+    }
+
     // Query messages from Parse so we can load them into the chat adapter
     void refreshMessages() {
         Log.i("REFRESH", "IN REFRESH");
@@ -126,8 +135,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
-        Intent i = new Intent(LoginActivity.this, HomeScreenActivity.class);
-        startActivity(i);
     }
 
     @Override

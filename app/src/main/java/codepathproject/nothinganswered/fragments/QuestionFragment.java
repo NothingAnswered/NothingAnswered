@@ -55,9 +55,15 @@ public class QuestionFragment extends DialogFragment {
                 qObject.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        Log.i(TAG, "Saved");
+                        if (e != null) {
+                            e.printStackTrace();
+                        }
                     }
                 });
+                Log.i(TAG, sender);
+                Log.i(TAG, question);
+                Log.i(TAG, recipient);
+                getDialog().dismiss();
             }
         });
         return view;

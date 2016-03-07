@@ -52,7 +52,12 @@ public class ParseClient {
         ParseObject qObject = ParseObject.create("Question");
         qObject.put(Question.SENDER_ID, ParseUser.getCurrentUser().getObjectId());
         qObject.put(Question.QUESTION, question);
-        qObject.put(Question.VIDEO, video);
+        if (video != null) {
+            qObject.put(Question.VIDEO, video);
+        }
+        else {
+            qObject.put(Question.VIDEO, "");
+        }
         qObject.put(Question.RECIPIENTS_ID, recipients);
         return qObject;
     }
@@ -91,6 +96,7 @@ public class ParseClient {
 
         // Create the ParseFile
         ParseFile file = createParseBlob("androidbegin.png", image);
+        file.saveInBackground();
 
         return file;
     }
