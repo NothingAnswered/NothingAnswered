@@ -17,10 +17,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.NAUser;
 
 /**
@@ -100,16 +100,8 @@ public class FacebookClient {
             @Override
             public void onCompleted(JSONArray jsonArray, GraphResponse response) {
                 if (response.getError() == null) {
-                    final List<String> friendId = new ArrayList<String>();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        try {
-                            Log.i(TAG, "friendid " + jsonArray.getJSONObject(i).getString("id"));
-                            Log.i(TAG, "friend " + jsonArray.getJSONObject(i).getString("name"));
-                            friendId.add(jsonArray.getJSONObject(i).getString("id"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    final Friends friends = Friends.getInstance();
+                    friends.fromJSONArray(jsonArray);
 
                     //Update friends list user Object
                     ParseQuery<NAUser> query = parseClient.getNAUserQuery(null, 10);
@@ -121,7 +113,7 @@ public class FacebookClient {
                                 Log.i(TAG, "NAUser Objects returned " + objects.size());
                                 for (int i = 0; i < objects.size(); i++) {
                                     NAUser user = objects.get(i);
-                                    user.put(NAUser.FRIENDS, friendId);
+                                    user.put(NAUser.FRIENDS, friends.getFacebookIds());
                                     try {
                                         user.save();
                                     } catch (ParseException e1) {
@@ -138,6 +130,8 @@ public class FacebookClient {
                 }
             }
         });
+        Bundle bundle = req.getParameters();
+        bundle.putString("fields", "id,first_name,last_name");
         req.executeAsync();
     }
 
