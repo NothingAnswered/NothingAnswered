@@ -40,4 +40,5 @@ dependencies {
     compile 'com.parse:parsefacebookutils-v4-android:1.10.4@aar'
     compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    compile 'com.makeramen:roundedimageview:2.2.1'
 }

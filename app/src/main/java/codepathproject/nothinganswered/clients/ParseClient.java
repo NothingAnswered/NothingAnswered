@@ -1,14 +1,20 @@
 package codepathproject.nothinganswered.clients;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.models.NAUser;
 import codepathproject.nothinganswered.models.Question;
 
 /**
@@ -17,6 +23,7 @@ import codepathproject.nothinganswered.models.Question;
 public class ParseClient {
     private static ParseClient mInstance = null;
     private Context context;
+    private FacebookClient facebookClient;
 
     private ParseClient(Context context) {
         this.context = context;
@@ -29,6 +36,10 @@ public class ParseClient {
         return mInstance;
     }
 
+    public void setFacebookClient(FacebookClient client) {
+        facebookClient = client;
+    }
+
     public ParseFile createParseBlob(String name, byte[] blob) {
         // Create the ParseFile
         ParseFile file = new ParseFile(name, blob);
@@ -39,14 +50,14 @@ public class ParseClient {
 
     public ParseObject createQuestionObject(String question, ParseFile video, List<String> recipients) {
         ParseObject qObject = ParseObject.create("Question");
-        qObject.put(Question.QUESTION_SENDER_ID_KEY, "Gangi");
-        qObject.put(Question.QUESTION, "Who am I?");
-        qObject.put(Question.VIDEO_KEY, video);
-        qObject.put(Question.RECIPIENT_ID_KEY, "Palem");
+        qObject.put(Question.SENDER_ID, ParseUser.getCurrentUser().getObjectId());
+        qObject.put(Question.QUESTION, question);
+        qObject.put(Question.VIDEO, video);
+        qObject.put(Question.RECIPIENTS_ID, recipients);
         return qObject;
     }
 
-    public ParseQuery<Question> getQuery(ArrayList<String> columns, int limit) {
+    public ParseQuery<Question> getQuestionQuery(ArrayList<String> columns, int limit) {
         ParseQuery<Question> query = ParseQuery.getQuery(Question.class);
         if (columns != null) {
             query.selectKeys(columns);
@@ -55,6 +66,33 @@ public class ParseClient {
         query.setLimit(limit);
         query.orderByAscending("createdAt");
         return query;
+    }
+
+    public ParseQuery<NAUser> getNAUserQuery(ArrayList<String> columns, int limit) {
+        ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
+        if (columns != null) {
+            query.selectKeys(columns);
+        }
+        // Configure limit and sort order
+        query.setLimit(limit);
+        query.orderByAscending("createdAt");
+        return query;
+    }
+
+    public ParseFile parseTemplateFile() {
+        // Locate the image in res > drawable-hdpi
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.mipmap.ic_launcher);
+        // Convert it to byte
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress image to lower quality scale 1 - 100
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] image = stream.toByteArray();
+
+        // Create the ParseFile
+        ParseFile file = createParseBlob("androidbegin.png", image);
+
+        return file;
     }
 
 }

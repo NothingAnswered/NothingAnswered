@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:id="@+id/ivSendImage"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="fitCenter"
+        app:riv_corner_radius="30dip"
+        app:riv_mutate_background="true"
+        app:riv_tile_mode="repeat"
+        app:riv_oval="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="First Name"
+        android:id="@+id/tvSendName"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_toEndOf="@+id/ivSendImage" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/etSendQuestion"
+        android:background="@drawable/rounded_corner"
+        android:layout_below="@+id/ivSendImage"
+        android:layout_alignStart="@+id/ivSendImage"
+        android:layout_marginTop="30dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND"
+        android:id="@+id/btnSend"
+        android:layout_below="@+id/etSendQuestion"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="29dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/etRecipient"
+        android:hint="recipient"
+        android:background="@drawable/rounded_corner"
+        android:layout_alignStart="@+id/etSendQuestion"
+        android:layout_toStartOf="@+id/btnSend"
+        android:layout_alignBottom="@+id/btnSend"
+        android:layout_alignTop="@+id/btnSend" />
+
+</RelativeLayout>

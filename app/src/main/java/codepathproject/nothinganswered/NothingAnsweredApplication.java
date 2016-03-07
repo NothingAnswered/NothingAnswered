@@ -11,6 +11,7 @@ import com.parse.interceptors.ParseLogInterceptor;
 
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
+import codepathproject.nothinganswered.models.NAUser;
 import codepathproject.nothinganswered.models.Question;
 
 /**
@@ -18,6 +19,8 @@ import codepathproject.nothinganswered.models.Question;
  */
 public class NothingAnsweredApplication extends Application {
     private static Context context;
+    private ParseClient parseClient;
+    private FacebookClient facebookClient;
 
     @Override
     public void onCreate() {
@@ -27,6 +30,7 @@ public class NothingAnsweredApplication extends Application {
         // set applicationId and server based on the values in the Heroku settings.
         // any network interceptors must be added with the Configuration Builder given this syntax
         ParseObject.registerSubclass(Question.class);
+        ParseObject.registerSubclass(NAUser.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("nothinganswered") // should correspond to APP_ID env variable
                 .clientKey(null)
@@ -34,6 +38,12 @@ public class NothingAnsweredApplication extends Application {
                 .server("https://nothinganswered.herokuapp.com/parse/").build());
         ParseFacebookUtils.initialize(this);
         NothingAnsweredApplication.context = this;
+
+        //Set clients for another
+        parseClient = getParseClient();
+        facebookClient = getFacebookClient();
+        parseClient.setFacebookClient(facebookClient);
+        facebookClient.setParseClient(parseClient);
     }
 
     public static ParseClient getParseClient() {
