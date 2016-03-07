@@ -8,12 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.VideoView;
 
-import com.andtinder.model.CardModel;
 import com.andtinder.model.Orientations;
-import com.andtinder.view.CardContainer;
 
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.adapters.GaffeSimpleCardStackAdapter;
+import codepathproject.nothinganswered.models.GaffeCardModel;
 
 public class FragmentVideoResponse extends Fragment {
 
@@ -28,11 +27,13 @@ public class FragmentVideoResponse extends Fragment {
         View view = inflater.inflate(R.layout.fragment_video_responses, container, false);
 
 //     //  swipeable cards checking here
-        CardContainer mcardContainer = (CardContainer) view.findViewById(R.id.layoutview);
+        codepathproject.nothinganswered.container.CardContainer mcardContainer = (codepathproject.nothinganswered.container.CardContainer) view.findViewById(R.id.layoutview);
         mcardContainer.setOrientation(Orientations.Orientation.Disordered);
 
-        CardModel card = new CardModel("Video Response","Video Response",view.getResources().getDrawable(R.drawable.picture1));
-        CardModel card1 = new CardModel("Video Response","Video Response",view.getResources().getDrawable(R.drawable.picture2));
+         GaffeCardModel card = new GaffeCardModel("Card 1","http://techslides.com/demos/sample-videos/small.mp4",
+                 view.getResources().getDrawable(R.drawable.picture1),"End Card 1");
+        GaffeCardModel card1 = new GaffeCardModel("Card 2","http://techslides.com/demos/sample-videos/small.mp4",
+                view.getResources().getDrawable(R.drawable.picture2),"End Card 2");
 
 
         GaffeSimpleCardStackAdapter adapter = new GaffeSimpleCardStackAdapter(getActivity());
@@ -41,16 +42,6 @@ public class FragmentVideoResponse extends Fragment {
         mcardContainer.setAdapter(adapter);
 
 
-
-       // testVideo = (VideoView) view.findViewById(R.id.testVideo);
-//        testVideo.setVideoPath("http://techslides.com/demos/sample-videos/small.mp4");
-//       // MediaController mediaController = new MediaController(this);
-//        testVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//            @Override
-//            public void onPrepared(MediaPlayer mp) {
-//                testVideo.start();
-//            }
-//        });
 
         return view;
     }

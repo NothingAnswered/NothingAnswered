@@ -1,53 +1,73 @@
 package codepathproject.nothinganswered.adapters;
 
 import android.content.Context;
-import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
-
-import com.andtinder.model.CardModel;
-import com.andtinder.view.CardStackAdapter;
+import android.widget.VideoView;
 
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.activities.PlayVideoActivity_rahul;
+import codepathproject.nothinganswered.models.GaffeCardModel;
 
-/**
- * Created by rmukhedkar on 3/6/16.
- */
-public class GaffeSimpleCardStackAdapter extends CardStackAdapter {
 
-    private ImageView imageView;
+public class GaffeSimpleCardStackAdapter extends GaffeCardStackAdapter {
 
+
+    private TextView gaffeCardQuestion;
+  //  private ImageView gaffeCardVideoThumbnail;
+    private VideoView gaffeCardVideoThumbnail;
+    private ImageView gaffeCardProfilePictureUrl;
+    private TextView gaffeCardProfileName;
 
     public GaffeSimpleCardStackAdapter(Context mContext) {
         super(mContext);
     }
 
     @Override
-    protected View getCardView(int i, CardModel model, View convertView, ViewGroup parent) {
-        if(convertView == null) {
+    protected View getCardView(int position, GaffeCardModel model, View convertView, ViewGroup parent) {
+                if(convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.std_card_inner, parent, false);
+            convertView = inflater.inflate(R.layout.item_gaffecard, parent, false);
             assert convertView != null;
         }
 
-        imageView = (ImageView) convertView.findViewById(R.id.image);
-        imageView.setImageDrawable(model.getCardImageDrawable());
-        ((TextView) convertView.findViewById(R.id.title)).setText(model.getTitle());
-        ((TextView) convertView.findViewById(R.id.description)).setText(model.getDescription());
+      // gaffeCardVideoThumbnail = (ImageView) convertView.findViewById(R.id.gaffeCardVideoThumbnail);
+      //  gaffeCardVideoThumbnail.setImageDrawable(model.getGaffeCardVideoThumbnail());
+        gaffeCardVideoThumbnail = (VideoView) convertView.findViewById(R.id.gaffeCardVideoThumbnail);
+        gaffeCardVideoThumbnail.setVideoPath(model.getGaffeCardVideoThumbnail());
+        gaffeCardQuestion = (TextView) convertView.findViewById(R.id.gaffeCardQuestion);
+        gaffeCardQuestion.setText(model.getGaffeCardQuestion());
+        gaffeCardProfileName = (TextView) convertView.findViewById(R.id.gaffeCardProfileName);
+        gaffeCardProfileName.setText(model.getGaffeCardProfileName());
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+
+        gaffeCardVideoThumbnail.setMediaController(new MediaController(getContext()));
+        gaffeCardVideoThumbnail.requestFocus();
+        gaffeCardVideoThumbnail.setZOrderOnTop(true);
+
+        gaffeCardVideoThumbnail.start();
+//        gaffeCardVideoThumbnail.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(MediaPlayer mp) {
+//                gaffeCardVideoThumbnail.start();
+//            }
+//        });
+
+        gaffeCardVideoThumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent (getContext(), PlayVideoActivity_rahul.class);
-                getContext().startActivity(i);
-                }
+                Log.d("DEBUG","This was clicked");
+            }
         });
 
 
         return convertView;
+
     }
+
+
 }

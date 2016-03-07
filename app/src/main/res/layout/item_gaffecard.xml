@@ -25,8 +25,8 @@
         android:background="@color/card_outline"
         />
 
-    <ImageView
-        android:id="@+id/gaffeCardVideo"
+    <VideoView
+        android:id="@+id/gaffeCardVideoThumbnail"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@id/divider_title"
@@ -38,7 +38,7 @@
         android:id="@+id/divider_bottom"
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/gaffeCardVideo"
+        android:layout_below="@id/gaffeCardVideoThumbnail"
         android:background="@color/card_outline" />
 
     <ImageView
@@ -49,13 +49,13 @@
         android:src="@android:mipmap/sym_def_app_icon" />
 
     <TextView
-        android:id="@+id/gaffeCardDescription"
+        android:id="@+id/gaffeCardProfileName"
         style="@android:style/TextAppearance.Inverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/image_2"
 
-        android:layout_below="@id/gaffeCardVideo"
+        android:layout_below="@id/gaffeCardVideoThumbnail"
         android:layout_toRightOf="@+id/gaffeCardProfilePictureUrl"
         android:layout_toLeftOf="@+id/btn_sep_1"
         android:gravity="center_vertical"
@@ -71,7 +71,7 @@
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_alignBottom="@+id/image_1"
-        android:layout_below="@id/gaffeCardVideo"
+        android:layout_below="@id/gaffeCardVideoThumbnail"
         android:layout_marginTop="7dp"
         android:layout_toLeftOf="@+id/image_1"
         android:background="#ccc"/>
@@ -80,7 +80,7 @@
         android:id="@+id/image_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gaffeCardVideo"
+        android:layout_below="@id/gaffeCardVideoThumbnail"
         android:layout_toLeftOf="@+id/btn_sep_2"
         android:background="?android:attr/selectableItemBackground"
         android:padding="10dp"
@@ -91,7 +91,7 @@
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_alignBottom="@id/image_1"
-        android:layout_below="@id/gaffeCardVideo"
+        android:layout_below="@id/gaffeCardVideoThumbnail"
         android:layout_marginTop="7dp"
         android:layout_toLeftOf="@+id/image_2"
         android:background="#ccc"/>
@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/gaffeCardVideo"
+        android:layout_below="@id/gaffeCardVideoThumbnail"
         android:background="?android:attr/selectableItemBackground"
         android:padding="10dp"
         android:src="@drawable/people"/>

@@ -1,14 +1,16 @@
 package codepathproject.nothinganswered.models;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by rmukhedkar on 3/6/16.
  */
 public class GaffeCardModel {
 
     private String  gaffeCardQuestion;
-    private String  gaffeCardVideoUrl;
-    private String gaffeCardProfilePictureUrl;
-    private String gaffeCardDescription;
+    private String gaffeCardVideoThumbnail;
+    private Drawable gaffeCardProfilePictureUrl;
+    private String gaffeCardProfileName;
 
 
     private OnCardDismissedListener mOnCardDismissedListener = null;
@@ -25,17 +27,16 @@ public class GaffeCardModel {
     }
 
 
-   public GaffeCardModel (String gaffeCardQuestion, String gaffeCardVideoUrl, String gaffeCardProfilePictureUrl,
-                          String gaffeCardDescription)
+   public GaffeCardModel (String gaffeCardQuestion, String gaffeCardVideoThumbnail, Drawable gaffeCardProfilePictureUrl,
+                          String gaffeCardProfileName)
    {
-       this.gaffeCardDescription = gaffeCardDescription;
-       this.gaffeCardVideoUrl = gaffeCardVideoUrl;
+       this.gaffeCardQuestion = gaffeCardQuestion;
+       this.gaffeCardVideoThumbnail = gaffeCardVideoThumbnail;
        this.gaffeCardProfilePictureUrl = gaffeCardProfilePictureUrl;
-       this.gaffeCardDescription = gaffeCardDescription;
+       this.gaffeCardProfileName = gaffeCardProfileName;
    }
 
     public String getGaffeCardQuestion() {
-
         return gaffeCardQuestion;
     }
 
@@ -43,28 +44,28 @@ public class GaffeCardModel {
         this.gaffeCardQuestion = gaffeCardQuestion;
     }
 
-    public String getGaffeCardVideo() {
-        return gaffeCardVideoUrl;
+    public String getGaffeCardVideoThumbnail() {
+        return gaffeCardVideoThumbnail;
     }
 
-    public void setGaffeCardVideo(String gaffeCardVideoUrl) {
-        this.gaffeCardVideoUrl = gaffeCardVideoUrl;
+    public void setGaffeCardVideoThumbnail(String gaffeCardVideoThumbnail) {
+        this.gaffeCardVideoThumbnail = gaffeCardVideoThumbnail;
     }
 
-    public String getGaffeCardProfilePictureUrl() {
+    public Drawable getGaffeCardProfilePictureUrl() {
         return gaffeCardProfilePictureUrl;
     }
 
-    public void setGaffeCardProfilePictureUrl(String gaffeCardProfilePictureUrl) {
+    public void setGaffeCardProfilePictureUrl(Drawable gaffeCardProfilePictureUrl) {
         this.gaffeCardProfilePictureUrl = gaffeCardProfilePictureUrl;
     }
 
-    public String getGaffeCardDescription() {
-        return gaffeCardDescription;
+    public String getGaffeCardProfileName() {
+        return gaffeCardProfileName;
     }
 
-    public void setGaffeCardDescription(String gaffeCardDescription) {
-        this.gaffeCardDescription = gaffeCardDescription;
+    public void setGaffeCardProfileName(String gaffeCardProfileName) {
+        this.gaffeCardProfileName = gaffeCardProfileName;
     }
 
     public OnCardDismissedListener getmOnCardDismissedListener() {
