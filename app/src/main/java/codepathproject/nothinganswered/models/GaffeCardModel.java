@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.activities.Model;
+package codepathproject.nothinganswered.models;
 
 /**
  * Created by rmukhedkar on 3/6/16.

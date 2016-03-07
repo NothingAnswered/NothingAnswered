@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.activities.Video;
+package codepathproject.nothinganswered.activities;
 
 import android.media.MediaPlayer;
 import android.net.Uri;

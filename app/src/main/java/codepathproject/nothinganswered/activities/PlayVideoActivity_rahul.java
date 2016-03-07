@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.activities.Activity;
+package codepathproject.nothinganswered.activities;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.activities.Adapter;
+package codepathproject.nothinganswered.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import com.andtinder.model.CardModel;
 import com.andtinder.view.CardStackAdapter;
 
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.activities.Activity.PlayVideoActivity_rahul;
+import codepathproject.nothinganswered.activities.PlayVideoActivity_rahul;
 
 /**
  * Created by rmukhedkar on 3/6/16.

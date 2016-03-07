@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package codepathproject.nothinganswered.activities.Video;
+package codepathproject.nothinganswered.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
 
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.fragments.Camera2VideoFragment;
 
 public class CameraActivity extends Activity {
 

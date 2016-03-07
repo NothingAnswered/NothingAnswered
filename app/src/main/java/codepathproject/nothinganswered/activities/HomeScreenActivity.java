@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.activities.Activity;
+package codepathproject.nothinganswered.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import com.astuetz.PagerSlidingTabStrip;
 
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.activities.Adapter.GaffeFragmentPagerAdapter;
+import codepathproject.nothinganswered.adapters.GaffeFragmentPagerAdapter;
 import codepathproject.nothinganswered.fragments.QuestionFragment;
 
 public class HomeScreenActivity extends AppCompatActivity {

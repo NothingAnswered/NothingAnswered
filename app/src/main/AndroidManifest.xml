@@ -38,15 +38,15 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activities.Activity.HomeScreenActivity"></activity>
+        <activity android:name=".activities.HomeScreenActivity"></activity>
 
-        <activity android:name=".activities.Video.CameraActivity"
+        <activity android:name=".activities.CameraActivity"
             android:label="@string/app_name">
 
 
         </activity>
 
-        <activity android:name=".activities.Video.PlayVideoActivity" android:label="@string/app_name"></activity>
+        <activity android:name=".activities.PlayVideoActivity" android:label="@string/app_name"></activity>
     </application>
 
 </manifest>

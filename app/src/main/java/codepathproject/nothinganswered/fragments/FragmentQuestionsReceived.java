@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.activities.Fragments;
+package codepathproject.nothinganswered.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

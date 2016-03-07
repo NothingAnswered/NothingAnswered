@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package codepathproject.nothinganswered.activities.Video;
+package codepathproject.nothinganswered.fragments;
 
 import android.Manifest;
 import android.app.Activity;
@@ -42,7 +42,6 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -71,6 +70,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.activities.PlayVideoActivity;
+import codepathproject.nothinganswered.views.AutoFitTextureView;
 
 public class Camera2VideoFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {

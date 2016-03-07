@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.activities.Fragments;
+package codepathproject.nothinganswered.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +13,7 @@ import com.andtinder.model.Orientations;
 import com.andtinder.view.CardContainer;
 
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.activities.Adapter.GaffeSimpleCardStackAdapter;
+import codepathproject.nothinganswered.adapters.GaffeSimpleCardStackAdapter;
 
 public class FragmentVideoResponse extends Fragment {
 
