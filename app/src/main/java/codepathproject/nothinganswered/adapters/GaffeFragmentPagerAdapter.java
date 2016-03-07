@@ -1,10 +1,10 @@
-package codepathproject.nothinganswered.activities.Adapter;
+package codepathproject.nothinganswered.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-import codepathproject.nothinganswered.activities.Fragments.FragmentQuestionsReceived;
-import codepathproject.nothinganswered.activities.Fragments.FragmentVideoResponse;
+import codepathproject.nothinganswered.fragments.FragmentQuestionsReceived;
+import codepathproject.nothinganswered.fragments.FragmentVideoResponse;
 
 public class GaffeFragmentPagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
 

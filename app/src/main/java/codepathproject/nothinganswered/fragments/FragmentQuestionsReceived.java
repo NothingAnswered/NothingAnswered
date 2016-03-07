@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.activities.Fragments;
+package codepathproject.nothinganswered.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.andtinder.model.CardModel;
 import com.andtinder.model.Orientations;
@@ -15,7 +14,8 @@ import com.andtinder.view.SimpleCardStackAdapter;
 
 import codepathproject.nothinganswered.R;
 
-public class FragmentVideoResponse extends Fragment {
+
+public class FragmentQuestionsReceived extends Fragment {
 
     public static final String ARG_PAGE = "ARG_PAGE";
 
@@ -24,16 +24,16 @@ public class FragmentVideoResponse extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video_responses, container, false);
-        TextView tvTitle = (TextView) view.findViewById(R.id.textView1);
+        View view = inflater.inflate(R.layout.fragment_questions_received, container, false);
 
-     //   swipeable cards checking here
+        //   swipeable cards checking here
         CardContainer mcardContainer = (CardContainer) view.findViewById(R.id.layoutview);
         mcardContainer.setOrientation(Orientations.Orientation.Disordered);
-        CardModel card = new CardModel("Video Response","Decription GOes there",view.getResources().getDrawable(R.drawable.picture1));
+        CardModel card = new CardModel("Questions Recieved","Decription GOes there",view.getResources().getDrawable(R.drawable.picture2));
         SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
         adapter.add(card);
         mcardContainer.setAdapter(adapter);
+
 
         return view;
     }
@@ -43,11 +43,11 @@ public class FragmentVideoResponse extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public static FragmentVideoResponse newInstance (int page)
+    public static FragmentQuestionsReceived newInstance (int page)
     {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
-        FragmentVideoResponse fragment = new FragmentVideoResponse();
+        FragmentQuestionsReceived fragment = new FragmentQuestionsReceived();
         fragment.setArguments(args);
         return fragment;
     }

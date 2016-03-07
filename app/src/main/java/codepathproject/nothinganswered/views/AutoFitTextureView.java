@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package codepathproject.nothinganswered.activities.Video;
+package codepathproject.nothinganswered.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
