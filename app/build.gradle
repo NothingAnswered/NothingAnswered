@@ -41,4 +41,5 @@ dependencies {
     compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.makeramen:roundedimageview:2.2.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

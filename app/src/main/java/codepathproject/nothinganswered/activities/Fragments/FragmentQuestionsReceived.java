@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.andtinder.model.CardModel;
 import com.andtinder.model.Orientations;
@@ -26,7 +25,6 @@ public class FragmentQuestionsReceived extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_questions_received, container, false);
-        TextView tvTitle = (TextView) view.findViewById(R.id.textView2);
 
         //   swipeable cards checking here
         CardContainer mcardContainer = (CardContainer) view.findViewById(R.id.layoutview);

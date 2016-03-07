@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     Runnable mRefreshMessagesRunnable = new Runnable() {
         @Override
         public void run() {
-            refreshMessages();
+            //refreshMessages();
             mHandler.postDelayed(this, POLL_INTERVAL);
         }
     };

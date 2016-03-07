@@ -24,8 +24,10 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
@@ -38,7 +40,9 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -57,6 +61,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -602,6 +607,7 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private File getVideoFile(Context context) {
+
         return new File(context.getExternalFilesDir(null), "video.mp4");
     }
 
@@ -647,9 +653,47 @@ public class Camera2VideoFragment extends Fragment
         mTextureView.setVisibility(View.INVISIBLE);
         mButtonVideo.setVisibility(View.VISIBLE);
         mTempStopRecordingBtn.setVisibility(View.INVISIBLE);
+
         stopBackgroundThread();
         closeCamera();
+        StartPlayVideoActivity();
         //startPreview();
+    }
+
+    private Uri getImageUri(){
+
+        Bitmap bitmap = mTextureView.getBitmap();
+        Uri bmpUri = null;
+        try {
+            // Use methods on Context to access package-specific directories on external storage.
+            // This way, you don't need to request external read/write permission.
+            // See https://youtu.be/5xVh-7ywKpE?t=25m25s
+            //File(context.getExternalFilesDir(null), "video.mp4");
+
+            File file =  new File(getActivity().getExternalFilesDir(null), "thumbnail_" + System.currentTimeMillis() + ".png");
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.close();
+            bmpUri = Uri.fromFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bmpUri;
+
+    }
+
+    private void StartPlayVideoActivity() {
+        Uri videoUri;
+        Uri imageUri = getImageUri();
+
+        File file = getVideoFile(getActivity());
+        videoUri =  Uri.fromFile(file);
+
+        Intent intent = new Intent(getActivity(), PlayVideoActivity.class);
+        intent.putExtra(PlayVideoActivity.VIDEO_URI, videoUri);
+        intent.putExtra(PlayVideoActivity.IMAGE_URI, imageUri);
+        startActivity(intent);
     }
 
     /**
