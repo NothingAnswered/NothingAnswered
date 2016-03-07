@@ -44,7 +44,7 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/gaffeCardProfilePicture"
+        android:id="@+id/gaffeCardProfilePictureUrl"
         android:layout_alignBottom="@+id/image_2"
         android:src="@android:mipmap/sym_def_app_icon" />
 
@@ -56,7 +56,7 @@
         android:layout_alignBottom="@+id/image_2"
 
         android:layout_below="@id/gaffeCardVideo"
-        android:layout_toRightOf="@+id/gaffeCardProfilePicture"
+        android:layout_toRightOf="@+id/gaffeCardProfilePictureUrl"
         android:layout_toLeftOf="@+id/btn_sep_1"
         android:gravity="center_vertical"
         android:fontFamily="sans-serif-condensed"

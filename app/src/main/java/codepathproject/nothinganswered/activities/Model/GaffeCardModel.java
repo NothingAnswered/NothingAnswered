@@ -5,9 +5,11 @@ package codepathproject.nothinganswered.activities.Model;
  */
 public class GaffeCardModel {
 
-    private String  title;
-    private String  description;
-    private String  videoUrl;
+    private String  gaffeCardQuestion;
+    private String  gaffeCardVideoUrl;
+    private String gaffeCardProfilePictureUrl;
+    private String gaffeCardDescription;
+
 
     private OnCardDismissedListener mOnCardDismissedListener = null;
 
@@ -23,31 +25,63 @@ public class GaffeCardModel {
     }
 
 
-    public GaffeCardModel(String title, String description, String videoUrl) {
-        this.title = title;
-        this.description = description;
-        this.videoUrl = videoUrl;
+   public GaffeCardModel (String gaffeCardQuestion, String gaffeCardVideoUrl, String gaffeCardProfilePictureUrl,
+                          String gaffeCardDescription)
+   {
+       this.gaffeCardDescription = gaffeCardDescription;
+       this.gaffeCardVideoUrl = gaffeCardVideoUrl;
+       this.gaffeCardProfilePictureUrl = gaffeCardProfilePictureUrl;
+       this.gaffeCardDescription = gaffeCardDescription;
+   }
+
+    public String getGaffeCardQuestion() {
+
+        return gaffeCardQuestion;
     }
 
-
-
-    public String getTitle() {
-        return title;
+    public void setGaffeCardQuestion(String gaffeCardQuestion) {
+        this.gaffeCardQuestion = gaffeCardQuestion;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getGaffeCardVideo() {
+        return gaffeCardVideoUrl;
     }
 
-    public String getDescription() {
-        return description;
+    public void setGaffeCardVideo(String gaffeCardVideoUrl) {
+        this.gaffeCardVideoUrl = gaffeCardVideoUrl;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getGaffeCardProfilePictureUrl() {
+        return gaffeCardProfilePictureUrl;
     }
 
+    public void setGaffeCardProfilePictureUrl(String gaffeCardProfilePictureUrl) {
+        this.gaffeCardProfilePictureUrl = gaffeCardProfilePictureUrl;
+    }
 
+    public String getGaffeCardDescription() {
+        return gaffeCardDescription;
+    }
+
+    public void setGaffeCardDescription(String gaffeCardDescription) {
+        this.gaffeCardDescription = gaffeCardDescription;
+    }
+
+    public OnCardDismissedListener getmOnCardDismissedListener() {
+        return mOnCardDismissedListener;
+    }
+
+    public void setmOnCardDismissedListener(OnCardDismissedListener mOnCardDismissedListener) {
+        this.mOnCardDismissedListener = mOnCardDismissedListener;
+    }
+
+    public OnClickListener getmOnClickListener() {
+        return mOnClickListener;
+    }
+
+    public void setmOnClickListener(OnClickListener mOnClickListener) {
+        this.mOnClickListener = mOnClickListener;
+    }
 
     public void setOnCardDismissedListener( OnCardDismissedListener listener ) {
         this.mOnCardDismissedListener = listener;
