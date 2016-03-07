@@ -3,14 +3,17 @@ package codepathproject.nothinganswered.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.Arrays;
 
@@ -49,7 +52,12 @@ public class QuestionFragment extends DialogFragment {
                 String question = etSendQuestion.getText().toString();
                 String recipient = etRecipient.getText().toString();
                 ParseObject qObject = parseClient.createQuestionObject(question, parseClient.parseTemplateFile(), Arrays.asList(recipient));
-                qObject.saveInBackground();
+                qObject.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.i(TAG, "Saved");
+                    }
+                });
             }
         });
         return view;
