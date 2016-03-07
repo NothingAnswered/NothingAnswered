@@ -8,11 +8,13 @@
         android:authorities="com.facebook.app.FacebookContentProvider1724056447876596"
         android:exported="true" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
+        android:name=".NothingAnsweredApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,12 +22,14 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:theme">
         <activity android:name=".activities.LoginActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
         </activity>
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -36,11 +40,15 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activities.Activity.HomeScreenActivity" />
-        <activity
-            android:name=".activities.Video.CameraActivity"
-            android:label="@string/app_name"></activity>
-        <activity android:name=".activities.Activity.PlayVideoActivity"></activity>
+        <activity android:name=".activities.Activity.HomeScreenActivity"></activity>
+
+        <activity android:name=".activities.Video.CameraActivity"
+            android:label="@string/app_name">
+
+
+        </activity>
+
+        <activity android:name=".activities.Video.PlayVideoActivity" android:label="@string/app_name"></activity>
     </application>
 
 </manifest>

@@ -12,7 +12,7 @@ import com.andtinder.model.CardModel;
 import com.andtinder.view.CardStackAdapter;
 
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.activities.Activity.PlayVideoActivity;
+import codepathproject.nothinganswered.activities.Activity.PlayVideoActivity_rahul;
 
 /**
  * Created by rmukhedkar on 3/6/16.
@@ -42,7 +42,7 @@ public class GaffeSimpleCardStackAdapter extends CardStackAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent (getContext(), PlayVideoActivity.class);
+                Intent i = new Intent (getContext(), PlayVideoActivity_rahul.class);
                 getContext().startActivity(i);
                 }
         });

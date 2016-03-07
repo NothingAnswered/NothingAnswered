@@ -7,13 +7,13 @@ import android.widget.VideoView;
 
 import codepathproject.nothinganswered.R;
 
-public class PlayVideoActivity extends AppCompatActivity {
+public class PlayVideoActivity_rahul extends AppCompatActivity {
 
     public  VideoView testVideo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play_video);
+        setContentView(R.layout.activity_play_video_rahul);
 
 
          testVideo = (VideoView) findViewById(R.id.testVideo);
