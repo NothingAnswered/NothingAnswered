@@ -17,12 +17,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:paddingTop="20dp">
+    >
 
     <codepathproject.nothinganswered.views.AutoFitTextureView
         android:id="@+id/texture"
-        android:layout_width="350dp"
-        android:layout_height="250dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="invisible"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -34,19 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/texture"
         android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:id="@+id/txtcountdown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:layout_centerHorizontal="true"
-        android:text="1"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_below="@+id/texture" />
-
     <Button
         android:id="@+id/stop"
         android:layout_width="wrap_content"
