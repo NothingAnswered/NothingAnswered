@@ -592,15 +592,16 @@ public class Camera2VideoFragment extends Fragment
         if (null == activity) {
             return;
         }
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mMediaRecorder.setOutputFile(getVideoFile(activity).getAbsolutePath());
-        mMediaRecorder.setVideoEncodingBitRate(10000000);
-        mMediaRecorder.setVideoFrameRate(30);
+        mMediaRecorder.setVideoEncodingBitRate(100000);
+        mMediaRecorder.setVideoFrameRate(15);
+        mMediaRecorder.setMaxDuration(Integer.parseInt(getString(R.string.max_video_duration)));
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         int orientation = ORIENTATIONS.get(rotation);
         mMediaRecorder.setOrientationHint(orientation);
@@ -609,7 +610,7 @@ public class Camera2VideoFragment extends Fragment
 
     private File getVideoFile(Context context) {
 
-        return new File(context.getExternalFilesDir(null), "video.mp4");
+        return new File(context.getExternalFilesDir(null), "video.3gpp");
     }
 
     private void startRecordingVideo() {

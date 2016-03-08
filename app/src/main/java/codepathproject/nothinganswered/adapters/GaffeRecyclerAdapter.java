@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.Jay;
+package codepathproject.nothinganswered.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import codepathproject.nothinganswered.models.Gaffe;
 import codepathproject.nothinganswered.R;
 
 /**

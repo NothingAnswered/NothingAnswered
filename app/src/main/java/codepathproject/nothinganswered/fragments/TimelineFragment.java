@@ -11,16 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import codepathproject.nothinganswered.Jay.Gaffe;
-import codepathproject.nothinganswered.Jay.GaffeRecyclerAdapter;
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.activities.HomeScreenActivity;
+import codepathproject.nothinganswered.adapters.GaffeRecyclerAdapter;
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
 import codepathproject.nothinganswered.models.Friends;
+import codepathproject.nothinganswered.models.Gaffe;
 
 /**
  * Created by jnagaraj on 3/8/16.
@@ -62,9 +61,6 @@ public abstract class TimelineFragment extends Fragment {
 
         mGaffes = new ArrayList<>();
         gaffeRecyclerAdapter = new GaffeRecyclerAdapter(mGaffes);
-
-        //cardStackAdapter = new SimpleCardStackAdapter(getActivity());
-
     }
 
     @Nullable
@@ -85,13 +81,4 @@ public abstract class TimelineFragment extends Fragment {
     }
 
     public abstract void populateTimeline();
-
-    public void clearListAndAddNew(List<Gaffe> cards) {
-
-        cards.clear();
-        gaffeRecyclerAdapter.notifyDataSetChanged();
-        cards.addAll(cards);
-        gaffeRecyclerAdapter.notifyDataSetChanged();
-    }
-
 }

@@ -11,7 +11,7 @@ import com.parse.ParseQuery;
 
 import java.util.List;
 
-import codepathproject.nothinganswered.Jay.Gaffe;
+import codepathproject.nothinganswered.models.Gaffe;
 import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.Question;
 
@@ -21,26 +21,6 @@ public class FragmentQuestionsReceived extends TimelineFragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private int mPage;
-
-    /*@Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_questions_received, container, false);
-
-        //   swipeable cards checking here
-        //ListView mcardContainer = (ListView) view.findViewById(R.id.layoutview);
-//        CardContainer mcardContainer = (CardContainer) view.findViewById(R.id.layoutview);
-//        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
-
-
-        //CardModel card = new CardModel("Questions Recieved","Decription GOes there",view.getResources().getDrawable(R.drawable.picture2));
-        //SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
-        //adapter.add(card);
-        //mcardContainer.setAdapter(adapter);
-
-
-        return view;
-    }*/
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

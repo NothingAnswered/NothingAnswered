@@ -1,4 +1,4 @@
-package codepathproject.nothinganswered.Jay;
+package codepathproject.nothinganswered.models;
 
 /**
  * Created by jnagaraj on 3/6/16.
