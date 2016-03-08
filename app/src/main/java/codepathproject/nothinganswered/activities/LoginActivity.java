@@ -130,6 +130,34 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
+    private void getQuestionsTimeline() {
+
+        Log.i("REFRESH", "IN REFRESH");
+        // Construct query to execute
+        ParseQuery<Question> query = parseClient.getQuestionTimeline("my id", 5);
+        // Execute query to fetch all messages from Parse asynchronously
+        // This is equivalent to a SELECT query with SQL
+        query.findInBackground(new FindCallback<Question>() {
+            public void done(List<Question> messages, ParseException e) {
+                if (e == null) {
+                    if (messages != null && messages.size() > 0) {
+                        Question video = (Question) messages.get(0);
+                        ParseFile parseFile = video.getParseFile(Question.VIDEO);
+                        ivImage.setParseFile(parseFile);
+                        ivImage.loadInBackground();
+                        tvQuestion.setText(video.get(Question.QUESTION).toString());
+                        tvSender.setText(video.get(Question.SENDER_ID).toString());
+                        tvReceiver.setText(video.get(Question.RECIPIENTS_ID).toString());
+                    }
+                } else {
+                    Log.e("message", "Error Loading Messages" + e);
+                }
+            }
+        });
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
