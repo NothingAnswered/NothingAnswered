@@ -2,41 +2,45 @@ package codepathproject.nothinganswered.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
 
-import com.andtinder.model.CardModel;
-import com.andtinder.view.SimpleCardStackAdapter;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
-import codepathproject.nothinganswered.R;
+import java.util.List;
+
+import codepathproject.nothinganswered.Jay.Gaffe;
+import codepathproject.nothinganswered.models.Friends;
+import codepathproject.nothinganswered.models.Question;
 
 
-public class FragmentQuestionsReceived extends Fragment {
+public class FragmentQuestionsReceived extends TimelineFragment {
 
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private int mPage;
 
-    @Nullable
+    /*@Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_questions_received, container, false);
 
         //   swipeable cards checking here
-        ListView mcardContainer = (ListView) view.findViewById(R.id.layoutview);
+        //ListView mcardContainer = (ListView) view.findViewById(R.id.layoutview);
 //        CardContainer mcardContainer = (CardContainer) view.findViewById(R.id.layoutview);
 //        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
-        CardModel card = new CardModel("Questions Recieved","Decription GOes there",view.getResources().getDrawable(R.drawable.picture2));
-        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
-        adapter.add(card);
-        mcardContainer.setAdapter(adapter);
+
+
+        //CardModel card = new CardModel("Questions Recieved","Decription GOes there",view.getResources().getDrawable(R.drawable.picture2));
+        //SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
+        //adapter.add(card);
+        //mcardContainer.setAdapter(adapter);
 
 
         return view;
-    }
+    }*/
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -51,4 +55,71 @@ public class FragmentQuestionsReceived extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    public void populateTimeline() {
+
+        Log.i("REFRESH", "IN REFRESH");
+        // Construct query to execute
+        final ParseQuery<Question> query = parseClient.getQuestionTimeline(Friends.myId, 5);
+        // Execute query to fetch all messages from Parse asynchronously
+        // This is equivalent to a SELECT query with SQL
+        query.findInBackground(new FindCallback<Question>() {
+            public void done(List<Question> messages, ParseException e) {
+                if (e == null) {
+                    if (messages != null && messages.size() > 0) {
+
+                        mGaffes.clear();
+
+                        for (int i = 0; i < messages.size(); i++) {
+
+
+                            Question question = messages.get(i);
+                            friends = Friends.getInstance();
+                            String sender = question.get(Question.SENDER_ID).toString();
+
+                            Gaffe card = new Gaffe();
+                            card.questionTitle = question.get(Question.QUESTION).toString();
+                            card.username = (friends.getNameFromId(sender));
+
+                            mGaffes.add(card);
+
+                            Log.i(TAG, question.get(Question.QUESTION).toString());
+                            Log.i(TAG, friends.getNameFromId(sender));
+                        }
+                        //clearListAndAddNew(mGaffes);
+
+                        gaffeRecyclerAdapter.notifyDataSetChanged();
+                    }
+
+                } else {
+                    Log.e("message", "Error Loading Messages" + e);
+                }
+            }
+        });
+
+    }
+
+   /* public void populateTimeline() {
+
+        Log.d(TAG, "Populate Timeline");
+
+        ArrayList<Gaffe> gaffes = new ArrayList<>();
+        for(int i = 0; i < 10; i++) {
+
+
+            Gaffe card = new Gaffe();
+            card.questionTitle = "What's on your tongue?";
+            card.username = "Jayashree";
+
+            Log.d(TAG, card.questionTitle);
+            gaffes.add(card);
+
+        }
+
+        mGaffes.addAll(gaffes);
+        gaffeRecyclerAdapter.notifyDataSetChanged();
+
+        //clearListAndAddNew(mGaffes);
+    }*/
+
 }
