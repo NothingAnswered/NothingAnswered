@@ -14,11 +14,9 @@ import android.widget.MultiAutoCompleteTextView;
 
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -53,10 +51,18 @@ public class QuestionFragment extends DialogFragment {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sender = ParseUser.getCurrentUser().getObjectId();
                 String question = etSendQuestion.getText().toString();
-                String recipient = etRecipient.getText().toString();
-                ParseObject qObject = parseClient.createQuestionObject(question, parseClient.parseTemplateFile(), Arrays.asList(recipient));
+                String recipientStr = etRecipient.getText().toString();
+                String[] recipients = recipientStr.split(",");
+                ArrayList<String> recipientIds = new ArrayList<String>();
+                for (String recipient : recipients) {
+                    Log.i(TAG, recipient.trim());
+                    String facebookId = Friends.getInstance().getIdFromName(recipient.trim());
+                    if (facebookId != null) {
+                        recipientIds.add(facebookId);
+                    }
+                }
+                ParseObject qObject = parseClient.createQuestionObject(question, parseClient.parseTemplateFile(), recipientIds);
                 qObject.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -65,9 +71,8 @@ public class QuestionFragment extends DialogFragment {
                         }
                     }
                 });
-                Log.i(TAG, sender);
                 Log.i(TAG, question);
-                Log.i(TAG, recipient);
+                Log.i(TAG, recipientStr);
                 getDialog().dismiss();
             }
         });
