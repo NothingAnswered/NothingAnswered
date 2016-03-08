@@ -73,6 +73,20 @@ public class ParseClient {
         return query;
     }
 
+    public ParseQuery<Question> getQuestionTimeline(String facebookId, int limit) {
+        ParseQuery<Question> query = ParseQuery.getQuery(Question.class);
+        if (facebookId != null) {
+
+            query.whereContains(facebookId, Question.RECIPIENTS_ID);
+            // Configure limit and sort order
+            query.setLimit(limit);
+            query.orderByAscending("createdAt");
+            return query;
+        }
+
+        return null;
+    }
+
     public ParseQuery<NAUser> getNAUserQuery(ArrayList<String> columns, int limit) {
         ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
         if (columns != null) {
