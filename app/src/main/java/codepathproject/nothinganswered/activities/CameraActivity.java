@@ -18,11 +18,14 @@ package codepathproject.nothinganswered.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Button;
 
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.fragments.Camera2VideoFragment;
 
 public class CameraActivity extends Activity {
+
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,8 @@ public class CameraActivity extends Activity {
                     .replace(R.id.container, Camera2VideoFragment.newInstance())
                     .commit();
         }
+
     }
+
 
 }

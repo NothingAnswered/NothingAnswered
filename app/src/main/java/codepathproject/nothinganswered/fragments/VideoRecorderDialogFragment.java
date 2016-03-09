@@ -65,9 +65,6 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
 
     private RecordResponseDialogActionListener listener;
 
-    private Button btnStop;
-    private Button btnStart;
-
     public interface RecordResponseDialogActionListener {
         void onRecordResponse(Uri imageUri, Uri videoUri);
     }
@@ -102,7 +99,8 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
 
 
     private AutoFitTextureView mTextureView;
-    private ImageView mButtonVideo;
+    private Button mButtonVideo;
+    private Button mButtonStopVideo;
     private Button mTempStopRecordingBtn;
     private CameraDevice mCameraDevice;
     private CameraCaptureSession mPreviewSession;
@@ -238,8 +236,10 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-        mButtonVideo = (ImageView) view.findViewById(R.id.video);
+        mButtonVideo = (Button) view.findViewById(R.id.start);
+        mButtonStopVideo = (Button) view.findViewById(R.id.stop);
         mButtonVideo.setOnClickListener(this);
+        mButtonStopVideo.setOnClickListener(this);
         mTempStopRecordingBtn = (Button) view.findViewById(R.id.stop);
         mTempStopRecordingBtn.setOnClickListener(this);
 
@@ -249,17 +249,12 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
     @Override
     public void onResume() {
         super.onResume();
-        if(mIsRecordingVideo) {
             startBackgroundThread();
             if (mTextureView.isAvailable()) {
                 openCamera(mTextureView.getWidth(), mTextureView.getHeight());
             } else {
                 mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
             }
-        }
-        else {
-            mTempStopRecordingBtn.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
@@ -274,20 +269,19 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.video: {
-                Log.d("DEBUG", "START RECORDING" );
-                if (mIsRecordingVideo) {
-                    stopRecordingVideo();
-                } else {
-                    startRecordingVideo();
-                }
-                break;
-            }
             case R.id.stop: {
                 if(mIsRecordingVideo) {
                     stopRecordingVideo();
                 }
                 Log.d("DEBUG", "STOP RECORDING" );
+
+            }
+            case R.id.start: {
+                Log.d("DEBUG", "START RECORDING" );
+                if (!mIsRecordingVideo) {
+                    startRecordingVideo();
+                }
+                break;
 
             }
             default: Log.d("DEBUG", "DEFAULT");
@@ -509,23 +503,14 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
 
     private void startRecordingVideo() {
         try {
-            // UI
-            mTextureView.setVisibility(View.VISIBLE);
+
+            mButtonStopVideo.setVisibility(View.VISIBLE);
             mButtonVideo.setVisibility(View.INVISIBLE);
-            mTempStopRecordingBtn.setVisibility(View.VISIBLE);
-
-            startBackgroundThread();
-            if (mTextureView.isAvailable()) {
-                openCamera(mTextureView.getWidth(), mTextureView.getHeight());
-            } else {
-                mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
-            }
-
             //mButtonVideo.setText(R.string.stop);
             mIsRecordingVideo = true;
 
             // Start recording
-            //mMediaRecorder.start();
+            mMediaRecorder.start();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
@@ -542,9 +527,8 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
             Toast.makeText(activity, "Video saved: " + getVideoFile(activity),
                     Toast.LENGTH_SHORT).show();
         }
-        mTextureView.setVisibility(View.INVISIBLE);
+        mButtonStopVideo.setVisibility(View.INVISIBLE);
         mButtonVideo.setVisibility(View.VISIBLE);
-        mTempStopRecordingBtn.setVisibility(View.INVISIBLE);
 
         stopBackgroundThread();
         closeCamera();
