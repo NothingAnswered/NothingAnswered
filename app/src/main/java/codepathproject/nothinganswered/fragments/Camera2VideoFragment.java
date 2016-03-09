@@ -70,8 +70,12 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.activities.PlayVideoActivity;
+import codepathproject.nothinganswered.clients.FacebookClient;
+import codepathproject.nothinganswered.clients.ParseClient;
+import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.views.AutoFitTextureView;
 
 public class Camera2VideoFragment extends Fragment
@@ -82,6 +86,9 @@ public class Camera2VideoFragment extends Fragment
     private static final String TAG = "Camera2VideoFragment";
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
+
+    private ParseClient parseClient;
+    private FacebookClient facebookClient;
 
     private static final String[] VIDEO_PERMISSIONS = {
             Manifest.permission.CAMERA,
@@ -660,7 +667,10 @@ public class Camera2VideoFragment extends Fragment
         stopBackgroundThread();
         closeCamera();
         StartPlayVideoActivity();
-        //startPreview();
+
+        //Upload Video
+        parseClient = NothingAnsweredApplication.getParseClient();
+        parseClient.sendVideoResponse(Friends.myId, "Example question", getVideoFile(activity));
     }
 
     private Uri getImageUri(){

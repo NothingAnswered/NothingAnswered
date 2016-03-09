@@ -3,21 +3,28 @@ package codepathproject.nothinganswered.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -41,6 +48,8 @@ public class QuestionFragment extends DialogFragment {
     @Bind(R.id.etRecipient) MultiAutoCompleteTextView etRecipient;
     @Bind(R.id.btnSend) Button btnSend;
     @Bind(R.id.tvCharacterCount) TextView tvCharacterCount;
+    @Bind(R.id.ivSendImage) RoundedImageView ivSendImage;
+    @Bind(R.id.tvSendName) TextView tvSendName;
 
     public ArrayAdapter<String> adapter;
     public QuestionFragment() {
@@ -50,16 +59,35 @@ public class QuestionFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // get dialog removes the empty space in the fragment
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.fragment_send_question, container, false);
+
         ButterKnife.bind(this, view);
+
+        //Getting the toolbar
+        Toolbar toolbar =  (Toolbar) view.findViewById(R.id.send_question_toolbar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        activity.getSupportActionBar().setTitle("Ask your friends");
+
+        //Image
+        ivSendImage.setImageResource(0);
+        Picasso.with(getContext()).load(Friends.profileImage).placeholder(R.drawable.ic_launcher).into(ivSendImage);
+        //TextViews
+        tvSendName.setText(Friends.firstName + " " + Friends.lastName);
         etSendQuestion.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tvCharacterCount.setText(String.valueOf(s.length()) + "/100");
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -93,6 +121,23 @@ public class QuestionFragment extends DialogFragment {
             }
         });
         return view;
+    }
+
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.miCompose).setVisible(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                dismiss();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

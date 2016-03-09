@@ -16,6 +16,9 @@ public class Friends {
     private static Friends mInstance = null;
 
     public static String myId;
+    public static String firstName;
+    public static String lastName;
+    public static String profileImage;
     public static ArrayList<Friend> friends;
     public static HashMap<String, String> facebookIds;
     public static HashMap<String, String> facebookNames;
