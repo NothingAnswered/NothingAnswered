@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -48,7 +49,7 @@ public class ParseClient {
         facebookClient = client;
     }
 
-    public void updateProfileInfo(String id, String firstName, String lastName, String email) {
+    public void createNAUserInfo(String id, String firstName, String lastName, String email) {
         ParseObject userInfo = ParseObject.create("NAUser");
         userInfo.put(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
         userInfo.put(NAUser.FACEBOOK_ID, id);
@@ -57,7 +58,31 @@ public class ParseClient {
         userInfo.put(NAUser.EMAIL, email);
         userInfo.put(NAUser.PROFILE_PICTURE, "");
         userInfo.put(NAUser.FRIENDS, Arrays.asList(""));
-        userInfo.saveInBackground();
+        try {
+            userInfo.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateNAUserInfo(final String id, final String firstName, final String lastName, final String email) {
+        ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
+        query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        query.getFirstInBackground(new GetCallback<NAUser>() {
+            @Override
+            public void done(NAUser object, ParseException e) {
+                if (e == null) {
+                    object.put(NAUser.FACEBOOK_ID, id);
+                    object.put(NAUser.FIRST_NAME, firstName);
+                    object.put(NAUser.LAST_NAME, lastName);
+                    object.put(NAUser.EMAIL, email);
+                    object.saveInBackground();
+                }
+                else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public ParseFile createParseBlob(String name, byte[] blob) {
@@ -89,7 +114,7 @@ public class ParseClient {
         }
         // Configure limit and sort order
         query.setLimit(limit);
-        query.orderByAscending("createdAt");
+        query.orderByDescending("createdAt");
         return query;
     }
 
@@ -99,7 +124,7 @@ public class ParseClient {
             query.whereContains(Question.RECIPIENTS_ID, facebookId);
             // Configure limit and sort order
             query.setLimit(limit);
-            query.orderByAscending("createdAt");
+            query.orderByDescending("createdAt");
             return query;
         }
 

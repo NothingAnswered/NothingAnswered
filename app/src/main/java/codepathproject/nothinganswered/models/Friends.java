@@ -8,6 +8,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import codepathproject.nothinganswered.NothingAnsweredApplication;
+
 /**
  * Created by gpalem on 3/6/16.
  */
@@ -45,6 +47,20 @@ public class Friends {
             this.firstName = firstName;
             this.lastName = lastName;
         }
+    }
+
+    public static void loadNAUser(NAUser user) {
+        myId = user.get(NAUser.FACEBOOK_ID).toString();
+        firstName = user.get(NAUser.FIRST_NAME).toString();
+        lastName = user.get(NAUser.LAST_NAME).toString();
+        profileImage = NothingAnsweredApplication.getProfileImage(myId);
+    }
+
+    public static void setMyModelInfo(String id, String firstName, String lastName) {
+        Friends.myId = id;
+        Friends.firstName = firstName;
+        Friends.lastName = lastName;
+        profileImage = NothingAnsweredApplication.getProfileImage(myId);
     }
 
     public String getIdFromName(String name) {
