@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:padding="16dp" >
 
     <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,6 +32,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:id="@+id/etSendQuestion"
+        android:gravity="top|left"
+        android:maxLength="@string/max_char_count"
         android:background="@drawable/rounded_corner"
         android:layout_below="@+id/ivSendImage"
         android:layout_alignStart="@+id/ivSendImage"
@@ -39,16 +44,24 @@
         android:layout_height="wrap_content"
         android:text="SEND"
         android:id="@+id/btnSend"
-        android:layout_below="@+id/etSendQuestion"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="29dp" />
+        android:layout_below="@+id/tvCharacterCount"
+        android:layout_alignEnd="@+id/tvCharacterCount" />
 
     <MultiAutoCompleteTextView
         android:id="@+id/etRecipient"
         android:background="@drawable/rounded_corner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:layout_below="@+id/etSendQuestion"
         android:layout_alignStart="@+id/etSendQuestion" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0/100"
+        android:id="@+id/tvCharacterCount"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/etRecipient" />
 </RelativeLayout>

@@ -6,9 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.VideoView;
-
-import com.andtinder.model.Orientations;
 
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.adapters.GaffeSimpleCardStackAdapter;
@@ -27,9 +26,10 @@ public class FragmentVideoResponse extends Fragment {
         View view = inflater.inflate(R.layout.fragment_video_responses, container, false);
 
 //     //  swipeable cards checking here
-        codepathproject.nothinganswered.container.CardContainer mcardContainer = (codepathproject.nothinganswered.container.CardContainer) view.findViewById(R.id.layoutview);
-        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
+//        codepathproject.nothinganswered.container.CardContainer mcardContainer = (codepathproject.nothinganswered.container.CardContainer) view.findViewById(R.id.layoutview);
+//        mcardContainer.setOrientation(Orientations.Orientation.Disordered);
 
+        ListView mcardContainer = (ListView)view.findViewById(R.id.layoutview);
          GaffeCardModel card = new GaffeCardModel("Card 1","http://techslides.com/demos/sample-videos/small.mp4",
                  view.getResources().getDrawable(R.drawable.picture1),"End Card 1");
         GaffeCardModel card1 = new GaffeCardModel("Card 2","http://techslides.com/demos/sample-videos/small.mp4",

@@ -7,13 +7,13 @@ import android.graphics.BitmapFactory;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.NAUser;
 import codepathproject.nothinganswered.models.Question;
 
@@ -50,7 +50,7 @@ public class ParseClient {
 
     public ParseObject createQuestionObject(String question, ParseFile video, List<String> recipients) {
         ParseObject qObject = ParseObject.create("Question");
-        qObject.put(Question.SENDER_ID, ParseUser.getCurrentUser().getObjectId());
+        qObject.put(Question.SENDER_ID, Friends.myId);
         qObject.put(Question.QUESTION, question);
         if (video != null) {
             qObject.put(Question.VIDEO, video);
@@ -76,8 +76,7 @@ public class ParseClient {
     public ParseQuery<Question> getQuestionTimeline(String facebookId, int limit) {
         ParseQuery<Question> query = ParseQuery.getQuery(Question.class);
         if (facebookId != null) {
-
-            query.whereContains(facebookId, Question.RECIPIENTS_ID);
+            query.whereContains(Question.RECIPIENTS_ID, facebookId);
             // Configure limit and sort order
             query.setLimit(limit);
             query.orderByAscending("createdAt");

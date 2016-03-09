@@ -5,42 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Question"
-        android:id="@+id/tvQuestion"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sender"
-        android:id="@+id/tvSender"
-        android:layout_below="@+id/tvQuestion"
-        android:layout_centerHorizontal="true" />
-
-    <com.parse.ParseImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/ivImage"
-        android:layout_below="@+id/tvSender"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Receiver"
-        android:id="@+id/tvReceiver"
-        android:layout_below="@+id/ivImage"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Parse Facebook Login"
+    <ImageButton
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:text="PARSE FACEBOOK LOGIN"
         android:id="@+id/btnLoginParse"
         android:onClick="clickLogin"
+        android:focusable="true"
+        android:background="@drawable/login_facebook_image"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 

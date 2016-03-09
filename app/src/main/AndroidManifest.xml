@@ -42,8 +42,6 @@
 
         <activity android:name=".activities.CameraActivity"
             android:label="@string/app_name">
-
-
         </activity>
 
         <activity android:name=".activities.PlayVideoActivity" android:label="@string/app_name"></activity>

@@ -1,7 +1,6 @@
 package codepathproject.nothinganswered.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +34,6 @@ public class GaffeSimpleCardStackAdapter extends GaffeCardStackAdapter {
             assert convertView != null;
         }
 
-      // gaffeCardVideoThumbnail = (ImageView) convertView.findViewById(R.id.gaffeCardVideoThumbnail);
-      //  gaffeCardVideoThumbnail.setImageDrawable(model.getGaffeCardVideoThumbnail());
         gaffeCardVideoThumbnail = (VideoView) convertView.findViewById(R.id.gaffeCardVideoThumbnail);
         gaffeCardVideoThumbnail.setVideoPath(model.getGaffeCardVideoThumbnail());
         gaffeCardQuestion = (TextView) convertView.findViewById(R.id.gaffeCardQuestion);
@@ -49,18 +46,10 @@ public class GaffeSimpleCardStackAdapter extends GaffeCardStackAdapter {
         gaffeCardVideoThumbnail.requestFocus();
         gaffeCardVideoThumbnail.setZOrderOnTop(true);
 
-        gaffeCardVideoThumbnail.start();
-//        gaffeCardVideoThumbnail.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//            @Override
-//            public void onPrepared(MediaPlayer mp) {
-//                gaffeCardVideoThumbnail.start();
-//            }
-//        });
-
         gaffeCardVideoThumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("DEBUG","This was clicked");
+                gaffeCardVideoThumbnail.start();
             }
         });
 

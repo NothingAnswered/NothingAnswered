@@ -16,10 +16,10 @@ import codepathproject.nothinganswered.fragments.QuestionFragment;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
+    private static String TAG = HomeScreenActivity.class.getSimpleName();
 
     private ViewPager vpPager;
     private FragmentManager fragmentManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         //Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         // Get the viewpager
         vpPager = (ViewPager) findViewById(R.id.viewpager);
@@ -41,7 +40,6 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         //Fragment manager
         fragmentManager = getSupportFragmentManager();
-
     }
 
     // Menu icons are inflated just as they were with actionbar
@@ -63,4 +61,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         QuestionFragment questionFragment = new QuestionFragment();
         questionFragment.show(fragmentManager, "fragment_send_question");
     }
+
+
+
 }

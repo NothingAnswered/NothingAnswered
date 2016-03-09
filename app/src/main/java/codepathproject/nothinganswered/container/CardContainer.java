@@ -298,7 +298,7 @@ public class CardContainer extends AdapterView<ListAdapter> {
                 mTopCard.setTranslationX(mTopCard.getTranslationX() + dx);
                 mTopCard.setTranslationY(mTopCard.getTranslationY() + dy);
 
-                mTopCard.setRotation(40 * mTopCard.getTranslationX() / (getWidth() / 2.f));
+            //    mTopCard.setRotation(40 * mTopCard.getTranslationX() / (getWidth() / 2.f));
 
                 mLastTouchX = x;
                 mLastTouchY = y;
@@ -483,7 +483,7 @@ public class CardContainer extends AdapterView<ListAdapter> {
             GaffeCardModel cardModel = (GaffeCardModel) getAdapter().getItem(0);
 
             if (mTopCard != null)
-                mTopCard.setLayerType(LAYER_TYPE_HARDWARE, null);
+                mTopCard.setLayerType(LAYER_TYPE_HARDWARE, null);   
 
             if (cardModel.getOnCardDismissedListener() != null) {
                 if (targetX < 0) {

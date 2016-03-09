@@ -47,6 +47,26 @@ public class FacebookClient {
         parseClient = client;
     }
 
+    public void getFBId() {
+        GraphRequest req = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    String id = response.getJSONObject().getString("id");
+                    Log.i(TAG, "MyID " + id);
+                    Friends.myId = id;
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Bundle bundle = new Bundle();
+        bundle.putString("fields", "id");
+        req.setParameters(bundle);
+        req.executeAsync();
+    }
+
     public void getInfo() {
         GraphRequest req = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override

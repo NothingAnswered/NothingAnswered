@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by gpalem on 3/6/16.
@@ -14,10 +15,15 @@ public class Friends {
     private static String TAG = Friends.class.getSimpleName();
     private static Friends mInstance = null;
 
+    public static String myId;
     public static ArrayList<Friend> friends;
+    public static HashMap<String, String> facebookIds;
+    public static HashMap<String, String> facebookNames;
 
     private Friends() {
         friends = new ArrayList<>();
+        facebookIds = new HashMap<>();
+        facebookNames = new HashMap<>();
     }
 
     public static Friends getInstance() {
@@ -27,7 +33,7 @@ public class Friends {
         return mInstance;
     }
 
-    public class Friend {
+    private class Friend {
         public String facebookId;
         public String firstName;
         public String lastName;
@@ -36,6 +42,14 @@ public class Friends {
             this.firstName = firstName;
             this.lastName = lastName;
         }
+    }
+
+    public String getIdFromName(String name) {
+        return facebookIds.get(name);
+    }
+
+    public String getNameFromId(String id) {
+        return facebookNames.get(id);
     }
 
     public ArrayList<String> getFacebookIds() {
@@ -62,7 +76,15 @@ public class Friends {
         if (friends == null) {
             friends = new ArrayList<>();
         }
+        if (facebookIds == null) {
+            facebookIds = new HashMap<>();
+        }
+        if (facebookNames == null) {
+            facebookNames = new HashMap<>();
+        }
         friends.clear(); //TODO dummy thing I guess
+        facebookIds.clear(); //TODO dummy thing I guess
+        facebookNames.clear();
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 String id = jsonArray.getJSONObject(i).getString("id");
@@ -71,6 +93,8 @@ public class Friends {
                 Log.i(TAG, "id " + id);
                 Log.i(TAG, "first_name " + firstName);
                 Log.i(TAG, "last_name " + lastName);
+                facebookIds.put(firstName + " " + lastName, id);
+                facebookNames.put(id, firstName + " " + lastName);
                 friends.add(new Friend(id, firstName, lastName));
             } catch (JSONException e) {
                 e.printStackTrace();

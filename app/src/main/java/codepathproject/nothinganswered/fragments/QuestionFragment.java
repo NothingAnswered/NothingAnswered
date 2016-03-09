@@ -3,6 +3,8 @@ package codepathproject.nothinganswered.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +13,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
 
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,6 +40,7 @@ public class QuestionFragment extends DialogFragment {
     @Bind(R.id.etSendQuestion) EditText etSendQuestion;
     @Bind(R.id.etRecipient) MultiAutoCompleteTextView etRecipient;
     @Bind(R.id.btnSend) Button btnSend;
+    @Bind(R.id.tvCharacterCount) TextView tvCharacterCount;
 
     public ArrayAdapter<String> adapter;
     public QuestionFragment() {
@@ -50,13 +52,33 @@ public class QuestionFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_send_question, container, false);
         ButterKnife.bind(this, view);
+        etSendQuestion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tvCharacterCount.setText(String.valueOf(s.length()) + "/100");
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sender = ParseUser.getCurrentUser().getObjectId();
                 String question = etSendQuestion.getText().toString();
-                String recipient = etRecipient.getText().toString();
-                ParseObject qObject = parseClient.createQuestionObject(question, parseClient.parseTemplateFile(), Arrays.asList(recipient));
+                String recipientStr = etRecipient.getText().toString();
+                String[] recipients = recipientStr.split(",");
+                ArrayList<String> recipientIds = new ArrayList<String>();
+                for (String recipient : recipients) {
+                    Log.i(TAG, recipient.trim());
+                    String facebookId = Friends.getInstance().getIdFromName(recipient.trim());
+                    if (facebookId != null) {
+                        recipientIds.add(facebookId);
+                    }
+                }
+                ParseObject qObject = parseClient.createQuestionObject(question, parseClient.parseTemplateFile(), recipientIds);
                 qObject.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -65,9 +87,8 @@ public class QuestionFragment extends DialogFragment {
                         }
                     }
                 });
-                Log.i(TAG, sender);
                 Log.i(TAG, question);
-                Log.i(TAG, recipient);
+                Log.i(TAG, recipientStr);
                 getDialog().dismiss();
             }
         });
