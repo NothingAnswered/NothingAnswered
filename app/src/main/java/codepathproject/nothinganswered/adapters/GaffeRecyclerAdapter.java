@@ -6,12 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
 
-import codepathproject.nothinganswered.models.Gaffe;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.models.Gaffe;
 
 /**
  * Created by jnagaraj on 3/6/16.
@@ -19,6 +20,7 @@ import codepathproject.nothinganswered.R;
 public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
+    private RecordActionListener listener;
 
     private List<Gaffe> mGaffes;
 
@@ -26,6 +28,10 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         mGaffes = gaffes;
     }
 
+    public void setRecordActionListener(RecordActionListener listener){
+        this.listener = listener;
+
+    }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -56,6 +62,8 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private TextView mQuestionTitle;
         private TextView mUsername;
+        private ImageButton image_1;
+
         //private ImageView mImage;
         //private ImageView mProfileImage;
 
@@ -65,6 +73,17 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             mQuestionTitle = (TextView)itemView.findViewById(R.id.gaffeCardQuestion);
             mUsername = (TextView)itemView.findViewById(R.id.gaffeCardProfileName);
+            image_1 = (ImageButton) itemView.findViewById(R.id.image_1);
+
+            image_1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(listener != null) {
+                        listener.onRecordButtonClick();
+                    }
+                }
+            });
             //mImage = (ImageView) itemView.findViewById(R.id.image);
             //mProfileImage = (ImageView) itemView.findViewById(R.id.image_2);
 

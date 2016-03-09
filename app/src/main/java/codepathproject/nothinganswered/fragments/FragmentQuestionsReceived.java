@@ -2,6 +2,7 @@ package codepathproject.nothinganswered.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 
@@ -11,8 +12,9 @@ import com.parse.ParseQuery;
 
 import java.util.List;
 
-import codepathproject.nothinganswered.models.Gaffe;
+import codepathproject.nothinganswered.adapters.RecordActionListener;
 import codepathproject.nothinganswered.models.Friends;
+import codepathproject.nothinganswered.models.Gaffe;
 import codepathproject.nothinganswered.models.Question;
 
 
@@ -21,6 +23,23 @@ public class FragmentQuestionsReceived extends TimelineFragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private int mPage;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        gaffeRecyclerAdapter.setRecordActionListener(new RecordActionListener() {
+            @Override
+            public void onRecordButtonClick() {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                VideoRecorderDialogFragment recordVideo = VideoRecorderDialogFragment.newInstance("Compose", "");
+                recordVideo.setTargetFragment(getParentFragment(), 300);
+                recordVideo.show(fm, "dialog_compose_tweet");
+            }
+        });
+
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

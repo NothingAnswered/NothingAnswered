@@ -24,7 +24,7 @@ import codepathproject.nothinganswered.models.Gaffe;
 /**
  * Created by jnagaraj on 3/8/16.
  */
-public abstract class TimelineFragment extends Fragment {
+public abstract class TimelineFragment extends Fragment{
 
     public static String TAG = HomeScreenActivity.class.getSimpleName();
 
@@ -61,6 +61,8 @@ public abstract class TimelineFragment extends Fragment {
 
         mGaffes = new ArrayList<>();
         gaffeRecyclerAdapter = new GaffeRecyclerAdapter(mGaffes);
+
+
     }
 
     @Nullable
@@ -73,6 +75,7 @@ public abstract class TimelineFragment extends Fragment {
 
         rvResults = (RecyclerView) view.findViewById(R.id.rvGaffes);
         rvResults.setAdapter(gaffeRecyclerAdapter);
+
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         rvResults.setLayoutManager(linearLayoutManager);
