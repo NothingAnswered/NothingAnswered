@@ -63,11 +63,7 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
     public static String IMAGE_URL = "imageUrl";
     public static String VIDEO_URI = "videoUri";
 
-    private RecordResponseDialogActionListener listener;
-
-    public interface RecordResponseDialogActionListener {
-        void onRecordResponse(Uri imageUri, Uri videoUri);
-    }
+    public RecordResponseDialogActionListener listener;
 
     private final String DEFAULT_PIC = "http://pbs.twimg.com/profile_images/501991114090364930/bSQe0m2B_normal.jpeg";
 
@@ -77,11 +73,15 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
         // Use `newInstance` instead as shown below
     }
 
-    public static VideoRecorderDialogFragment newInstance(String title, String imageUrl) {
+    private int gaffeCardPosition;
+
+    public static VideoRecorderDialogFragment newInstance(int itemPosition) {
+
         VideoRecorderDialogFragment frag = new VideoRecorderDialogFragment();
         Bundle args = new Bundle();
-        args.putString(VideoRecorderDialogFragment.QUESTION_TITLE, title);
-        args.putString(VideoRecorderDialogFragment.IMAGE_URL, imageUrl);
+        args.putInt("gaffeCardPosition", itemPosition);
+        //args.putString(VideoRecorderDialogFragment.QUESTION_TITLE, title);
+        //args.putString(VideoRecorderDialogFragment.IMAGE_URL, imageUrl);
         frag.setArguments(args);
         return frag;
     }
@@ -229,6 +229,8 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_camera2_video, container);
+
+        gaffeCardPosition = getArguments().getInt("gaffeCardPosition");
 
         return view;
     }
@@ -560,14 +562,14 @@ public class VideoRecorderDialogFragment extends android.support.v4.app.DialogFr
     }
 
     private void StartPlayVideoActivity() {
-        Uri videoUri;
-        Uri imageUri = getImageUri();
+        //Uri videoUri;
+        //Uri imageUri = getImageUri();
 
-        File file = getVideoFile(getActivity());
-        videoUri =  Uri.fromFile(file);
+        //File file = getVideoFile(getActivity());
+        //videoUri =  Uri.fromFile(file);
 
         listener = (RecordResponseDialogActionListener) getTargetFragment();
-        listener.onRecordResponse(imageUri, videoUri);
+        listener.onRecordResponse(getVideoFile(getActivity()), gaffeCardPosition);
         dismiss();
 
 

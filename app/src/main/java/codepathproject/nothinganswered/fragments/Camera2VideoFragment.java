@@ -670,6 +670,7 @@ public class Camera2VideoFragment extends Fragment
 
         //Upload Video
         parseClient = NothingAnsweredApplication.getParseClient();
+        //recipient_id, question_text, video_file
         parseClient.sendVideoResponse(Friends.myId, "Example question", getVideoFile(activity));
     }
 

@@ -68,7 +68,7 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         //private ImageView mProfileImage;
 
 
-        public GaffeItemHolder(View itemView) {
+        public GaffeItemHolder(final View itemView) {
             super(itemView);
 
             mQuestionTitle = (TextView)itemView.findViewById(R.id.gaffeCardQuestion);
@@ -80,7 +80,7 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 public void onClick(View v) {
 
                     if(listener != null) {
-                        listener.onRecordButtonClick();
+                        listener.onRecordButtonClick(itemView, getLayoutPosition());
                     }
                 }
             });
