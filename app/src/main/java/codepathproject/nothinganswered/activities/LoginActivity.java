@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     //Existing user
                     Log.i(TAG, "EXISTING PARSE");
-                    facebookClient.getFBId();
+                    facebookClient.getInfo();
                     facebookClient.getFriendList();
                     //facebookClient.postOnMyWall();
                     getHomeActivity();

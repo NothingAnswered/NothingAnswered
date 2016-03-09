@@ -9,7 +9,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -17,7 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.List;
 
 import codepathproject.nothinganswered.models.Friends;
@@ -81,15 +79,8 @@ public class FacebookClient {
                     Log.i(TAG, firstName);
                     Log.i(TAG, lastName);
                     Log.i(TAG, email);
-                    ParseObject userInfo = ParseObject.create("NAUser");
-                    userInfo.put(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
-                    userInfo.put(NAUser.FACEBOOK_ID, id);
-                    userInfo.put(NAUser.FIRST_NAME, firstName);
-                    userInfo.put(NAUser.LAST_NAME, lastName);
-                    userInfo.put(NAUser.EMAIL, email);
-                    userInfo.put(NAUser.PROFILE_PICTURE, "");
-                    userInfo.put(NAUser.FRIENDS, Arrays.asList(""));
-                    userInfo.saveInBackground();
+                    setMyModelInfo(id, firstName, lastName);
+                    parseClient.updateProfileInfo(id, firstName, lastName, email);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -99,6 +90,13 @@ public class FacebookClient {
         bundle.putString("fields", "id,first_name,last_name,email");
         req.setParameters(bundle);
         req.executeAsync();
+    }
+
+    public void setMyModelInfo(String id, String firstName, String lastName) {
+        Friends.myId = id;
+        Friends.firstName = firstName;
+        Friends.lastName = lastName;
+        Friends.profileImage = "https://graph.facebook.com/" + id + "/picture?type=large";
     }
 
     public void postOnMyWall() {

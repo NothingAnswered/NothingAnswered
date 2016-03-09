@@ -18,10 +18,6 @@ import codepathproject.nothinganswered.models.Question;
 
 public class FragmentQuestionsReceived extends TimelineFragment {
 
-    public static final String ARG_PAGE = "ARG_PAGE";
-
-    private int mPage;
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -29,16 +25,12 @@ public class FragmentQuestionsReceived extends TimelineFragment {
 
     public static FragmentQuestionsReceived newInstance (int page)
     {
-        Bundle args = new Bundle();
-        args.putInt(ARG_PAGE, page);
         FragmentQuestionsReceived fragment = new FragmentQuestionsReceived();
-        fragment.setArguments(args);
         return fragment;
     }
 
     public void populateTimeline() {
 
-        Log.i("REFRESH", "IN REFRESH");
         // Construct query to execute
         final ParseQuery<Question> query = parseClient.getQuestionTimeline(Friends.myId, 5);
         // Execute query to fetch all messages from Parse asynchronously
@@ -78,28 +70,4 @@ public class FragmentQuestionsReceived extends TimelineFragment {
         });
 
     }
-
-   /* public void populateTimeline() {
-
-        Log.d(TAG, "Populate Timeline");
-
-        ArrayList<Gaffe> gaffes = new ArrayList<>();
-        for(int i = 0; i < 10; i++) {
-
-
-            Gaffe card = new Gaffe();
-            card.questionTitle = "What's on your tongue?";
-            card.username = "Jayashree";
-
-            Log.d(TAG, card.questionTitle);
-            gaffes.add(card);
-
-        }
-
-        mGaffes.addAll(gaffes);
-        gaffeRecyclerAdapter.notifyDataSetChanged();
-
-        //clearListAndAddNew(mGaffes);
-    }*/
-
 }

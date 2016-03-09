@@ -20,9 +20,11 @@ import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -46,6 +48,8 @@ public class QuestionFragment extends DialogFragment {
     @Bind(R.id.etRecipient) MultiAutoCompleteTextView etRecipient;
     @Bind(R.id.btnSend) Button btnSend;
     @Bind(R.id.tvCharacterCount) TextView tvCharacterCount;
+    @Bind(R.id.ivSendImage) RoundedImageView ivSendImage;
+    @Bind(R.id.tvSendName) TextView tvSendName;
 
     public ArrayAdapter<String> adapter;
     public QuestionFragment() {
@@ -69,7 +73,11 @@ public class QuestionFragment extends DialogFragment {
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         activity.getSupportActionBar().setTitle("Ask your friends");
 
-
+        //Image
+        ivSendImage.setImageResource(0);
+        Picasso.with(getContext()).load(Friends.profileImage).placeholder(R.drawable.ic_launcher).into(ivSendImage);
+        //TextViews
+        tvSendName.setText(Friends.firstName + " " + Friends.lastName);
         etSendQuestion.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
