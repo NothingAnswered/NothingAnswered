@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -142,12 +141,6 @@ public class QuestionFragment extends DialogFragment {
 
     @Override
     public void onResume() {
-        // Get existing layout params for the window
-        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-        // Assign window properties to fill the parent
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = WindowManager.LayoutParams.MATCH_PARENT;
-        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams)params);
         super.onResume();
         setAutoCompleteAdapter();
     }

@@ -2,8 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
-     >
+    android:background="@color/colorAccent"
+    >
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/etRecipient"
+        android:background="@drawable/rounded_corner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="25dp"
+        android:hint="To:Friends"
+        android:layout_below="@+id/ivSendImage"
+        android:layout_alignEnd="@+id/tvCharacterCount" />
+
 
     <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,16 +28,18 @@
         app:riv_corner_radius="30dip"
         app:riv_mutate_background="true"
         app:riv_tile_mode="repeat"
-        app:riv_oval="true" />
+        app:riv_oval="true"
+        android:layout_below="@+id/send_question_toolbar"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="First Name"
         android:id="@+id/tvSendName"
-        android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:layout_above="@+id/etRecipient"
         android:layout_toEndOf="@+id/ivSendImage" />
 
     <EditText
@@ -34,10 +48,12 @@
         android:id="@+id/etSendQuestion"
         android:gravity="top|left"
         android:maxLength="@string/max_char_count"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_corner"
-        android:layout_below="@+id/ivSendImage"
-        android:layout_alignStart="@+id/ivSendImage"
-        android:layout_marginTop="30dp" />
+        android:layout_below="@+id/etRecipient"
+        android:layout_alignParentStart="true"
+        android:hint="Ask a question..." />
 
     <Button
         android:layout_width="wrap_content"
@@ -45,26 +61,18 @@
         android:text="SEND"
         android:id="@+id/btnSend"
         android:background="@drawable/compose_button"
-        android:layout_centerVertical="true"
-        android:layout_alignEnd="@+id/tvCharacterCount" />
-
-    <MultiAutoCompleteTextView
-        android:id="@+id/etRecipient"
-        android:background="@drawable/rounded_corner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
         android:layout_below="@+id/etSendQuestion"
-        android:layout_alignStart="@+id/etSendQuestion" />
+        android:layout_toStartOf="@+id/tvCharacterCount" />
+
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0/100"
         android:id="@+id/tvCharacterCount"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/etRecipient" />
+        android:layout_below="@+id/etSendQuestion"
+        android:layout_alignParentEnd="true" />
 
 
     <android.support.v7.widget.Toolbar
@@ -72,6 +80,8 @@
         android:id="@+id/send_question_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimaryDark"/>
+        android:background="?attr/colorPrimaryDark"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
