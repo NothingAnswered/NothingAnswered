@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
-    android:padding="16dp" >
+    android:background="#ffffff"
+     >
 
     <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -44,7 +44,8 @@
         android:layout_height="wrap_content"
         android:text="SEND"
         android:id="@+id/btnSend"
-        android:layout_below="@+id/tvCharacterCount"
+        android:background="@drawable/compose_button"
+        android:layout_centerVertical="true"
         android:layout_alignEnd="@+id/tvCharacterCount" />
 
     <MultiAutoCompleteTextView
@@ -64,4 +65,13 @@
         android:id="@+id/tvCharacterCount"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/etRecipient" />
+
+
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/send_question_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark"/>
+
 </RelativeLayout>
