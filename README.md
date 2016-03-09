@@ -31,6 +31,8 @@ Here's a walkthrough of wireframes:
 
 <img src="http://i.imgur.com/NHlsutK.gif" title="source: imgur.com" />
 
+<a href="http://imgur.com/2qHiDwF"><img src="http://i.imgur.com/2qHiDwF.gif" title="source: imgur.com" /></a>
+
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
