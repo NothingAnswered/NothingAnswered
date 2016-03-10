@@ -51,6 +51,12 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         return fragment;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        populateTimeline();
+    }
+
     public void populateTimeline() {
 
         // Construct query to execute
@@ -74,6 +80,7 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
                             Gaffe card = new Gaffe();
                             card.questionTitle = question.get(Question.QUESTION).toString();
                             card.username = (friends.getNameFromId(sender));
+                            card.profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
 
 
                             mGaffes.add(card);
@@ -87,7 +94,7 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
                     }
 
                 } else {
-                    Log.e("message", "Error Loading Messages" + e);
+                    e.printStackTrace();
                 }
             }
         });

@@ -53,4 +53,9 @@ public class NothingAnsweredApplication extends Application {
     public static FacebookClient getFacebookClient() {
         return (FacebookClient) FacebookClient.getInstance(NothingAnsweredApplication.context);
     }
+
+    public static String getProfileImage(String id) {
+        return "https://graph.facebook.com/" + id + "/picture?type=large";
+    }
+
 }

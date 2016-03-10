@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -59,7 +62,6 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class GaffeItemHolder extends RecyclerView.ViewHolder {
-
         private TextView mQuestionTitle;
         private TextView mUsername;
         private ImageButton image_1;
@@ -67,6 +69,7 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         //private ImageView mImage;
         //private ImageView mProfileImage;
 
+        private ImageView mProfileImage;
 
         public GaffeItemHolder(final View itemView) {
             super(itemView);
@@ -86,16 +89,16 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             });
             //mImage = (ImageView) itemView.findViewById(R.id.image);
             //mProfileImage = (ImageView) itemView.findViewById(R.id.image_2);
+            mProfileImage = (ImageView) itemView.findViewById(R.id.gaffeCardProfilePictureUrl);
 
         }
 
         public void loadDataIntoView(Gaffe gaffe, Context context) {
-
-            //Glide.with(context).load(gaffe.getProfilePicUrl()).into(mProfileImage);
             mQuestionTitle.setText(gaffe.getQuestionTitle());
             mUsername.setText(gaffe.getUsername());
             Log.i("DEBUG", gaffe.getQuestionTitle());
-            //Glide.with(context).load(gaffe.getVideoResponseUrl()).into(mImage);
+            mProfileImage.setImageResource(0);
+            Picasso.with(context).load(gaffe.getProfilePicUrl()).placeholder(R.drawable.ic_launcher).into(mProfileImage);
         }
 
 

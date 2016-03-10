@@ -7,7 +7,7 @@ import android.util.Log;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -15,8 +15,6 @@ import com.parse.ParseUser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.NAUser;
@@ -79,8 +77,8 @@ public class FacebookClient {
                     Log.i(TAG, firstName);
                     Log.i(TAG, lastName);
                     Log.i(TAG, email);
-                    setMyModelInfo(id, firstName, lastName);
-                    parseClient.updateProfileInfo(id, firstName, lastName, email);
+                    Friends.setMyModelInfo(id, firstName, lastName);
+                    parseClient.updateNAUserInfo(id, firstName, lastName, email);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -90,13 +88,6 @@ public class FacebookClient {
         bundle.putString("fields", "id,first_name,last_name,email");
         req.setParameters(bundle);
         req.executeAsync();
-    }
-
-    public void setMyModelInfo(String id, String firstName, String lastName) {
-        Friends.myId = id;
-        Friends.firstName = firstName;
-        Friends.lastName = lastName;
-        Friends.profileImage = "https://graph.facebook.com/" + id + "/picture?type=large";
     }
 
     public void postOnMyWall() {
@@ -120,24 +111,15 @@ public class FacebookClient {
                 if (response.getError() == null) {
                     final Friends friends = Friends.getInstance();
                     friends.fromJSONArray(jsonArray);
-
                     //Update friends list user Object
-                    ParseQuery<NAUser> query = parseClient.getNAUserQuery(null, 10);
+                    ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
                     query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
-                    query.findInBackground(new FindCallback<NAUser>() {
+                    query.getFirstInBackground(new GetCallback<NAUser>() {
                         @Override
-                        public void done(List<NAUser> objects, ParseException e) {
+                        public void done(NAUser object, ParseException e) {
                             if (e == null) {
-                                Log.i(TAG, "NAUser Objects returned " + objects.size());
-                                for (int i = 0; i < objects.size(); i++) {
-                                    NAUser user = objects.get(i);
-                                    user.put(NAUser.FRIENDS, friends.getFacebookIds());
-                                    try {
-                                        user.save();
-                                    } catch (ParseException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
+                                object.put(NAUser.FRIENDS, friends.getFacebookIds());
+                                object.saveInBackground();
                             } else {
                                 e.printStackTrace();
                             }
