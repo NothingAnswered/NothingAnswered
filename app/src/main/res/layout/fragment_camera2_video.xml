@@ -21,36 +21,26 @@
 
     <codepathproject.nothinganswered.views.AutoFitTextureView
         android:id="@+id/texture"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="250dp"
+        android:layout_height="350dp"
         android:visibility="invisible"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <!--<ImageView
-        android:id="@+id/video"
-        android:src="@drawable/icon_play"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/texture"
-        android:layout_centerHorizontal="true" />-->
-    <Button
-        android:id="@+id/stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="STOP RECORDING"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/start" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/texture"
+        android:background="#4285f4">
 
-    <Button
-        android:id="@+id/start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="START RECORDING"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
+        <Button
+            android:id="@+id/video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/record" />
+    </FrameLayout>
 
 </RelativeLayout>

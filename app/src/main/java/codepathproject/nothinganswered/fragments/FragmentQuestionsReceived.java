@@ -27,20 +27,12 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*
-        adapter.setOnItemClickListener(new ContactsAdapter.OnItemClickListener() {
-    @Override
-    public void onItemClick(View view, int position) {
-        String name = users.get(position).name;
-        Toast.makeText(UserListActivity.this, name + " was clicked!", Toast.LENGTH_SHORT).show();
-    }
-         */
         gaffeRecyclerAdapter.setRecordActionListener(new RecordActionListener() {
             @Override
             public void onRecordButtonClick(View view, int position) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
 
-                VideoRecorderDialogFragment recordVideo = VideoRecorderDialogFragment.newInstance(position);
+                VideoResponseRecorderDialogFragment recordVideo = VideoResponseRecorderDialogFragment.newInstance(position);
                 recordVideo.setTargetFragment(getParentFragment(), 300);
                 recordVideo.show(fm, "dialog_compose_tweet");
             }
