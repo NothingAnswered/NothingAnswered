@@ -9,13 +9,13 @@ Time spent: **X** hours spent in total
 
 The following **required** functionality is completed:
 
-* [ ] Users can login/authenticate using their existing facebook accounts.
-* [ ] User can see the friends that are also using this app in their friends list.
-* [ ] User can ask a new question to selected or all of his friends.
-* [ ] User can see list to any of his outstanding questions.
+* [x] Users can login/authenticate using their existing facebook accounts.
+* [x] User can see the friends that are also using this app in their friends list.
+* [x] User can ask a new question to selected or all of his friends.
+* [x] User can see list to any of his outstanding questions.
 * [ ] User can see and share the responses received.
 * [ ] Implement push nofitications. User can navigate to the answer/yet-to-answer activities from push notifications.
-* [ ] Implement Parse/other backend to store user info (name, tagline, friends), videos.
+* [x] Implement Parse/other backend to store user info (name, tagline, friends), videos.
 * [ ] Share the question and video response to third party apps (like facebook, instagram etc).
 
 The following **optional** features are implemented:
@@ -29,9 +29,11 @@ The following **optional** features are implemented:
 
 Here's a walkthrough of wireframes:
 
-<img src="http://i.imgur.com/NHlsutK.gif" title="source: imgur.com" />
+Sender:
+<img src="http://i.imgur.com/GykrV8n.gif" title="source: imgur.com" />
 
-<a href="http://imgur.com/2qHiDwF"><img src="http://i.imgur.com/2qHiDwF.gif" title="source: imgur.com" /></a>
+Receiver:
+<img src="http://i.imgur.com/v8Une3j.gif" title="source: imgur.com" />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
