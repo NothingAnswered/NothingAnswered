@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/gaffeCardQuestion"
-        android:padding="10dp">
+        android:paddingBottom="150dp">
 
         <codepathproject.nothinganswered.views.AutoFitTextureView
             android:layout_width="match_parent"

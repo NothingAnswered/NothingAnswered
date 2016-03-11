@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ public abstract class TimelineFragment extends Fragment{
 
     public static String TAG = HomeScreenActivity.class.getSimpleName();
 
+    public SwipeRefreshLayout swipeContainer;
     public ParseClient parseClient;
     public FacebookClient facebookClient;
     public Friends friends;
@@ -46,7 +48,7 @@ public abstract class TimelineFragment extends Fragment{
     Runnable mRefreshMessagesRunnable = new Runnable() {
         @Override
         public void run() {
-            populateTimeline();
+            //populateTimeline();
             mHandler.postDelayed(this, POLL_INTERVAL);
         }
     };
@@ -61,6 +63,8 @@ public abstract class TimelineFragment extends Fragment{
 
         mGaffes = new ArrayList<>();
         gaffeRecyclerAdapter = new GaffeRecyclerAdapter(mGaffes);
+
+        populateTimeline();
 
 
     }
@@ -79,6 +83,22 @@ public abstract class TimelineFragment extends Fragment{
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         rvResults.setLayoutManager(linearLayoutManager);
+
+        swipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.swipeContainer);
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+               populateTimeline();
+
+            }
+        });
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         return view;
     }
