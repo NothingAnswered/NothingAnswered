@@ -25,20 +25,45 @@
         android:background="@color/card_outline"
         />
 
-    <VideoView
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gaffeCardQuestion"
+        android:paddingBottom="150dp">
+
+        <codepathproject.nothinganswered.views.AutoFitTextureView
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:id="@+id/texture"
+            android:background="#00BCD4"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/openCamera"
+            android:text="OPEN CAMERA"
+            android:layout_gravity="top"
+             />
+    </FrameLayout>
+
+
+
+    <!--<VideoView
         android:id="@+id/gaffeCardVideoThumbnail"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@id/divider_title"
         android:layout_alignWithParentIfMissing="true"
         android:scaleType="centerCrop"
-        android:background="#e3cdcd" />
+        android:background="#e3cdcd" />-->
 
     <View
         android:id="@+id/divider_bottom"
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/gaffeCardVideoThumbnail"
+        android:layout_below="@id/frame"
         android:background="@color/card_outline" />
 
     <ImageView
@@ -55,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/image_2"
 
-        android:layout_below="@id/gaffeCardVideoThumbnail"
+        android:layout_below="@id/frame"
         android:layout_toRightOf="@+id/gaffeCardProfilePictureUrl"
         android:layout_toLeftOf="@+id/btn_sep_1"
         android:gravity="center_vertical"
@@ -71,16 +96,17 @@
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_alignBottom="@+id/image_1"
-        android:layout_below="@id/gaffeCardVideoThumbnail"
+        android:layout_below="@id/frame"
         android:layout_marginTop="7dp"
         android:layout_toLeftOf="@+id/image_1"
         android:background="#ccc"/>
+
 
     <ImageButton
         android:id="@+id/image_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gaffeCardVideoThumbnail"
+        android:layout_below="@id/frame"
         android:layout_toLeftOf="@+id/btn_sep_2"
         android:background="?android:attr/selectableItemBackground"
         android:padding="10dp"
@@ -91,7 +117,7 @@
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_alignBottom="@id/image_1"
-        android:layout_below="@id/gaffeCardVideoThumbnail"
+        android:layout_below="@id/frame"
         android:layout_marginTop="7dp"
         android:layout_toLeftOf="@+id/image_2"
         android:background="#ccc"/>
@@ -101,7 +127,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/gaffeCardVideoThumbnail"
+        android:layout_below="@id/frame"
         android:background="?android:attr/selectableItemBackground"
         android:padding="10dp"
         android:src="@drawable/people"/>

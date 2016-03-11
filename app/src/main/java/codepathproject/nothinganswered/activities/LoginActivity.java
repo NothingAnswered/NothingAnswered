@@ -4,18 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.parse.GetCallback;
-import com.parse.LogInCallback;
 import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.ui.ParseLoginBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,10 +30,9 @@ import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.NAUser;
 
 public class LoginActivity extends AppCompatActivity {
-
-
     private static final String TAG = LoginActivity.class.getSimpleName();
 
+    private ParseUser currentUser;
     private ParseClient parseClient;
     private FacebookClient facebookClient;
 
@@ -55,24 +52,21 @@ public class LoginActivity extends AppCompatActivity {
         permissions.add("user_friends");
     }
 
-    public void clickLogin(View view) {
-        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if (user == null) { //Cancelled
-                    Log.i(TAG, "CANCELLED PARSE");
-                    e.printStackTrace();
-                } else if (user.isNew()) {
-                    //First time user
-                    Log.i(TAG, "FIRST PARSE");
-                    firstTimeUser();
-                } else {
-                    //Existing user
-                    Log.i(TAG, "EXISTING PARSE");
-                    loadParseInfoSelf();
-                }
-            }
-        });
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            //Load Friends class from local datastore to get going
+            //Also the base timeline
+            loadParseInfoSelf();
+        } else {
+            //Login User, check first time user and upload results
+            // User clicked to log in.
+            ParseLoginBuilder loginBuilder = new ParseLoginBuilder(LoginActivity.this);
+            startActivityForResult(loginBuilder.build(), 0);
+        }
     }
 
     public void firstTimeUser() {
@@ -157,7 +151,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG, "On Activity Result");
+        firstTimeUser();
     }
 
     @Override
