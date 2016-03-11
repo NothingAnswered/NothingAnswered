@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.activities.HomeScreenActivity;
+import codepathproject.nothinganswered.adapters.CustomGridLayoutManager;
 import codepathproject.nothinganswered.adapters.GaffeRecyclerAdapter;
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
@@ -28,6 +28,11 @@ import codepathproject.nothinganswered.models.Gaffe;
 public abstract class TimelineFragment extends Fragment{
 
     public static String TAG = HomeScreenActivity.class.getSimpleName();
+
+    //flag to check if the scrolling is disabled or enabled
+    //because of camera preview running
+
+    public boolean scrolling = true;
 
     public SwipeRefreshLayout swipeContainer;
     public ParseClient parseClient;
@@ -81,7 +86,8 @@ public abstract class TimelineFragment extends Fragment{
         rvResults.setAdapter(gaffeRecyclerAdapter);
 
 
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
+        //final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
+        final CustomGridLayoutManager linearLayoutManager = new CustomGridLayoutManager(this.getContext());
         rvResults.setLayoutManager(linearLayoutManager);
 
         swipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.swipeContainer);
@@ -89,8 +95,11 @@ public abstract class TimelineFragment extends Fragment{
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-               populateTimeline();
-
+                if(scrolling) {
+                    populateTimeline();
+                }else{
+                    swipeContainer.setRefreshing(false);
+                }
             }
         });
 

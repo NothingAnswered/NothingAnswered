@@ -19,16 +19,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
-import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -47,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.adapters.CustomGridLayoutManager;
 import codepathproject.nothinganswered.adapters.RecordActionListener;
 import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.Gaffe;
@@ -59,6 +56,7 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
     private static final String TAG = "QuestionsRecieved";
     AutoFitTextureView mTextureView;
     Button mButtonVideo;
+
 
     public static FragmentQuestionsReceived newInstance() {
         return new FragmentQuestionsReceived();
@@ -81,6 +79,8 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
                     public void onClick(View v) {
                         if (mIsRecordingVideo) {
                             stopRecordingVideo();
+                            setScrolling(true);
+
                         } else {
                             startRecordingVideo();
                         }
@@ -164,6 +164,13 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         Toast.makeText(this.getContext(), gaffe.username + " :: "  + gaffe.questionTitle, Toast.LENGTH_SHORT).show();
     }
 
+
+    private void setScrolling(boolean tf) {
+        scrolling = tf;
+        CustomGridLayoutManager manager = (CustomGridLayoutManager)rvResults.getLayoutManager();
+        manager.setScrollEnabled(tf);
+    }
+
     private TextureView.SurfaceTextureListener mSurfaceTextureListener
             = new TextureView.SurfaceTextureListener() {
 
@@ -192,6 +199,7 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
 
     private void StartCameraPreview() {
 
+        setScrolling(false);
         startBackgroundThread();
         if (mTextureView.isAvailable()) {
             openCamera(mTextureView.getWidth(), mTextureView.getHeight());
