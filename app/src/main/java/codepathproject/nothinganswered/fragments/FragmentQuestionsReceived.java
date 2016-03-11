@@ -2,25 +2,43 @@ package codepathproject.nothinganswered.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import java.io.File;
 import java.util.List;
 
-import codepathproject.nothinganswered.models.Gaffe;
+import codepathproject.nothinganswered.NothingAnsweredApplication;
+import codepathproject.nothinganswered.adapters.RecordActionListener;
 import codepathproject.nothinganswered.models.Friends;
+import codepathproject.nothinganswered.models.Gaffe;
 import codepathproject.nothinganswered.models.Question;
 
 
-public class FragmentQuestionsReceived extends TimelineFragment {
+public class FragmentQuestionsReceived extends TimelineFragment implements RecordResponseDialogActionListener {
 
-    public static final String ARG_PAGE = "ARG_PAGE";
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    private int mPage;
+        gaffeRecyclerAdapter.setRecordActionListener(new RecordActionListener() {
+            @Override
+            public void onRecordButtonClick(View view, int position) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                VideoResponseRecorderDialogFragment recordVideo = VideoResponseRecorderDialogFragment.newInstance(position);
+                recordVideo.setTargetFragment(getParentFragment(), 300);
+                recordVideo.show(fm, "dialog_compose_tweet");
+            }
+        });
+
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -29,16 +47,18 @@ public class FragmentQuestionsReceived extends TimelineFragment {
 
     public static FragmentQuestionsReceived newInstance (int page)
     {
-        Bundle args = new Bundle();
-        args.putInt(ARG_PAGE, page);
         FragmentQuestionsReceived fragment = new FragmentQuestionsReceived();
-        fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        populateTimeline();
     }
 
     public void populateTimeline() {
 
-        Log.i("REFRESH", "IN REFRESH");
         // Construct query to execute
         final ParseQuery<Question> query = parseClient.getQuestionTimeline(Friends.myId, 5);
         // Execute query to fetch all messages from Parse asynchronously
@@ -60,6 +80,8 @@ public class FragmentQuestionsReceived extends TimelineFragment {
                             Gaffe card = new Gaffe();
                             card.questionTitle = question.get(Question.QUESTION).toString();
                             card.username = (friends.getNameFromId(sender));
+                            card.profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
+
 
                             mGaffes.add(card);
 
@@ -72,34 +94,22 @@ public class FragmentQuestionsReceived extends TimelineFragment {
                     }
 
                 } else {
-                    Log.e("message", "Error Loading Messages" + e);
+                    e.printStackTrace();
                 }
             }
         });
 
     }
 
-   /* public void populateTimeline() {
+    @Override
+    public void onRecordResponse(File videoFile, int cardPosition) {
 
-        Log.d(TAG, "Populate Timeline");
+        Gaffe gaffe = mGaffes.get(cardPosition);
 
-        ArrayList<Gaffe> gaffes = new ArrayList<>();
-        for(int i = 0; i < 10; i++) {
+        //Upload Video
+        parseClient = NothingAnsweredApplication.getParseClient();
+        parseClient.sendVideoResponse(Friends.myId, gaffe.questionTitle, videoFile);
 
-
-            Gaffe card = new Gaffe();
-            card.questionTitle = "What's on your tongue?";
-            card.username = "Jayashree";
-
-            Log.d(TAG, card.questionTitle);
-            gaffes.add(card);
-
-        }
-
-        mGaffes.addAll(gaffes);
-        gaffeRecyclerAdapter.notifyDataSetChanged();
-
-        //clearListAndAddNew(mGaffes);
-    }*/
-
+        Toast.makeText(this.getContext(), gaffe.username + " :: "  + gaffe.questionTitle, Toast.LENGTH_SHORT).show();
+    }
 }

@@ -6,12 +6,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import codepathproject.nothinganswered.models.Gaffe;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.models.Gaffe;
 
 /**
  * Created by jnagaraj on 3/6/16.
@@ -19,6 +23,7 @@ import codepathproject.nothinganswered.R;
 public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
+    private RecordActionListener listener;
 
     private List<Gaffe> mGaffes;
 
@@ -26,6 +31,10 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         mGaffes = gaffes;
     }
 
+    public void setRecordActionListener(RecordActionListener listener){
+        this.listener = listener;
+
+    }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -53,30 +62,43 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class GaffeItemHolder extends RecyclerView.ViewHolder {
-
         private TextView mQuestionTitle;
         private TextView mUsername;
+        private ImageButton image_1;
+
         //private ImageView mImage;
         //private ImageView mProfileImage;
 
+        private ImageView mProfileImage;
 
-        public GaffeItemHolder(View itemView) {
+        public GaffeItemHolder(final View itemView) {
             super(itemView);
 
             mQuestionTitle = (TextView)itemView.findViewById(R.id.gaffeCardQuestion);
             mUsername = (TextView)itemView.findViewById(R.id.gaffeCardProfileName);
+            image_1 = (ImageButton) itemView.findViewById(R.id.image_1);
+
+            image_1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(listener != null) {
+                        listener.onRecordButtonClick(itemView, getLayoutPosition());
+                    }
+                }
+            });
             //mImage = (ImageView) itemView.findViewById(R.id.image);
             //mProfileImage = (ImageView) itemView.findViewById(R.id.image_2);
+            mProfileImage = (ImageView) itemView.findViewById(R.id.gaffeCardProfilePictureUrl);
 
         }
 
         public void loadDataIntoView(Gaffe gaffe, Context context) {
-
-            //Glide.with(context).load(gaffe.getProfilePicUrl()).into(mProfileImage);
             mQuestionTitle.setText(gaffe.getQuestionTitle());
             mUsername.setText(gaffe.getUsername());
             Log.i("DEBUG", gaffe.getQuestionTitle());
-            //Glide.with(context).load(gaffe.getVideoResponseUrl()).into(mImage);
+            mProfileImage.setImageResource(0);
+            Picasso.with(context).load(gaffe.getProfilePicUrl()).placeholder(R.drawable.ic_launcher).into(mProfileImage);
         }
 
 

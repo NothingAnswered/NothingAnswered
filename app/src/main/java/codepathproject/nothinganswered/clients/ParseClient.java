@@ -4,12 +4,21 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import codepathproject.nothinganswered.R;
@@ -38,6 +47,42 @@ public class ParseClient {
 
     public void setFacebookClient(FacebookClient client) {
         facebookClient = client;
+    }
+
+    public void createNAUserInfo(String id, String firstName, String lastName, String email) {
+        ParseObject userInfo = ParseObject.create("NAUser");
+        userInfo.put(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        userInfo.put(NAUser.FACEBOOK_ID, id);
+        userInfo.put(NAUser.FIRST_NAME, firstName);
+        userInfo.put(NAUser.LAST_NAME, lastName);
+        userInfo.put(NAUser.EMAIL, email);
+        userInfo.put(NAUser.PROFILE_PICTURE, "");
+        userInfo.put(NAUser.FRIENDS, Arrays.asList(""));
+        try {
+            userInfo.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateNAUserInfo(final String id, final String firstName, final String lastName, final String email) {
+        ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
+        query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        query.getFirstInBackground(new GetCallback<NAUser>() {
+            @Override
+            public void done(NAUser object, ParseException e) {
+                if (e == null) {
+                    object.put(NAUser.FACEBOOK_ID, id);
+                    object.put(NAUser.FIRST_NAME, firstName);
+                    object.put(NAUser.LAST_NAME, lastName);
+                    object.put(NAUser.EMAIL, email);
+                    object.saveInBackground();
+                }
+                else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public ParseFile createParseBlob(String name, byte[] blob) {
@@ -69,7 +114,7 @@ public class ParseClient {
         }
         // Configure limit and sort order
         query.setLimit(limit);
-        query.orderByAscending("createdAt");
+        query.orderByDescending("createdAt");
         return query;
     }
 
@@ -79,7 +124,7 @@ public class ParseClient {
             query.whereContains(Question.RECIPIENTS_ID, facebookId);
             // Configure limit and sort order
             query.setLimit(limit);
-            query.orderByAscending("createdAt");
+            query.orderByDescending("createdAt");
             return query;
         }
 
@@ -97,6 +142,38 @@ public class ParseClient {
         return query;
     }
 
+    public void sendVideoResponse(String recipientId, String question, File video) {
+        ParseObject rObject = ParseObject.create("Question");
+        rObject.put(Question.SENDER_ID, "012345"); //TODO change
+        rObject.put(Question.QUESTION, question);
+        rObject.put(Question.VIDEO, videoToParseFile(video));
+        //rObject.put(Question.RECIPIENTS_ID, Arrays.asList(recipientId));
+        rObject.put(Question.RECIPIENTS_ID, Arrays.asList("012345"));
+        rObject.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public ParseFile videoToParseFile(File video) {
+        byte[] bFile = new byte[(int) video.length()];
+
+        try {
+            //convert file into array of bytes
+            FileInputStream fileInputStream = new FileInputStream(video);
+            fileInputStream.read(bFile);
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return createParseBlob("response.3gpp", bFile);
+    }
     public ParseFile parseTemplateFile() {
         // Locate the image in res > drawable-hdpi
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
@@ -109,8 +186,6 @@ public class ParseClient {
 
         // Create the ParseFile
         ParseFile file = createParseBlob("androidbegin.png", image);
-        file.saveInBackground();
-
         return file;
     }
 

@@ -1,33 +1,9 @@
-/*
- * Copyright 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package codepathproject.nothinganswered.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
@@ -40,13 +16,9 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.NonNull;
-import android.support.v13.app.FragmentCompat;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -56,11 +28,9 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,25 +39,45 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.activities.PlayVideoActivity;
-import codepathproject.nothinganswered.clients.FacebookClient;
-import codepathproject.nothinganswered.clients.ParseClient;
-import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.views.AutoFitTextureView;
 
-public class Camera2VideoFragment extends Fragment
-        implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
+/**
+ * Created by jnagaraj on 3/9/16.
+ */
+
+//Trying to start over to fix the camera code
+
+public class VideoResponseRecorderDialogFragment extends android.support.v4.app.DialogFragment
+        implements View.OnClickListener{
+
+    public RecordResponseDialogActionListener listener;
+
+    private int gaffeCardPosition;
+
+    public VideoResponseRecorderDialogFragment() {
+        // Empty constructor is required for DialogFragment
+        // Make sure not to add arguments to the constructor
+        // Use `newInstance` instead as shown below
+    }
+
+    public static VideoResponseRecorderDialogFragment newInstance(int itemPosition) {
+
+        VideoResponseRecorderDialogFragment frag = new VideoResponseRecorderDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("gaffeCardPosition", itemPosition);
+        //args.putString(VideoRecorderDialogFragment.QUESTION_TITLE, title);
+        //args.putString(VideoRecorderDialogFragment.IMAGE_URL, imageUrl);
+        frag.setArguments(args);
+        return frag;
+    }
+
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
-    private static final String TAG = "Camera2VideoFragment";
+    private static final String TAG = "VideoResponse";
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
-
-    private ParseClient parseClient;
-    private FacebookClient facebookClient;
 
     private static final String[] VIDEO_PERMISSIONS = {
             Manifest.permission.CAMERA,
@@ -109,16 +99,15 @@ public class Camera2VideoFragment extends Fragment
     /**
      * Button to record video
      */
-    private ImageView mButtonVideo;
-    private Button mTempStopRecordingBtn;
+    private Button mButtonVideo;
 
     /**
-     * A refernce to the opened {@link CameraDevice}.
+     * A refernce to the opened {@link android.hardware.camera2.CameraDevice}.
      */
     private CameraDevice mCameraDevice;
 
     /**
-     * A reference to the current {@link CameraCaptureSession} for
+     * A reference to the current {@link android.hardware.camera2.CameraCaptureSession} for
      * preview.
      */
     private CameraCaptureSession mPreviewSession;
@@ -154,12 +143,12 @@ public class Camera2VideoFragment extends Fragment
     };
 
     /**
-     * The {@link Size} of camera preview.
+     * The {@link android.util.Size} of camera preview.
      */
     private Size mPreviewSize;
 
     /**
-     * The {@link Size} of video recording.
+     * The {@link android.util.Size} of video recording.
      */
     private Size mVideoSize;
 
@@ -228,10 +217,6 @@ public class Camera2VideoFragment extends Fragment
 
     };
 
-    public static Camera2VideoFragment newInstance() {
-        return new Camera2VideoFragment();
-    }
-
     /**
      * In this sample, we choose a video size with 3x4 aspect ratio. Also, we don't use sizes
      * larger than 1080p, since MediaRecorder cannot handle such a high-resolution video.
@@ -290,36 +275,25 @@ public class Camera2VideoFragment extends Fragment
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-        mButtonVideo = (ImageView) view.findViewById(R.id.video);
+        mButtonVideo = (Button) view.findViewById(R.id.video);
         mButtonVideo.setOnClickListener(this);
-        mTempStopRecordingBtn = (Button) view.findViewById(R.id.stop);
-        mTempStopRecordingBtn.setOnClickListener(this);
-
-        //view.findViewById(R.id.info).setOnClickListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(mIsRecordingVideo) {
-            startBackgroundThread();
-            if (mTextureView.isAvailable()) {
-                openCamera(mTextureView.getWidth(), mTextureView.getHeight());
-            } else {
-                mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
-            }
-        }
-        else {
-            mTempStopRecordingBtn.setVisibility(View.INVISIBLE);
+        startBackgroundThread();
+        if (mTextureView.isAvailable()) {
+            openCamera(mTextureView.getWidth(), mTextureView.getHeight());
+        } else {
+            mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
     }
 
     @Override
     public void onPause() {
-        if(mIsRecordingVideo) {
-            closeCamera();
-            stopBackgroundThread();
-        }
+        closeCamera();
+        stopBackgroundThread();
         super.onPause();
     }
 
@@ -327,7 +301,6 @@ public class Camera2VideoFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.video: {
-                Log.d("DEBUG", "START RECORDING" );
                 if (mIsRecordingVideo) {
                     stopRecordingVideo();
                 } else {
@@ -335,14 +308,6 @@ public class Camera2VideoFragment extends Fragment
                 }
                 break;
             }
-            case R.id.stop: {
-                if(mIsRecordingVideo) {
-                    stopRecordingVideo();
-                }
-                Log.d("DEBUG", "STOP RECORDING" );
-
-            }
-            default: Log.d("DEBUG", "DEFAULT");
         }
     }
 
@@ -369,72 +334,12 @@ public class Camera2VideoFragment extends Fragment
         }
     }
 
-    /**
-     * Gets whether you should show UI with rationale for requesting permissions.
-     *
-     * @param permissions The permissions your app wants to request.
-     * @return Whether you can show permission rationale UI.
-     */
-    private boolean shouldShowRequestPermissionRationale(String[] permissions) {
-        for (String permission : permissions) {
-            if (FragmentCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Requests permissions needed for recording video.
-     */
-    private void requestVideoPermissions() {
-        if (shouldShowRequestPermissionRationale(VIDEO_PERMISSIONS)) {
-            new ConfirmationDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
-        } else {
-            FragmentCompat.requestPermissions(this, VIDEO_PERMISSIONS, REQUEST_VIDEO_PERMISSIONS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult");
-        if (requestCode == REQUEST_VIDEO_PERMISSIONS) {
-            if (grantResults.length == VIDEO_PERMISSIONS.length) {
-                for (int result : grantResults) {
-                    if (result != PackageManager.PERMISSION_GRANTED) {
-                        ErrorDialog.newInstance(getString(R.string.permission_request))
-                                .show(getChildFragmentManager(), FRAGMENT_DIALOG);
-                        break;
-                    }
-                }
-            } else {
-                ErrorDialog.newInstance(getString(R.string.permission_request))
-                        .show(getChildFragmentManager(), FRAGMENT_DIALOG);
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    private boolean hasPermissionsGranted(String[] permissions) {
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Tries to open a {@link CameraDevice}. The result is listened by `mStateCallback`.
      */
     private void openCamera(int width, int height) {
-        if (!hasPermissionsGranted(VIDEO_PERMISSIONS)) {
-            requestVideoPermissions();
-            return;
-        }
+
         final Activity activity = getActivity();
         if (null == activity || activity.isFinishing()) {
             return;
@@ -470,8 +375,7 @@ public class Camera2VideoFragment extends Fragment
         } catch (NullPointerException e) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
-            ErrorDialog.newInstance(getString(R.string.camera_error))
-                    .show(getChildFragmentManager(), FRAGMENT_DIALOG);
+
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera opening.");
         }
@@ -504,7 +408,6 @@ public class Camera2VideoFragment extends Fragment
         }
         try {
             setUpMediaRecorder();
-            mMediaRecorder.start();
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             assert texture != null;
             texture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
@@ -564,7 +467,7 @@ public class Camera2VideoFragment extends Fragment
     }
 
     /**
-     * Configures the necessary {@link Matrix} transformation to `mTextureView`.
+     * Configures the necessary {@link android.graphics.Matrix} transformation to `mTextureView`.
      * This method should not to be called until the camera preview size is determined in
      * openCamera, or until the size of `mTextureView` is fixed.
      *
@@ -599,16 +502,15 @@ public class Camera2VideoFragment extends Fragment
         if (null == activity) {
             return;
         }
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mMediaRecorder.setOutputFile(getVideoFile(activity).getAbsolutePath());
-        mMediaRecorder.setVideoEncodingBitRate(100000);
-        mMediaRecorder.setVideoFrameRate(15);
-        mMediaRecorder.setMaxDuration(Integer.parseInt(getString(R.string.max_video_duration)));
+        mMediaRecorder.setVideoEncodingBitRate(10000000);
+        mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         int orientation = ORIENTATIONS.get(rotation);
         mMediaRecorder.setOrientationHint(orientation);
@@ -616,42 +518,27 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private File getVideoFile(Context context) {
-
-        return new File(context.getExternalFilesDir(null), "video.3gpp");
+        return new File(context.getExternalFilesDir(null), "video.mp4");
     }
 
     private void startRecordingVideo() {
         try {
             // UI
-            mTextureView.setVisibility(View.VISIBLE);
-            mButtonVideo.setVisibility(View.INVISIBLE);
-            mTempStopRecordingBtn.setVisibility(View.VISIBLE);
-
-            startBackgroundThread();
-            if (mTextureView.isAvailable()) {
-                openCamera(mTextureView.getWidth(), mTextureView.getHeight());
-            } else {
-                mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
-            }
-
-            //mButtonVideo.setText(R.string.stop);
+            mButtonVideo.setText(R.string.stop);
             mIsRecordingVideo = true;
 
             // Start recording
-            //mMediaRecorder.start();
+            mMediaRecorder.start();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     private void stopRecordingVideo() {
-
-        Log.d("STOP RECORDING", "STOP RECORDING");
         // UI
         mIsRecordingVideo = false;
-        //mButtonVideo.setText(R.string.record);
+        mButtonVideo.setText(R.string.record);
         // Stop recording
-
         mMediaRecorder.stop();
         mMediaRecorder.reset();
         Activity activity = getActivity();
@@ -659,54 +546,16 @@ public class Camera2VideoFragment extends Fragment
             Toast.makeText(activity, "Video saved: " + getVideoFile(activity),
                     Toast.LENGTH_SHORT).show();
         }
-        mTextureView.setVisibility(View.INVISIBLE);
-        mButtonVideo.setVisibility(View.VISIBLE);
-        mTempStopRecordingBtn.setVisibility(View.INVISIBLE);
 
         stopBackgroundThread();
         closeCamera();
-        StartPlayVideoActivity();
 
-        //Upload Video
-        parseClient = NothingAnsweredApplication.getParseClient();
-        //recipient_id, question_text, video_file
-        parseClient.sendVideoResponse(Friends.myId, "Example question", getVideoFile(activity));
-    }
+        //send the file back to the parent fragment
+        listener = (RecordResponseDialogActionListener) getTargetFragment();
+        listener.onRecordResponse(getVideoFile(getContext()), gaffeCardPosition);
+        dismiss();
 
-    private Uri getImageUri(){
-
-        Bitmap bitmap = mTextureView.getBitmap();
-        Uri bmpUri = null;
-        try {
-            // Use methods on Context to access package-specific directories on external storage.
-            // This way, you don't need to request external read/write permission.
-            // See https://youtu.be/5xVh-7ywKpE?t=25m25s
-            //File(context.getExternalFilesDir(null), "video.mp4");
-
-            File file =  new File(getActivity().getExternalFilesDir(null), "thumbnail_" + System.currentTimeMillis() + ".png");
-            FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.close();
-            bmpUri = Uri.fromFile(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return bmpUri;
-
-    }
-
-    private void StartPlayVideoActivity() {
-        Uri videoUri;
-        Uri imageUri = getImageUri();
-
-        File file = getVideoFile(getActivity());
-        videoUri =  Uri.fromFile(file);
-
-        Intent intent = new Intent(getActivity(), PlayVideoActivity.class);
-        intent.putExtra(PlayVideoActivity.VIDEO_URI, videoUri);
-        intent.putExtra(PlayVideoActivity.IMAGE_URI, imageUri);
-        startActivity(intent);
+        //startPreview();
     }
 
     /**
@@ -722,59 +571,4 @@ public class Camera2VideoFragment extends Fragment
         }
 
     }
-
-    public static class ErrorDialog extends DialogFragment {
-
-        private static final String ARG_MESSAGE = "message";
-
-        public static ErrorDialog newInstance(String message) {
-            ErrorDialog dialog = new ErrorDialog();
-            Bundle args = new Bundle();
-            args.putString(ARG_MESSAGE, message);
-            dialog.setArguments(args);
-            return dialog;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity activity = getActivity();
-            return new AlertDialog.Builder(activity)
-                    .setMessage(getArguments().getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            activity.finish();
-                        }
-                    })
-                    .create();
-        }
-
-    }
-
-    public static class ConfirmationDialog extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Fragment parent = getParentFragment();
-            return new AlertDialog.Builder(getActivity())
-                    .setMessage(R.string.permission_request)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            FragmentCompat.requestPermissions(parent, VIDEO_PERMISSIONS,
-                                    REQUEST_VIDEO_PERMISSIONS);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    parent.getActivity().finish();
-                                }
-                            })
-                    .create();
-        }
-
-    }
-
 }

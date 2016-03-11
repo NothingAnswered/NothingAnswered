@@ -6,32 +6,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.facebook.CallbackManager;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
-import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
-import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
-import codepathproject.nothinganswered.models.Question;
+import codepathproject.nothinganswered.models.Friends;
+import codepathproject.nothinganswered.models.NAUser;
 
 public class LoginActivity extends AppCompatActivity {
 
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-
-    private CallbackManager callbackManager;
 
     private ParseClient parseClient;
     private FacebookClient facebookClient;
@@ -42,7 +45,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        callbackManager = CallbackManager.Factory.create();
 
         ButterKnife.bind(this);
         parseClient = NothingAnsweredApplication.getParseClient();
@@ -63,19 +65,88 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (user.isNew()) {
                     //First time user
                     Log.i(TAG, "FIRST PARSE");
-                    facebookClient.getInfo();
-                    facebookClient.getFriendList();
-                    getHomeActivity();
+                    firstTimeUser();
                 } else {
                     //Existing user
                     Log.i(TAG, "EXISTING PARSE");
-                    facebookClient.getFBId();
-                    facebookClient.getFriendList();
-                    //facebookClient.postOnMyWall();
-                    getHomeActivity();
+                    loadParseInfoSelf();
                 }
             }
         });
+    }
+
+    public void firstTimeUser() {
+        GraphRequest req = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    String id = response.getJSONObject().getString("id");
+                    String firstName = response.getJSONObject().getString("first_name");
+                    String lastName = response.getJSONObject().getString("last_name");
+                    String email = response.getJSONObject().getString("email");
+                    Friends.setMyModelInfo(id, firstName, lastName);
+                    parseClient.createNAUserInfo(id, firstName, lastName, email);
+                    getFriendList();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Bundle bundle = new Bundle();
+        bundle.putString("fields", "id,first_name,last_name,email");
+        req.setParameters(bundle);
+        req.executeAsync();
+    }
+
+    public void loadParseInfoSelf() {
+        ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
+        query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        query.getFirstInBackground(new GetCallback<NAUser>() {
+            @Override
+            public void done(NAUser object, ParseException e) {
+                if (e == null) {
+                    Friends.loadNAUser(object);
+                    facebookClient.getInfo();
+                    getFriendList();
+                } else {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    public void getFriendList() {
+        GraphRequest req = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
+
+            @Override
+            public void onCompleted(JSONArray jsonArray, GraphResponse response) {
+                if (response.getError() == null) {
+                    final Friends friends = Friends.getInstance();
+                    friends.fromJSONArray(jsonArray);
+                    //Update friends list user Object
+                    ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
+                    query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
+                    query.getFirstInBackground(new GetCallback<NAUser>() {
+                        @Override
+                        public void done(NAUser object, ParseException e) {
+                            if (e == null) {
+                                object.put(NAUser.FRIENDS, friends.getFacebookIds());
+                                object.saveInBackground();
+                                getHomeActivity();
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    Log.i(TAG, response.getError().getErrorMessage());
+                }
+            }
+        });
+        Bundle bundle = req.getParameters();
+        bundle.putString("fields", "id,first_name,last_name");
+        req.executeAsync();
     }
 
     public void getHomeActivity() {
@@ -83,32 +154,9 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    // Query messages from Parse so we can load them into the chat adapter
-    void refreshMessages() {
-        Log.i("REFRESH", "IN REFRESH");
-        // Construct query to execute
-        ParseQuery<Question> query = parseClient.getQuestionQuery(null, 1);
-        // Execute query to fetch all messages from Parse asynchronously
-        // This is equivalent to a SELECT query with SQL
-        query.findInBackground(new FindCallback<Question>() {
-            public void done(List<Question> messages, ParseException e) {
-                if (e == null) {
-                    if (messages != null && messages.size() > 0) {
-                        Question video = (Question) messages.get(0);
-                        ParseFile parseFile = video.getParseFile(Question.VIDEO);
-                    }
-                } else {
-                    Log.e("message", "Error Loading Messages" + e);
-                }
-            }
-        });
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
