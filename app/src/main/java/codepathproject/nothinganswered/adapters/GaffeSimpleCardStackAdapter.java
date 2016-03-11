@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -34,7 +33,7 @@ public class GaffeSimpleCardStackAdapter extends GaffeCardStackAdapter {
             assert convertView != null;
         }
 
-        gaffeCardVideoThumbnail = (VideoView) convertView.findViewById(R.id.gaffeCardVideoThumbnail);
+       /* gaffeCardVideoThumbnail = (VideoView) convertView.findViewById(R.id.gaffeCardVideoThumbnail);
         gaffeCardVideoThumbnail.setVideoPath(model.getGaffeCardVideoThumbnail());
         gaffeCardQuestion = (TextView) convertView.findViewById(R.id.gaffeCardQuestion);
         gaffeCardQuestion.setText(model.getGaffeCardQuestion());
@@ -51,7 +50,7 @@ public class GaffeSimpleCardStackAdapter extends GaffeCardStackAdapter {
             public void onClick(View v) {
                 gaffeCardVideoThumbnail.start();
             }
-        });
+        });*/
 
 
         return convertView;

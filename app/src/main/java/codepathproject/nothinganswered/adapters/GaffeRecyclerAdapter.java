@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,10 +64,7 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public class GaffeItemHolder extends RecyclerView.ViewHolder {
         private TextView mQuestionTitle;
         private TextView mUsername;
-        private ImageButton image_1;
-
-        //private ImageView mImage;
-        //private ImageView mProfileImage;
+        private Button mOpenCamera;
 
         private ImageView mProfileImage;
 
@@ -76,9 +73,9 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             mQuestionTitle = (TextView)itemView.findViewById(R.id.gaffeCardQuestion);
             mUsername = (TextView)itemView.findViewById(R.id.gaffeCardProfileName);
-            image_1 = (ImageButton) itemView.findViewById(R.id.image_1);
+            mOpenCamera = (Button)itemView.findViewById(R.id.openCamera);
 
-            image_1.setOnClickListener(new View.OnClickListener() {
+            mOpenCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -87,8 +84,6 @@ public class GaffeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                 }
             });
-            //mImage = (ImageView) itemView.findViewById(R.id.image);
-            //mProfileImage = (ImageView) itemView.findViewById(R.id.image_2);
             mProfileImage = (ImageView) itemView.findViewById(R.id.gaffeCardProfilePictureUrl);
 
         }
