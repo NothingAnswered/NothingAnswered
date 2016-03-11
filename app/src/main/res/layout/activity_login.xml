@@ -3,17 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/app_icon"
     tools:context=".activities.LoginActivity">
-
-    <ImageButton
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:text="PARSE FACEBOOK LOGIN"
-        android:id="@+id/btnLoginParse"
-        android:onClick="clickLogin"
-        android:focusable="true"
-        android:background="@drawable/login_facebook_image"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

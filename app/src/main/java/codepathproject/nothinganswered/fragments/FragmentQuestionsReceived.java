@@ -138,8 +138,6 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
                             Log.i(TAG, question.get(Question.QUESTION).toString());
                             Log.i(TAG, friends.getNameFromId(sender));
                         }
-                        //clearListAndAddNew(mGaffes);
-
                         gaffeRecyclerAdapter.notifyDataSetChanged();
                         swipeContainer.setRefreshing(false);
                     }
