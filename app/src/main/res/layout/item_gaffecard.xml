@@ -46,18 +46,31 @@
             android:text="OPEN CAMERA"
             android:layout_gravity="top"
              />
+
+        <VideoView
+            android:id="@+id/vvVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/ivVideoImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ivPlayIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            android:src="@drawable/icon_play"
+            android:onClick="onThumbnailClick"/>
     </FrameLayout>
-
-
-
-    <!--<VideoView
-        android:id="@+id/gaffeCardVideoThumbnail"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@id/divider_title"
-        android:layout_alignWithParentIfMissing="true"
-        android:scaleType="centerCrop"
-        android:background="#e3cdcd" />-->
 
     <View
         android:id="@+id/divider_bottom"

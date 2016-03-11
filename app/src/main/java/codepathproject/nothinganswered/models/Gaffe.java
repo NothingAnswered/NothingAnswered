@@ -8,6 +8,7 @@ public class Gaffe {
     public String questionTitle;
     public String videoResponseUrl;
     public String profilePicUrl;
+    public boolean responded;
 
     public String getUsername() {
         return username;

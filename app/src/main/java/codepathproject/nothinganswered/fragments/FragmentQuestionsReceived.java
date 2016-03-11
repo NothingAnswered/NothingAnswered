@@ -14,7 +14,9 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -26,7 +28,10 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -57,7 +62,6 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
     AutoFitTextureView mTextureView;
     Button mButtonVideo;
 
-
     public static FragmentQuestionsReceived newInstance() {
         return new FragmentQuestionsReceived();
     }
@@ -68,7 +72,7 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
 
         gaffeRecyclerAdapter.setRecordActionListener(new RecordActionListener() {
             @Override
-            public void onRecordButtonClick(View view, int position) {
+            public void onRecordButtonClick(View view, final int position) {
                 mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
                 mButtonVideo = (Button)view.findViewById(R.id.openCamera);
                 StartCameraPreview();
@@ -78,7 +82,7 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
                     @Override
                     public void onClick(View v) {
                         if (mIsRecordingVideo) {
-                            stopRecordingVideo();
+                            stopRecordingVideo(position);
                             setScrolling(true);
 
                         } else {
@@ -86,6 +90,29 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
                         }
                     }
                 });
+            }
+
+            @Override
+            public void onPlayButtonClick(View view, final int position) {
+                final ImageView ivPlayIcon = (ImageView) view.findViewById(R.id.ivPlayIcon);
+                ivPlayIcon.setVisibility(View.INVISIBLE);
+                final VideoView videoView = (VideoView)view.findViewById(R.id.vvVideo);
+                videoView.setVisibility(View.VISIBLE);
+                videoView.setMediaController(new MediaController(getActivity()));
+                videoView.requestFocus();
+                Uri videoUri = Uri.fromFile(getVideoFile(getActivity()));
+                videoView.setVideoURI(videoUri);
+                videoView.start();
+
+                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        videoView.setVisibility(View.INVISIBLE);
+                        ivPlayIcon.setVisibility(View.VISIBLE);
+
+                    }
+                });
+
             }
         });
     }
@@ -496,7 +523,7 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         }
     }
 
-    private void stopRecordingVideo() {
+    private void stopRecordingVideo(int position) {
         // UI
         mIsRecordingVideo = false;
         mButtonVideo.setText("START RECORDING");
@@ -511,6 +538,9 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         //startPreview();
         closeCamera();
         stopBackgroundThread();
+
+        mGaffes.get(position).responded = true;
+        gaffeRecyclerAdapter.notifyDataSetChanged();
     }
 
 
