@@ -60,10 +60,12 @@ public class LoginActivity extends AppCompatActivity {
         if (currentUser != null) {
             //Load Friends class from local datastore to get going
             //Also the base timeline
+            Log.i(TAG, "Auto Login");
             loadParseInfoSelf();
         } else {
             //Login User, check first time user and upload results
             // User clicked to log in.
+            Log.i(TAG, "Logged out user");
             ParseLoginBuilder loginBuilder = new ParseLoginBuilder(LoginActivity.this);
             startActivityForResult(loginBuilder.build(), 0);
         }
@@ -80,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                     String email = response.getJSONObject().getString("email");
                     Friends.setMyModelInfo(id, firstName, lastName);
                     parseClient.createNAUserInfo(id, firstName, lastName, email);
+                    Log.i(TAG, "First time user");
                     getFriendList();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -95,15 +98,19 @@ public class LoginActivity extends AppCompatActivity {
     public void loadParseInfoSelf() {
         ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
         query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        query.fromLocalDatastore();
         query.getFirstInBackground(new GetCallback<NAUser>() {
             @Override
             public void done(NAUser object, ParseException e) {
                 if (e == null) {
+                    Log.i(TAG, "Load parse info self");
                     Friends.loadNAUser(object);
                     facebookClient.getInfo();
-                    getFriendList();
+                    facebookClient.getFriendList();
+                    getHomeActivity();
                 } else {
-                    e.printStackTrace();
+                    Log.i(TAG, "Load parse info self first time user");
+                    firstTimeUser();
                 }
 
             }
@@ -125,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void done(NAUser object, ParseException e) {
                             if (e == null) {
+                                Log.i(TAG, "Get friends list");
                                 object.put(NAUser.FRIENDS, friends.getFacebookIds());
                                 object.saveInBackground();
                                 getHomeActivity();
@@ -144,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void getHomeActivity() {
+        Log.i(TAG, "Start home activity");
         Intent i = new Intent(LoginActivity.this, HomeScreenActivity.class);
         startActivity(i);
     }
@@ -152,7 +161,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "On Activity Result");
-        firstTimeUser();
     }
 
     @Override

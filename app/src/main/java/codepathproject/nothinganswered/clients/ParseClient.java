@@ -3,6 +3,7 @@ package codepathproject.nothinganswered.clients;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -58,15 +59,14 @@ public class ParseClient {
         userInfo.put(NAUser.EMAIL, email);
         userInfo.put(NAUser.PROFILE_PICTURE, "");
         userInfo.put(NAUser.FRIENDS, Arrays.asList(""));
-        try {
-            userInfo.save();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        userInfo.pinInBackground(id);
+        userInfo.saveInBackground();
+        Log.i("PIN", "CREATE " + firstName);
     }
 
     public void updateNAUserInfo(final String id, final String firstName, final String lastName, final String email) {
         ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
+        query.fromLocalDatastore();
         query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
         query.getFirstInBackground(new GetCallback<NAUser>() {
             @Override
@@ -77,14 +77,54 @@ public class ParseClient {
                     object.put(NAUser.LAST_NAME, lastName);
                     object.put(NAUser.EMAIL, email);
                     object.saveInBackground();
-                }
-                else {
+                    object.pinInBackground(id);
+                    Log.i("PIN", "UPDATE " + firstName);
+                } else {
                     e.printStackTrace();
                 }
             }
         });
     }
 
+    public void updateFriendsList() {
+        ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
+        query.fromLocalDatastore();
+        query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        query.getFirstInBackground(new GetCallback<NAUser>() {
+            @Override
+            public void done(NAUser object, ParseException e) {
+                if (e == null) {
+                    final Friends friends = Friends.getInstance();
+                    object.put(NAUser.FRIENDS, friends.getFacebookIds());
+                    object.saveInBackground();
+                    object.pinInBackground(Friends.myId);
+                    Log.i("PIN", "UPDATE FRIENDSID " + friends.getFacebookIds());
+                    updateLocalStoreFriendsList();
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void updateLocalStoreFriendsList() {
+        final List<String> facebookIds = Friends.getInstance().getFacebookIds();
+        for (int i = 0; i < facebookIds.size(); i++) {
+            ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
+            query.whereEqualTo(NAUser.FACEBOOK_ID, facebookIds.get(i));
+            query.getFirstInBackground(new GetCallback<NAUser>() {
+                @Override
+                public void done(NAUser object, ParseException e) {
+                    if (e == null) {
+                        Log.i("PIN", "UPDATE FRIENDS " + object.get(NAUser.FIRST_NAME).toString());
+                        object.pinInBackground(object.get(NAUser.FACEBOOK_ID).toString());
+                    } else {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
     public ParseFile createParseBlob(String name, byte[] blob) {
         // Create the ParseFile
         ParseFile file = new ParseFile(name, blob);

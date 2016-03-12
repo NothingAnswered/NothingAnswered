@@ -7,9 +7,6 @@ import android.util.Log;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
@@ -17,7 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import codepathproject.nothinganswered.models.Friends;
-import codepathproject.nothinganswered.models.NAUser;
 
 /**
  * Created by gpalem on 3/5/16.
@@ -112,19 +108,7 @@ public class FacebookClient {
                     final Friends friends = Friends.getInstance();
                     friends.fromJSONArray(jsonArray);
                     //Update friends list user Object
-                    ParseQuery<NAUser> query = ParseQuery.getQuery(NAUser.class);
-                    query.whereEqualTo(NAUser.CURRENT_USER_ID, ParseUser.getCurrentUser().getObjectId());
-                    query.getFirstInBackground(new GetCallback<NAUser>() {
-                        @Override
-                        public void done(NAUser object, ParseException e) {
-                            if (e == null) {
-                                object.put(NAUser.FRIENDS, friends.getFacebookIds());
-                                object.saveInBackground();
-                            } else {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    parseClient.updateFriendsList();
                 } else {
                     Log.i(TAG, response.getError().getErrorMessage());
                 }
