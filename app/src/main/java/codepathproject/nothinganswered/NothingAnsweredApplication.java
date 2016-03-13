@@ -26,7 +26,6 @@ public class NothingAnsweredApplication extends Application {
     public void onCreate() {
         super.onCreate();
         FacebookSdk.sdkInitialize(getApplicationContext());
-        Parse.enableLocalDatastore(this);
         // set applicationId and server based on the values in the Heroku settings.
         // any network interceptors must be added with the Configuration Builder given this syntax
         ParseObject.registerSubclass(Question.class);
@@ -34,6 +33,7 @@ public class NothingAnsweredApplication extends Application {
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("nothinganswered") // should correspond to APP_ID env variable
                 .clientKey(null)
+                .enableLocalDataStore()
                 .addNetworkInterceptor(new ParseLogInterceptor())
                 .server("https://nothinganswered.herokuapp.com/parse/").build());
         ParseFacebookUtils.initialize(this);
