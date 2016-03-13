@@ -18,6 +18,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.Nullable;
@@ -27,18 +28,19 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -58,9 +60,24 @@ import codepathproject.nothinganswered.views.AutoFitTextureView;
 
 public class FragmentQuestionsReceived extends TimelineFragment implements RecordResponseDialogActionListener {
 
+    private HandlerThread mBackgroundThread;
+    private Handler mBackgroundHandler;
+    private CameraDevice mCameraDevice;
+    private Size mPreviewSize;
+    private MediaRecorder mMediaRecorder;
+    private CaptureRequest.Builder mPreviewBuilder;
+    private Size mVideoSize;
+    private Semaphore mCameraOpenCloseLock = new Semaphore(1);
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+
+    //to play video on a texture
+    private Surface mSurface;
+    private CameraCaptureSession mPreviewSession;
+
     private static final String TAG = "QuestionsRecieved";
+    private CountDownTimer mTimer;
     AutoFitTextureView mTextureView;
-    Button mButtonVideo;
+    ImageButton mButtonVideo;
 
     public static FragmentQuestionsReceived newInstance() {
         return new FragmentQuestionsReceived();
@@ -74,20 +91,53 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
             @Override
             public void onRecordButtonClick(View view, final int position) {
                 mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-                mButtonVideo = (Button)view.findViewById(R.id.openCamera);
+                mButtonVideo = (ImageButton)view.findViewById(R.id.openCamera);
+                final ImageButton ibsendVideo = (ImageButton)view.findViewById(R.id.sendVideo);
                 StartCameraPreview();
+                mButtonVideo.setImageResource(R.drawable.record);
                 Toast.makeText(getActivity(), "position " + position, Toast.LENGTH_SHORT).show();
-
+                final TextView tvTimer = (TextView)view.findViewById(R.id.tvTimer);
                 mButtonVideo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mIsRecordingVideo) {
-                            stopRecordingVideo(position);
-                            setScrolling(true);
 
-                        } else {
-                            startRecordingVideo();
+                            if(mIsRecordingVideo) {
+                                stopRecordingVideo(position);
+                                tvTimer.setVisibility(View.INVISIBLE);
+                            }else {
+                                startRecordingVideo();
+                                mButtonVideo.setImageResource(R.drawable.stoprecord);
+                                //mButtonVideo.setVisibility(View.VISIBLE);
+                                tvTimer.setVisibility(View.VISIBLE);
+                                mTimer = new CountDownTimer(5000, 1000) {
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+                                        tvTimer.setText(millisUntilFinished / 1000 + "");
+                                    }
+
+                                    @Override
+                                    public void onFinish() {
+                                        stopRecordingVideo(position);
+                                        ibsendVideo.setVisibility(View.VISIBLE);
+                                    }
+                                }.start();
+                            }
                         }
+                });
+
+                ibsendVideo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Gaffe gaffe = mGaffes.get(position);
+
+                        //Upload Video
+                        parseClient = NothingAnsweredApplication.getParseClient();
+                        File file = new File(gaffe.getVideoResponseUrl().toString());
+                        parseClient.sendVideoResponse(Friends.myId, gaffe.questionTitle, file);
+
+                        Toast.makeText(getActivity(), gaffe.username + " :: "  + gaffe.questionTitle, Toast.LENGTH_SHORT).show();
+
                     }
                 });
             }
@@ -95,23 +145,67 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
             @Override
             public void onPlayButtonClick(View view, final int position) {
                 final ImageView ivPlayIcon = (ImageView) view.findViewById(R.id.ivPlayIcon);
+                final ImageView ivVideoImage = (ImageView) view.findViewById(R.id.ivVideoImage);
+
                 ivPlayIcon.setVisibility(View.INVISIBLE);
-                final VideoView videoView = (VideoView)view.findViewById(R.id.vvVideo);
-                videoView.setVisibility(View.VISIBLE);
-                videoView.setMediaController(new MediaController(getActivity()));
-                videoView.requestFocus();
-                Uri videoUri = Uri.fromFile(getVideoFile(getActivity()));
-                videoView.setVideoURI(videoUri);
-                videoView.start();
+                ivVideoImage.setVisibility(View.INVISIBLE);
+               mTextureView.setVisibility(View.VISIBLE);
 
-                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        videoView.setVisibility(View.INVISIBLE);
-                        ivPlayIcon.setVisibility(View.VISIBLE);
 
-                    }
-                });
+                //final VideoView videoView = (VideoView)view.findViewById(R.id.vvVideo);
+                //videoView.setVisibility(View.VISIBLE);
+                //videoView.setMediaController(new MediaController(getActivity()));
+                //videoView.requestFocus();
+//                Uri videoUri = Uri.fromFile(getVideoFile(getActivity()));
+//                videoView.setVideoURI(videoUri);
+//                videoView.start();
+
+//                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                    @Override
+//                    public void onCompletion(MediaPlayer mp) {
+//                        videoView.setVisibility(View.INVISIBLE);
+//                        ivPlayIcon.setVisibility(View.VISIBLE);
+//                        ivVideoImage.setVisibility(View.VISIBLE);
+//
+//                    }
+//                });
+
+
+                try {
+                final MediaPlayer mediaPlayer = new MediaPlayer();
+                    Context context = getActivity();
+
+                    mediaPlayer.setDataSource(context, Uri.fromFile(getVideoFile(context)));
+                    mediaPlayer.setSurface(mSurface);
+                    mediaPlayer.setLooping(false);
+                    mediaPlayer.prepareAsync();
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            ivPlayIcon.setVisibility(View.VISIBLE);
+                            ivVideoImage.setVisibility(View.VISIBLE);
+                        }
+
+                    });
+
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            mediaPlayer.start();
+                        }
+                    });
+
+                } catch (IllegalArgumentException e) {
+                    Log.d(TAG, e.getMessage());
+                } catch (SecurityException e) {
+                    Log.d(TAG, e.getMessage());
+                } catch (IllegalStateException e) {
+                    Log.d(TAG, e.getMessage());
+                } catch (IOException e) {
+                    Log.d(TAG, e.getMessage());
+                }
 
             }
         });
@@ -159,7 +253,6 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
                             card.username = (friends.getNameFromId(sender));
                             card.profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
 
-
                             mGaffes.add(card);
 
                             Log.i(TAG, question.get(Question.QUESTION).toString());
@@ -202,6 +295,8 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
                                               int width, int height) {
+
+            mSurface = new Surface(surfaceTexture);
             openCamera(width, height);
         }
 
@@ -228,24 +323,13 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         startBackgroundThread();
         if (mTextureView.isAvailable()) {
             openCamera(mTextureView.getWidth(), mTextureView.getHeight());
-            mButtonVideo.setText("START RECODING");
+            mButtonVideo.setImageResource(R.drawable.stoprecord);
         } else {
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
     }
 
 
-    private HandlerThread mBackgroundThread;
-    private Handler mBackgroundHandler;
-    private CameraDevice mCameraDevice;
-    private Size mPreviewSize;
-    private MediaRecorder mMediaRecorder;
-    private CaptureRequest.Builder mPreviewBuilder;
-    private Size mVideoSize;
-    private Semaphore mCameraOpenCloseLock = new Semaphore(1);
-    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-
-    private CameraCaptureSession mPreviewSession;
 
     private void startBackgroundThread() {
         mBackgroundThread = new HandlerThread("CameraBackground");
@@ -512,8 +596,7 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
 
     private void startRecordingVideo() {
         try {
-            // UI
-            mButtonVideo.setText("STOP RECORDING");
+
             mIsRecordingVideo = true;
 
             // Start recording
@@ -524,21 +607,25 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
     }
 
     private void stopRecordingVideo(int position) {
-        // UI
         mIsRecordingVideo = false;
-        mButtonVideo.setText("START RECORDING");
+        Picasso.with(getContext()).load(R.drawable.record).fit().centerInside().into(mButtonVideo);
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
+
+        mGaffes.get(position).thumbnail = mTextureView.getBitmap();
+
         Activity activity = getActivity();
         if (null != activity) {
             Toast.makeText(activity, "Video saved: " + getVideoFile(activity),
                     Toast.LENGTH_SHORT).show();
         }
+        mGaffes.get(position).videoResponseUrl = Uri.fromFile(getVideoFile(activity));
+
         //startPreview();
         closeCamera();
         stopBackgroundThread();
-
+        setScrolling(true);
         mGaffes.get(position).responded = true;
         gaffeRecyclerAdapter.notifyDataSetChanged();
     }
