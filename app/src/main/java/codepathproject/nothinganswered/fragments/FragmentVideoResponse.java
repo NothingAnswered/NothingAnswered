@@ -17,7 +17,7 @@ public class FragmentVideoResponse extends TimelineFragment {
         return fragment;
     }
 
-    public void populateTimeline() {
+    public void loadObjects() {
 
     }
 }

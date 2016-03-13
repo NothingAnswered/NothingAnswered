@@ -25,9 +25,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,12 +39,13 @@ import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -51,14 +55,15 @@ import java.util.concurrent.TimeUnit;
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.adapters.CustomGridLayoutManager;
+import codepathproject.nothinganswered.adapters.ParseQuestionAdapter;
 import codepathproject.nothinganswered.adapters.RecordActionListener;
 import codepathproject.nothinganswered.models.Friends;
-import codepathproject.nothinganswered.models.Gaffe;
 import codepathproject.nothinganswered.models.Question;
 import codepathproject.nothinganswered.views.AutoFitTextureView;
 
+public class FragmentQuestionsReceived extends TimelineFragment {
 
-public class FragmentQuestionsReceived extends TimelineFragment implements RecordResponseDialogActionListener {
+    private final static int CAMERA_RQ = 6969;
 
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
@@ -79,6 +84,8 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
     AutoFitTextureView mTextureView;
     ImageButton mButtonVideo;
 
+    private ParseQuestionAdapter questionAdapter;
+
     public static FragmentQuestionsReceived newInstance() {
         return new FragmentQuestionsReceived();
     }
@@ -87,56 +94,88 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        gaffeRecyclerAdapter.setRecordActionListener(new RecordActionListener() {
+        createQuestionAdapter();
+        setVideoEventListener();
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        rvResults.setAdapter(questionAdapter);
+        return view;
+    }
+
+    public void createQuestionAdapter() {
+        ParseQueryAdapter.QueryFactory<Question> factory = new ParseQueryAdapter.QueryFactory<Question>() {
+            public ParseQuery<Question> create() {
+                ParseQuery<Question> query = ParseQuery.getQuery(Question.class);
+                query.whereEqualTo(Question.RECIPIENT_ID, Friends.myId);
+                query.orderByDescending("createdAt");
+
+                //-24 hours Date object
+                Calendar calendar = Calendar.getInstance();
+                Log.i(TAG, "Time " + getActivity().getString(R.string.max_lookback_time));
+                calendar.add(Calendar.HOUR_OF_DAY, -Integer.parseInt(getActivity().getString(R.string.max_lookback_time)));
+                query.whereGreaterThan("createdAt", calendar.getTime());
+                return query;
+            }
+        };
+        questionAdapter = new ParseQuestionAdapter(factory, true);
+    }
+
+    public void setVideoEventListener() {
+        questionAdapter.setRecordActionListener(new RecordActionListener() {
             @Override
             public void onRecordButtonClick(View view, final int position) {
                 mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-                mButtonVideo = (ImageButton)view.findViewById(R.id.openCamera);
-                final ImageButton ibsendVideo = (ImageButton)view.findViewById(R.id.sendVideo);
+                mButtonVideo = (ImageButton) view.findViewById(R.id.openCamera);
+                final ImageButton ibsendVideo = (ImageButton) view.findViewById(R.id.sendVideo);
                 StartCameraPreview();
                 mButtonVideo.setImageResource(R.drawable.record);
                 Toast.makeText(getActivity(), "position " + position, Toast.LENGTH_SHORT).show();
-                final TextView tvTimer = (TextView)view.findViewById(R.id.tvTimer);
+                final TextView tvTimer = (TextView) view.findViewById(R.id.tvTimer);
                 mButtonVideo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                            if(mIsRecordingVideo) {
-                                stopRecordingVideo(position);
-                                tvTimer.setVisibility(View.INVISIBLE);
-                            }else {
-                                startRecordingVideo();
-                                mButtonVideo.setImageResource(R.drawable.stoprecord);
-                                //mButtonVideo.setVisibility(View.VISIBLE);
-                                tvTimer.setVisibility(View.VISIBLE);
-                                mTimer = new CountDownTimer(5000, 1000) {
-                                    @Override
-                                    public void onTick(long millisUntilFinished) {
-                                        tvTimer.setText(millisUntilFinished / 1000 + "");
-                                    }
+                        if (mIsRecordingVideo) {
+                            stopRecordingVideo(position);
+                            tvTimer.setVisibility(View.INVISIBLE);
+                        } else {
+                            startRecordingVideo();
+                            mButtonVideo.setImageResource(R.drawable.stoprecord);
+                            //mButtonVideo.setVisibility(View.VISIBLE);
+                            tvTimer.setVisibility(View.VISIBLE);
+                            mTimer = new CountDownTimer(5000, 1000) {
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+                                    tvTimer.setText(millisUntilFinished / 1000 + "");
+                                }
 
-                                    @Override
-                                    public void onFinish() {
-                                        stopRecordingVideo(position);
-                                        ibsendVideo.setVisibility(View.VISIBLE);
-                                    }
-                                }.start();
-                            }
+                                @Override
+                                public void onFinish() {
+                                    stopRecordingVideo(position);
+                                    ibsendVideo.setVisibility(View.VISIBLE);
+                                }
+                            }.start();
                         }
+                    }
                 });
 
                 ibsendVideo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        Gaffe gaffe = mGaffes.get(position);
+                        Question question = questionAdapter.getItem(position);
 
                         //Upload Video
                         parseClient = NothingAnsweredApplication.getParseClient();
-                        File file = new File(gaffe.getVideoResponseUrl().toString());
-                        parseClient.sendVideoResponse(Friends.myId, gaffe.questionTitle, file);
+                        File file = new File(question.get(Question.LOCALVIDEOURL).toString());
+                        parseClient.sendVideoResponse(Friends.myId, question.get(Question.QUESTION).toString(), file);
 
-                        Toast.makeText(getActivity(), gaffe.username + " :: "  + gaffe.questionTitle, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), question.get(Question.QUESTION).toString(), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -149,30 +188,11 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
 
                 ivPlayIcon.setVisibility(View.INVISIBLE);
                 ivVideoImage.setVisibility(View.INVISIBLE);
-               mTextureView.setVisibility(View.VISIBLE);
-
-
-                //final VideoView videoView = (VideoView)view.findViewById(R.id.vvVideo);
-                //videoView.setVisibility(View.VISIBLE);
-                //videoView.setMediaController(new MediaController(getActivity()));
-                //videoView.requestFocus();
-//                Uri videoUri = Uri.fromFile(getVideoFile(getActivity()));
-//                videoView.setVideoURI(videoUri);
-//                videoView.start();
-
-//                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//                    @Override
-//                    public void onCompletion(MediaPlayer mp) {
-//                        videoView.setVisibility(View.INVISIBLE);
-//                        ivPlayIcon.setVisibility(View.VISIBLE);
-//                        ivVideoImage.setVisibility(View.VISIBLE);
-//
-//                    }
-//                });
+                mTextureView.setVisibility(View.VISIBLE);
 
 
                 try {
-                final MediaPlayer mediaPlayer = new MediaPlayer();
+                    final MediaPlayer mediaPlayer = new MediaPlayer();
                     Context context = getActivity();
 
                     mediaPlayer.setDataSource(context, Uri.fromFile(getVideoFile(context)));
@@ -211,6 +231,10 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         });
     }
 
+    public void loadObjects() {
+        questionAdapter.loadObjects();
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -221,67 +245,6 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         FragmentQuestionsReceived fragment = new FragmentQuestionsReceived();
         return fragment;
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        populateTimeline();
-    }
-
-    public void populateTimeline() {
-
-        // Construct query to execute
-        final ParseQuery<Question> query = parseClient.getQuestionTimeline(Friends.myId, 5);
-        // Execute query to fetch all messages from Parse asynchronously
-        // This is equivalent to a SELECT query with SQL
-        query.findInBackground(new FindCallback<Question>() {
-            public void done(List<Question> messages, ParseException e) {
-                if (e == null) {
-                    if (messages != null && messages.size() > 0) {
-
-                        mGaffes.clear();
-
-                        for (int i = 0; i < messages.size(); i++) {
-
-
-                            Question question = messages.get(i);
-                            friends = Friends.getInstance();
-                            String sender = question.get(Question.SENDER_ID).toString();
-
-                            Gaffe card = new Gaffe();
-                            card.questionTitle = question.get(Question.QUESTION).toString();
-                            card.username = (friends.getNameFromId(sender));
-                            card.profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
-
-                            mGaffes.add(card);
-
-                            Log.i(TAG, question.get(Question.QUESTION).toString());
-                            Log.i(TAG, friends.getNameFromId(sender));
-                        }
-                        gaffeRecyclerAdapter.notifyDataSetChanged();
-                        swipeContainer.setRefreshing(false);
-                    }
-
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void onRecordResponse(File videoFile, int cardPosition) {
-
-        Gaffe gaffe = mGaffes.get(cardPosition);
-
-        //Upload Video
-        parseClient = NothingAnsweredApplication.getParseClient();
-        parseClient.sendVideoResponse(Friends.myId, gaffe.questionTitle, videoFile);
-
-        Toast.makeText(this.getContext(), gaffe.username + " :: "  + gaffe.questionTitle, Toast.LENGTH_SHORT).show();
-    }
-
 
     private void setScrolling(boolean tf) {
         scrolling = tf;
@@ -613,21 +576,20 @@ public class FragmentQuestionsReceived extends TimelineFragment implements Recor
         mMediaRecorder.stop();
         mMediaRecorder.reset();
 
-        mGaffes.get(position).thumbnail = mTextureView.getBitmap();
+        Question question = questionAdapter.getItem(position);
+        //question.put(Question.THUMBMAIL, mTextureView.getBitmap()); //TODO
 
         Activity activity = getActivity();
         if (null != activity) {
             Toast.makeText(activity, "Video saved: " + getVideoFile(activity),
                     Toast.LENGTH_SHORT).show();
         }
-        mGaffes.get(position).videoResponseUrl = Uri.fromFile(getVideoFile(activity));
+        question.put(Question.LOCALVIDEOURL, Uri.fromFile(getVideoFile(activity)));
 
         //startPreview();
         closeCamera();
         stopBackgroundThread();
         setScrolling(true);
-        mGaffes.get(position).responded = true;
-        gaffeRecyclerAdapter.notifyDataSetChanged();
     }
 
 

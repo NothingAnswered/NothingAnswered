@@ -45,6 +45,7 @@ dependencies {
     //For rounded images for profile pics
     compile 'com.makeramen:roundedimageview:2.2.1'
 
-    //Recylcer View
+    //Recycler View
     compile 'com.android.support:recyclerview-v7:23.1.1'
+
 }

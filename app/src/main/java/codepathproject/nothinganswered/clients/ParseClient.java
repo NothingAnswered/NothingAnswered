@@ -8,10 +8,13 @@ import android.util.Log;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.SendCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -143,6 +146,28 @@ public class ParseClient {
             @Override
             public void done(ParseException e) {
                 if (e != null) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void sendQuestionNotification(String question, String facebookId) {
+        // Create our Installation query
+        ParseQuery pushQuery = ParseInstallation.getQuery();
+        pushQuery.whereEqualTo(NAUser.FACEBOOK_ID, facebookId);
+
+        // Send push notification to query
+        ParsePush push = new ParsePush();
+        push.setQuery(pushQuery); // Set our Installation query
+        push.setMessage(question);
+        push.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.i("PUSH", "Push successful");
+                }
+                else {
                     e.printStackTrace();
                 }
             }

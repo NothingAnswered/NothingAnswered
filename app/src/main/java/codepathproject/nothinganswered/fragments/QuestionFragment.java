@@ -100,6 +100,7 @@ public class QuestionFragment extends DialogFragment {
                     String facebookId = Friends.getInstance().getIdFromName(recipient.trim());
                     if (facebookId != null) {
                         parseClient.sendQuestionObject(question, facebookId);
+                        parseClient.sendQuestionNotification(question, facebookId);
                     }
                 }
                 Log.i(TAG, question);

@@ -152,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void getHomeActivity() {
+        NothingAnsweredApplication.setParseInstallationObject();
         Log.i(TAG, "Start home activity");
         Intent i = new Intent(LoginActivity.this, HomeScreenActivity.class);
         startActivity(i);

@@ -6,11 +6,13 @@ import android.content.Context;
 import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.interceptors.ParseLogInterceptor;
 
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
+import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.NAUser;
 import codepathproject.nothinganswered.models.Question;
 
@@ -46,12 +48,19 @@ public class NothingAnsweredApplication extends Application {
         facebookClient.setParseClient(parseClient);
     }
 
+    public static void setParseInstallationObject() {
+        ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+        parseInstallation.put(NAUser.FACEBOOK_ID, Friends.myId);
+        parseInstallation.saveInBackground();
+
+    }
+
     public static ParseClient getParseClient() {
-        return (ParseClient) ParseClient.getInstance(NothingAnsweredApplication.context);
+        return ParseClient.getInstance(NothingAnsweredApplication.context);
     }
 
     public static FacebookClient getFacebookClient() {
-        return (FacebookClient) FacebookClient.getInstance(NothingAnsweredApplication.context);
+        return FacebookClient.getInstance(NothingAnsweredApplication.context);
     }
 
     public static String getProfileImage(String id) {
