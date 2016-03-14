@@ -8,4 +8,5 @@ import android.view.View;
 public interface RecordActionListener {
 
     void onRecordButtonClick(View view, int position);
+    void onPlayButtonClick(View view, int position);
 }

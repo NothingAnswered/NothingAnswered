@@ -21,9 +21,6 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -98,23 +95,14 @@ public class QuestionFragment extends DialogFragment {
                 String question = etSendQuestion.getText().toString();
                 String recipientStr = etRecipient.getText().toString();
                 String[] recipients = recipientStr.split(",");
-                ArrayList<String> recipientIds = new ArrayList<String>();
                 for (String recipient : recipients) {
                     Log.i(TAG, recipient.trim());
                     String facebookId = Friends.getInstance().getIdFromName(recipient.trim());
                     if (facebookId != null) {
-                        recipientIds.add(facebookId);
+                        parseClient.sendQuestionObject(question, facebookId);
+                        parseClient.sendQuestionNotification(question, facebookId);
                     }
                 }
-                ParseObject qObject = parseClient.createQuestionObject(question, parseClient.parseTemplateFile(), recipientIds);
-                qObject.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
                 Log.i(TAG, question);
                 Log.i(TAG, recipientStr);
                 getDialog().dismiss();

@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import codepathproject.nothinganswered.R;
-import codepathproject.nothinganswered.fragments.Camera2VideoFragment;
 
 public class CameraActivity extends Activity {
 

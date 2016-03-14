@@ -10,17 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.activities.HomeScreenActivity;
 import codepathproject.nothinganswered.adapters.CustomGridLayoutManager;
-import codepathproject.nothinganswered.adapters.GaffeRecyclerAdapter;
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
 import codepathproject.nothinganswered.models.Friends;
-import codepathproject.nothinganswered.models.Gaffe;
 
 /**
  * Created by jnagaraj on 3/8/16.
@@ -31,18 +27,12 @@ public abstract class TimelineFragment extends Fragment{
 
     //flag to check if the scrolling is disabled or enabled
     //because of camera preview running
-
     public boolean scrolling = true;
 
     public SwipeRefreshLayout swipeContainer;
     public ParseClient parseClient;
     public FacebookClient facebookClient;
     public Friends friends;
-    //public SimpleCardStackAdapter cardStackAdapter;
-    //public ArrayList<CardModel> cards;
-
-    public GaffeRecyclerAdapter gaffeRecyclerAdapter;
-    public ArrayList<Gaffe> mGaffes;
 
     public RecyclerView rvResults;
 
@@ -65,13 +55,6 @@ public abstract class TimelineFragment extends Fragment{
         mHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
         parseClient = NothingAnsweredApplication.getParseClient();
         facebookClient = NothingAnsweredApplication.getFacebookClient();
-
-        mGaffes = new ArrayList<>();
-        gaffeRecyclerAdapter = new GaffeRecyclerAdapter(mGaffes);
-
-        populateTimeline();
-
-
     }
 
     @Nullable
@@ -83,10 +66,6 @@ public abstract class TimelineFragment extends Fragment{
 
 
         rvResults = (RecyclerView) view.findViewById(R.id.rvGaffes);
-        rvResults.setAdapter(gaffeRecyclerAdapter);
-
-
-        //final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         final CustomGridLayoutManager linearLayoutManager = new CustomGridLayoutManager(this.getContext());
         rvResults.setLayoutManager(linearLayoutManager);
 
@@ -95,11 +74,8 @@ public abstract class TimelineFragment extends Fragment{
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(scrolling) {
-                    populateTimeline();
-                }else{
-                    swipeContainer.setRefreshing(false);
-                }
+                loadObjects();
+                swipeContainer.setRefreshing(false);
             }
         });
 
@@ -112,5 +88,5 @@ public abstract class TimelineFragment extends Fragment{
         return view;
     }
 
-    public abstract void populateTimeline();
+    public abstract void loadObjects();
 }

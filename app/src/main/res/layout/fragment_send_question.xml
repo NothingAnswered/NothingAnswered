@@ -28,7 +28,7 @@
         app:riv_corner_radius="30dip"
         app:riv_mutate_background="true"
         app:riv_tile_mode="repeat"
-        app:riv_oval="true"
+        app:riv_oval="false"
         android:layout_below="@+id/send_question_toolbar"
         android:layout_alignParentStart="true" />
 
