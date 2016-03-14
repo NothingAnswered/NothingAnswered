@@ -24,6 +24,7 @@ import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -180,20 +181,7 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
             }
         });
 
-        //setVideoEventListener();
-
     }
-
-    /*@Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tinder_fling_view, container, false);
-
-        flingContainer = (SwipeFlingAdapterView) view.findViewById(R.id.frame);
-
-        flingContainer.setAdapter(questionAdapter);
-        return view;
-    }*/
 
 
     private void performCameraActions(View view, final int position) {
@@ -245,6 +233,7 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
         });
 
     }
+
 
     public void setVideoEventListener() {
         questionAdapter.setRecordActionListener(new RecordActionListener() {
@@ -347,19 +336,6 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
             }
         });
     }
-
-
-   /* @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-*/
-   /* public static FragmentQuestionsReceived newInstance (int page)
-    {
-        FragmentQuestionsReceived fragment = new FragmentQuestionsReceived();
-        return fragment;
-    }*/
-
 
     private TextureView.SurfaceTextureListener mSurfaceTextureListener
             = new TextureView.SurfaceTextureListener() {
@@ -505,10 +481,27 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
-            String cameraId = manager.getCameraIdList()[0];
+            //String cameraId = manager.getCameraIdList()[0];
+            String cameraIdForFrontFacing = "";
 
+
+            for(String cameraId : manager.getCameraIdList()){
+                CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraId);
+                Integer facing = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
+                if(facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+
+                    Toast.makeText(this, "FRONT CAMERA", Toast.LENGTH_SHORT).show();
+                    cameraIdForFrontFacing = cameraId;
+                }
+            }
+
+            if(cameraIdForFrontFacing.equals("")){
+                Toast.makeText(this, "BACK CAMERA", Toast.LENGTH_SHORT).show();
+                cameraIdForFrontFacing = manager.getCameraIdList()[0];
+            }
             // Choose the sizes for camera preview and video recording
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraIdForFrontFacing);
+
             StreamConfigurationMap map = characteristics
                     .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             mVideoSize = chooseVideoSize(map.getOutputSizes(MediaRecorder.class));
@@ -523,7 +516,7 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
             }
             configureTransform(width, height);
             mMediaRecorder = new MediaRecorder();
-            manager.openCamera(cameraId, mStateCallback, null);
+            manager.openCamera(cameraIdForFrontFacing, mStateCallback, null);
         } catch (CameraAccessException e) {
             Toast.makeText(activity, "Cannot access the camera.", Toast.LENGTH_SHORT).show();
             activity.finish();
