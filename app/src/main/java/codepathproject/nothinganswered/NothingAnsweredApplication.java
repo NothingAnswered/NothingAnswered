@@ -15,6 +15,7 @@ import codepathproject.nothinganswered.clients.ParseClient;
 import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.NAUser;
 import codepathproject.nothinganswered.models.Question;
+import codepathproject.nothinganswered.models.Video;
 
 /**
  * Created by gpalem on 3/4/16.
@@ -32,6 +33,8 @@ public class NothingAnsweredApplication extends Application {
         // any network interceptors must be added with the Configuration Builder given this syntax
         ParseObject.registerSubclass(Question.class);
         ParseObject.registerSubclass(NAUser.class);
+        ParseObject.registerSubclass(Video.class);
+
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("nothinganswered") // should correspond to APP_ID env variable
                 .clientKey(null)
