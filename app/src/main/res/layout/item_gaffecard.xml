@@ -10,7 +10,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="100dp"
@@ -57,12 +58,7 @@
             android:id="@+id/texture"
             android:layout_gravity="center_horizontal"
             />
-        <!--<VideoView
-            android:id="@+id/vvVideo"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_gravity="center"
-            android:visibility="invisible"/>-->
+
 
         <ImageView
             android:id="@+id/ivVideoImage"
