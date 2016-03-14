@@ -61,12 +61,12 @@ public class TinderSimpleAdapter extends BaseAdapter {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             rowView = inflater.inflate(R.layout.tinder_card_item, parent, false);
             // configure view holder
-            viewHolder = new ViewHolder();
+            viewHolder = new ViewHolder(rowView);
             viewHolder.question = (TextView) rowView.findViewById(R.id.gaffeCardQuestion);
             viewHolder.mOpenCamera = (ImageButton)rowView.findViewById(R.id.openCamera);
             viewHolder.mTimeStamp = (TextView) rowView.findViewById(R.id.tvQuestionTimeStamp);
 
-            viewHolder.mOpenCamera.setOnClickListener(new View.OnClickListener() {
+           /* viewHolder.mOpenCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -74,7 +74,7 @@ public class TinderSimpleAdapter extends BaseAdapter {
                         listener.onRecordButtonClick(rowView, position);
                     }
                 }
-            });
+            });*/
 
             rowView.setTag(viewHolder);
 
@@ -88,9 +88,14 @@ public class TinderSimpleAdapter extends BaseAdapter {
 
     public class ViewHolder {
 
+        View view;
         public TextView question;
         private ImageButton mOpenCamera;
         private TextView mTimeStamp;
+
+        public ViewHolder(View v) {
+            view = v;
+        }
     }
 
 }

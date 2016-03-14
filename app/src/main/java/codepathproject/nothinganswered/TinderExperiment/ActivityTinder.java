@@ -114,6 +114,7 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
         al = new ArrayList<>();
         al.add(new Data("This is a first question"));
         al.add(new Data("This is a second question"));
+        al.add(new Data("This is a third question"));
 
         questionAdapter = new TinderSimpleAdapter(al, this);
 
@@ -140,17 +141,16 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
             @Override
             public void onRightCardExit(Object dataObject) {
 
-                Data data = al.remove(0);
-                al.add(data);
+                //Data data = al.remove(0);
+                //al.add(data);
                 //al.set(lastIndex, data);
-                //al.remove(0);
+                al.remove(0);
                 questionAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
 
-                Toast.makeText(getApplicationContext(), "About to get empty!", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -172,13 +172,15 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
             public void onItemClicked(int itemPosition, Object dataObject) {
 
                 View view = flingContainer.getSelectedView();
+                performCameraActions(view, flingContainer.getId());
+
                 view.findViewById(R.id.background).setAlpha(0);
 
                 questionAdapter.notifyDataSetChanged();
             }
         });
 
-        setVideoEventListener();
+        //setVideoEventListener();
 
     }
 
@@ -194,16 +196,70 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
     }*/
 
 
+    private void performCameraActions(View view, final int position) {
+
+        Toast.makeText(ActivityTinder.this, "position " + position, Toast.LENGTH_SHORT).show();
+        mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        mButtonVideo = (ImageButton) view.findViewById(R.id.openCamera);
+        final ImageButton ibsendVideo = (ImageButton) view.findViewById(R.id.sendVideo);
+
+        StartCameraPreview();
+
+        mButtonVideo.setImageResource(R.drawable.record);
+
+        final TextView tvTimer = (TextView) view.findViewById(R.id.tvTimer);
+        mButtonVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mIsRecordingVideo) {
+                    stopRecordingVideo(position);
+                    tvTimer.setVisibility(View.INVISIBLE);
+                } else {
+                    startRecordingVideo();
+                    mButtonVideo.setImageResource(R.drawable.stoprecord);
+                    //mButtonVideo.setVisibility(View.VISIBLE);
+                    tvTimer.setVisibility(View.VISIBLE);
+                    mTimer = new CountDownTimer(5000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            tvTimer.setText(millisUntilFinished / 1000 + "");
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            stopRecordingVideo(position);
+                            ibsendVideo.setVisibility(View.VISIBLE);
+                        }
+                    }.start();
+                }
+            }
+        });
+
+        ibsendVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+
+    }
+
     public void setVideoEventListener() {
         questionAdapter.setRecordActionListener(new RecordActionListener() {
             @Override
             public void onRecordButtonClick(View view, final int position) {
+
+                Toast.makeText(ActivityTinder.this, "position " + position, Toast.LENGTH_SHORT).show();
                 mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
                 mButtonVideo = (ImageButton) view.findViewById(R.id.openCamera);
                 final ImageButton ibsendVideo = (ImageButton) view.findViewById(R.id.sendVideo);
+
                 StartCameraPreview();
+
                 mButtonVideo.setImageResource(R.drawable.record);
-                Toast.makeText(ActivityTinder.this, "position " + position, Toast.LENGTH_SHORT).show();
+
                 final TextView tvTimer = (TextView) view.findViewById(R.id.tvTimer);
                 mButtonVideo.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -237,8 +293,6 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
                     @Override
                     public void onClick(View v) {
 
-
-                        Toast.makeText(ActivityTinder.this, "Question sent!", Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -314,7 +368,9 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
                                               int width, int height) {
 
+            Toast.makeText(getApplicationContext(), "Is Now Available", Toast.LENGTH_SHORT).show();
             mSurface = new Surface(surfaceTexture);
+
             openCamera(width, height);
         }
 
@@ -339,6 +395,7 @@ public class ActivityTinder extends AppCompatActivity implements FlingCardListen
 
         startBackgroundThread();
         if (mTextureView.isAvailable()) {
+            Toast.makeText(this, "Is Available", Toast.LENGTH_SHORT).show();
             openCamera(mTextureView.getWidth(), mTextureView.getHeight());
             mButtonVideo.setImageResource(R.drawable.stoprecord);
         } else {
