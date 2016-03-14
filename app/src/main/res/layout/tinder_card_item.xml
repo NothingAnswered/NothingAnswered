@@ -80,13 +80,37 @@
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
 
-        <codepathproject.nothinganswered.views.AutoFitTextureView
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:id="@+id/texture"
-            android:layout_gravity="center_horizontal"
-            android:background="#ffffff"
-            />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <codepathproject.nothinganswered.views.AutoFitTextureView
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:id="@+id/texture"
+                android:layout_gravity="center_horizontal"
+                android:background="#ffffff"
+                />
+
+            <ImageView
+                android:id="@+id/ivVideoImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                />
+
+            <ImageView
+                android:id="@+id/ivPlayIcon"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                android:src="@drawable/icon_play"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -100,7 +124,7 @@
                 android:src="@drawable/send"
                 android:scaleType="fitCenter"
                 android:background="#FFFFFF"
-                />
+                android:visibility="invisible" />
 
             <ImageButton
                 android:layout_width="40dp"
