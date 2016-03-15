@@ -64,6 +64,9 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
         private TextView mUsername;
         private ImageButton mOpenCamera;
         private TextView mTimeStamp;
+        private ImageView ivPlay;
+        private ImageView ivVideoThumbnail;
+        private TextView tvTimer;
 
         private ImageView mProfileImage;
 
@@ -74,6 +77,9 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
             //mUsername = (TextView)itemView.findViewById(R.id.gaffeCardProfileName);
             mOpenCamera = (ImageButton)itemView.findViewById(R.id.openCamera);
             mTimeStamp = (TextView) itemView.findViewById(R.id.tvQuestionTimeStamp);
+            ivPlay = (ImageView)itemView.findViewById(R.id.ivPlayIcon);
+            ivVideoThumbnail = (ImageView)itemView.findViewById(R.id.ivVideoImage);
+            tvTimer = (TextView) itemView.findViewById(R.id.tvTimer);
 
             mOpenCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,6 +90,17 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
                     }
                 }
             });
+
+            ivPlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null) {
+                        listener.onPlayButtonClick(itemView, getLayoutPosition());
+                    }
+
+                }
+            });
+
             mProfileImage = (ImageView) itemView.findViewById(R.id.gaffeCardProfilePictureUrl);
 
         }
@@ -102,6 +119,27 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
             mProfileImage.setImageResource(0);
             String profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
             Picasso.with(context).load(profilePicUrl).placeholder(R.drawable.ic_launcher).into(mProfileImage);
+
+            ivVideoThumbnail.setImageResource(R.drawable.ic_launcher);
+
+            if(question.get(Question.RESPONDED).toString().equals("true")){
+                //display video playback view
+                ivPlay.setVisibility(View.VISIBLE);
+                ivVideoThumbnail.setVisibility(View.VISIBLE);
+
+                //autoFitTextureView.setVisibility(View.INVISIBLE);
+                mOpenCamera.setVisibility(View.INVISIBLE);
+                tvTimer.setVisibility((View.INVISIBLE));
+
+            }else{
+                //display video recorder view
+                ivPlay.setVisibility(View.INVISIBLE);
+                ivVideoThumbnail.setVisibility(View.INVISIBLE);
+
+                //autoFitTextureView.setVisibility(View.VISIBLE);
+                mOpenCamera.setVisibility(View.VISIBLE);
+                tvTimer.setVisibility((View.VISIBLE));
+            }
         }
 
         public String getFormattedTimeStamp(String timeStamp) {

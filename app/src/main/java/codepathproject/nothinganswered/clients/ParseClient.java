@@ -1,8 +1,6 @@
 package codepathproject.nothinganswered.clients;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.parse.GetCallback;
@@ -16,7 +14,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SendCallback;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.NAUser;
 import codepathproject.nothinganswered.models.Question;
@@ -129,6 +125,24 @@ public class ParseClient {
             });
         }
     }
+
+    public void sendVideoResponse(String recipientId, String question, File video) {
+        ParseObject rObject = ParseObject.create("Video");
+        rObject.put(Video.SENDER_ID, Friends.myId); //TODO change
+        rObject.put(Video.QUESTION, question);
+        rObject.put(Video.VIDEO, videoToParseFile(video));
+        rObject.put(Video.RECIPIENT_ID, recipientId);
+        Log.i("VIDEO", Friends.myId + " " + recipientId + " " + question);
+        rObject.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public ParseFile createParseBlob(String name, byte[] blob) {
         // Create the ParseFile
         ParseFile file = new ParseFile(name, blob);
@@ -142,6 +156,8 @@ public class ParseClient {
         qObject.put(Question.SENDER_ID, Friends.myId);
         qObject.put(Question.QUESTION, question);
         qObject.put(Question.RECIPIENT_ID, recipient);
+        qObject.put(Question.RESPONDED, "false");
+        qObject.put(Question.THUMBMAIL, "");
         qObject.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -166,8 +182,7 @@ public class ParseClient {
             public void done(ParseException e) {
                 if (e == null) {
                     Log.i("PUSH", "Push successful");
-                }
-                else {
+                } else {
                     e.printStackTrace();
                 }
             }
@@ -209,22 +224,6 @@ public class ParseClient {
         return query;
     }
 
-    public void sendVideoResponse(String recipientId, String question, File video) {
-        ParseObject rObject = ParseObject.create("Video");
-        rObject.put(Video.SENDER_ID, Friends.myId); //TODO change
-        rObject.put(Video.QUESTION, question);
-        rObject.put(Video.VIDEO, videoToParseFile(video));
-        rObject.put(Video.RECIPIENT_ID, recipientId);
-        rObject.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     public ParseFile videoToParseFile(File video) {
         byte[] bFile = new byte[(int) video.length()];
 
@@ -239,21 +238,6 @@ public class ParseClient {
             e.printStackTrace();
         }
         return createParseBlob("response.3gpp", bFile);
-    }
-
-    public ParseFile parseTemplateFile() {
-        // Locate the image in res > drawable-hdpi
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.mipmap.ic_launcher);
-        // Convert it to byte
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        // Compress image to lower quality scale 1 - 100
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] image = stream.toByteArray();
-
-        // Create the ParseFile
-        ParseFile file = createParseBlob("androidbegin.png", image);
-        return file;
     }
 
 }
