@@ -81,7 +81,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
            <!--<codepathproject.nothinganswered.views.AutoFitTextureView
@@ -97,7 +97,7 @@
                 android:layout_height="350dp"
                 android:id="@+id/texture"
                 android:layout_gravity="center_horizontal"
-                android:visibility="invisible"/>
+                />
 
             <!--<ImageView
                 android:id="@+id/ivVideoImage"
@@ -106,12 +106,13 @@
                 android:layout_gravity="center"
                 />-->
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/ivPlayIcon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon_play"
+                android:background="#FFFFFF"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true" />
         </RelativeLayout>

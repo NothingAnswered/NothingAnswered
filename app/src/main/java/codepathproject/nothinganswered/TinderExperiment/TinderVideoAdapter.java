@@ -58,7 +58,7 @@ public class TinderVideoAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.question.setText("Here's my response!");
+        viewHolder.question.setText("This is " + videos.get(position).stringFileName);
 
         return rowView;
     }

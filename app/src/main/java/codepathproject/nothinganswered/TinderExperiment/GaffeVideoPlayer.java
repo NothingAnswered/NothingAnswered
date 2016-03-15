@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -17,19 +18,20 @@ public class GaffeVideoPlayer {
 
     private TextureView mTextureView;
     private Activity activity;
-    private Surface mSurface;
+    private SurfaceTexture surfaceTexture;
     private MediaPlayer mediaPlayer;
 
     public GaffeVideoPlayer(Activity a){
         activity = a;
         mediaPlayer = new MediaPlayer();
-
     }
 
-    public void StartMediaPlayer(TextureView textureView){
+    public void startMediaPlayer(TextureView textureView){
 
+        Log.i("VIDEO", "Start Media Player");
         mTextureView = textureView;
         mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+
     }
 
     public boolean isVideoPlaying() {
@@ -44,11 +46,12 @@ public class GaffeVideoPlayer {
             = new TextureView.SurfaceTextureListener() {
 
         @Override
-        public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
+        public void onSurfaceTextureAvailable(SurfaceTexture st,
                                               int width, int height) {
 
-            //Toast.makeText(getApplicationContext(), "Is Now Available", Toast.LENGTH_SHORT).show();
-            mSurface = new Surface(surfaceTexture);
+            Toast.makeText(activity, "Is Now Available", Toast.LENGTH_SHORT).show();
+            Log.i("VIDEO", "Texture just got available!");
+            surfaceTexture = st;
         }
 
         @Override
@@ -62,24 +65,36 @@ public class GaffeVideoPlayer {
         }
 
         @Override
-        public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+        public void onSurfaceTextureUpdated(SurfaceTexture st) {
+
         }
 
     };
 
     public void play(TinderVideo video) {
 
-        Log.i("VIDEO", "Trying to Play" + video.stringFileName);
-        if(mTextureView.isAvailable() && mSurface != null) {
+        if(surfaceTexture == null) {
+            surfaceTexture = mTextureView.getSurfaceTexture();
+        }
+
+        if(mTextureView.isAvailable() && surfaceTexture != null) {
 
             try {
-                //AssetFileDescriptor afd = context.getAssets().openFd(itemVideo.getItemDescripter());
+
+                if(mediaPlayer.isPlaying()){
+                    mediaPlayer.stop();
+                    mediaPlayer.reset();
+                    mediaPlayer.release();
+                }
+                Surface surface = new Surface(surfaceTexture);
+
                 AssetFileDescriptor afd = video.getItemDescripter();
-                //AssetFileDescriptor afd = activity.getAssets().openFd(filename);
-                //mediaPlayer = new MediaPlayer();
+                if(mediaPlayer == null){
+                    mediaPlayer = new MediaPlayer();
+                }
                 mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                mediaPlayer.setSurface(mSurface);
-                mediaPlayer.setLooping(true);
+                mediaPlayer.setSurface(surface);
+                //mediaPlayer.setLooping(true);
                 mediaPlayer.prepareAsync();
 
                 // Play video when the media source is ready for playback.
@@ -87,9 +102,9 @@ public class GaffeVideoPlayer {
                     @Override
                     public void onPrepared(MediaPlayer mediaPlayer) {
 
-                        if(mediaPlayer.isPlaying()){
+                        if (mediaPlayer.isPlaying()) {
                             mediaPlayer.stop();
-                        }else {
+                        } else {
                             mediaPlayer.start();
                         }
                     }
@@ -99,24 +114,67 @@ public class GaffeVideoPlayer {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
                         mediaPlayer.stop();
+                        mediaPlayer.release();
+                    }
+                });
+
+                mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                    @Override
+                    public boolean onError(MediaPlayer mp, int what, int extra) {
+                        mediaPlayer.release();
+                        return true;
                     }
                 });
 
 
+
             } catch (IllegalArgumentException e) {
-                Log.d("VIDEO", e.getMessage());
+                e.printStackTrace();
             } catch (SecurityException e) {
-                Log.d("VIDEO", e.getMessage());
+                e.printStackTrace();
             } catch (IllegalStateException e) {
-                Log.d("VIDEO", e.getMessage());
+                e.printStackTrace();
             } catch (IOException e) {
-                Log.d("VIDEO", e.getMessage());
+                e.printStackTrace();
             }
         }
     }
 
     public void stop() {
-        mediaPlayer.stop();
+        if(mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+        }
+
     }
+
+    public void resetAndRelease(){
+        mediaPlayer.reset();
+        mediaPlayer.release();
+
+    }
+
+/*
+    private HandlerThread mBackgroundThread;
+    private Handler mBackgroundHandler;
+    private Semaphore mCameraOpenCloseLock = new Semaphore(1);
+
+
+    private void startBackgroundThread() {
+        mBackgroundThread = new HandlerThread("CameraBackground");
+        mBackgroundThread.start();
+        mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
+    }
+
+    public void stopBackgroundThread() {
+        mBackgroundThread.quitSafely();
+        try {
+            mBackgroundThread.join();
+            mBackgroundThread = null;
+            mBackgroundHandler = null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }*/
 
 }

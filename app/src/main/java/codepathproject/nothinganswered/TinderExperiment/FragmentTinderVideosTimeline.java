@@ -8,14 +8,13 @@ import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.tindercard.SwipeFlingAdapterView;
-import codepathproject.nothinganswered.views.AutoFitTextureView;
 
 /**
  * Created by jnagaraj on 3/14/16.
@@ -41,13 +40,12 @@ public class FragmentTinderVideosTimeline extends Fragment {
         View view = inflater.inflate(R.layout.tinder_fling_view, container, false);
 
 
+        videoPlayer = new GaffeVideoPlayer(getActivity());
         videos = new ArrayList<>();
         videos.add(new TinderVideo("video_1.mp4", this.getContext()));
-        /*videos.add(new TinderVideo("video_1.mp4", this.getContext()));
-        videos.add(new TinderVideo("video_1.mp4", this.getContext()));
-        videos.add(new TinderVideo("video_1.mp4", this.getContext()));*/
-
-        videoPlayer = new GaffeVideoPlayer(this.getActivity());
+        videos.add(new TinderVideo("video_2.mp4", this.getContext()));
+        videos.add(new TinderVideo("video_3.mp4", this.getContext()));
+        videos.add(new TinderVideo("video_4.mp4", this.getContext()));
 
         videoAdapter = new TinderVideoAdapter(videos, this.getContext());
 
@@ -67,6 +65,7 @@ public class FragmentTinderVideosTimeline extends Fragment {
             public void onLeftCardExit(Object dataObject) {
                 videos.remove(0);
                 videoAdapter.notifyDataSetChanged();
+                videoPlayer.resetAndRelease();
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
@@ -81,6 +80,7 @@ public class FragmentTinderVideosTimeline extends Fragment {
                 //al.set(lastIndex, data);
                 videos.remove(0);
                 videoAdapter.notifyDataSetChanged();
+                videoPlayer.resetAndRelease();
             }
 
             @Override
@@ -122,15 +122,25 @@ public class FragmentTinderVideosTimeline extends Fragment {
 
         Toast.makeText(getActivity(), "position " + position, Toast.LENGTH_SHORT).show();
         final TextureView textureView = (TextureView) view.findViewById(R.id.texture);
-        final ImageView playIcon = (ImageView)view.findViewById(R.id.ivPlayIcon);
 
-        videoPlayer.StartMediaPlayer(textureView);
+        final ImageButton playIcon = (ImageButton)view.findViewById(R.id.ivPlayIcon);
+        videoPlayer.startMediaPlayer(textureView);
 
-        if(videoPlayer.isVideoPlaying()) {
-            videoPlayer.stop();
-        }else{
-            videoPlayer.play(videos.get(position));
-        }
+        playIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.i("VIDEO", "Tapped on video texture");
+                if (!videoPlayer.isVideoPlaying()) {
+                    videoPlayer.play(videos.get(position));
+
+                    playIcon.setVisibility(View.INVISIBLE);
+                    textureView.setVisibility(View.VISIBLE);
+
+                    Log.i("VIDEO", "Play Video");
+                }
+            }
+        });
 
         textureView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,19 +156,7 @@ public class FragmentTinderVideosTimeline extends Fragment {
             }
         });
 
-        playIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!videoPlayer.isVideoPlaying()) {
-                    videoPlayer.play(videos.get(position));
 
-                    playIcon.setVisibility(View.INVISIBLE);
-                    textureView.setVisibility(View.VISIBLE);
-
-                    Log.i("VIDEO", "Tapped on video texture");
-                }
-            }
-        });
 
     }
 
