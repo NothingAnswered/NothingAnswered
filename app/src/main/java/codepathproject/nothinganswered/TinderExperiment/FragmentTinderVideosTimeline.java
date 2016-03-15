@@ -1,5 +1,6 @@
 package codepathproject.nothinganswered.TinderExperiment;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,8 +19,9 @@ import codepathproject.nothinganswered.tindercard.SwipeFlingAdapterView;
 public class FragmentTinderVideosTimeline extends Fragment {
 
     private SwipeFlingAdapterView flingContainer;
-    private TinderSimpleAdapter questionAdapter;
-    private ArrayList<Data> al;
+    private TinderVideoAdapter videoAdapter;
+    private ArrayList<TinderVideo> videos;
+    private MediaPlayer mediaPlayer;
 
     public static FragmentTinderVideosTimeline newInstance (int page)
     {
@@ -34,22 +36,25 @@ public class FragmentTinderVideosTimeline extends Fragment {
 
         View view = inflater.inflate(R.layout.tinder_fling_view, container, false);
 
+        videos = new ArrayList<>();
+        videos.add(new TinderVideo("video_1.mp4", this.getContext()));
+        videos.add(new TinderVideo("video_1.mp4", this.getContext()));
+        videos.add(new TinderVideo("video_1.mp4", this.getContext()));
+        videos.add(new TinderVideo("video_1.mp4", this.getContext()));
 
-        al = new ArrayList<>();
-        al.add(new Data("This is a first video response"));
-        al.add(new Data("This is a second video response"));
-        al.add(new Data("This is a third video response"));
-
-        questionAdapter = new TinderSimpleAdapter(al, this.getActivity());
+        mediaPlayer = new MediaPlayer();
+        videoAdapter = new TinderVideoAdapter(videos, this.getContext(), mediaPlayer);
 
         flingContainer = (SwipeFlingAdapterView) view.findViewById(R.id.frame);
 
-        flingContainer.setAdapter(questionAdapter);
+        flingContainer.setAdapter(videoAdapter);
 
-
+        videoAdapter.notifyDataSetChanged();
 
         return view;
     }
+
+
 
 
 }

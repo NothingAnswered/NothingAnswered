@@ -36,7 +36,7 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
     ImageButton mButtonVideo;
 
     private SwipeFlingAdapterView flingContainer;
-    private TinderSimpleAdapter questionAdapter;
+    private TinderQuestionAdapter questionAdapter;
 
     public static FragmentTinderQuestionsTimeline newInstance (int page)
     {
@@ -62,7 +62,7 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
         al.add(new Data("This is a second question"));
         al.add(new Data("This is a third question"));
 
-        questionAdapter = new TinderSimpleAdapter(al, this.getContext());
+        questionAdapter = new TinderQuestionAdapter(al, this.getContext());
 
         flingContainer = (SwipeFlingAdapterView) view.findViewById(R.id.frame);
 
