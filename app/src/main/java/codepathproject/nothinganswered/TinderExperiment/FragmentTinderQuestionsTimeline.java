@@ -120,7 +120,7 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
             public void onItemClicked(int itemPosition, Object dataObject) {
 
                 View view = flingContainer.getSelectedView();
-                performCameraActions(view, flingContainer.getId());
+                performCameraActions(view, flingContainer.getFirstVisiblePosition());
 
                 view.findViewById(R.id.background).setAlpha(0);
 

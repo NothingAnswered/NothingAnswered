@@ -84,43 +84,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <codepathproject.nothinganswered.views.AutoFitTextureView
+           <!--<codepathproject.nothinganswered.views.AutoFitTextureView
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
                 android:id="@+id/texture"
                 android:layout_gravity="center_horizontal"
-                android:background="#ffffff"
+                android:background="#ffffff"-->
 
                 />
-
-            <!--<TextureView
+            <TextureView
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
-                android:id="@+id/videoTexture"
+                android:id="@+id/texture"
                 android:layout_gravity="center_horizontal"
-                android:visibility="invisible"/>-->
+                android:visibility="invisible"/>
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/ivVideoImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
                 android:layout_gravity="center"
-                android:visibility="invisible"
-                />
+                />-->
 
             <ImageView
                 android:id="@+id/ivPlayIcon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:visibility="invisible"
                 android:src="@drawable/icon_play"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true" />
         </RelativeLayout>
 
 
-        <RelativeLayout
+       <!-- <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -155,7 +152,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true" />
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
 
     </LinearLayout>

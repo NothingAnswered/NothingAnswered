@@ -17,7 +17,7 @@ import codepathproject.nothinganswered.adapters.RecordActionListener;
  * Created by jnagaraj on 3/14/16.
  */
 
-public class TinderQuestionAdapter extends BaseAdapter {
+public class TinderQuestionAdapter extends BaseAdapter{
 
     private RecordActionListener listener;
 
