@@ -224,10 +224,10 @@ public class GaffeCamera {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
             //String cameraId = manager.getCameraIdList()[0];
-            String cameraIdForFrontFacing = "";
+            String cameraIdForFrontFacing = manager.getCameraIdList()[0];
 
 
-            for(String cameraId : manager.getCameraIdList()){
+            /*for(String cameraId : manager.getCameraIdList()){
                 CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraId);
                 Integer facing = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
                 if(facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
@@ -240,7 +240,9 @@ public class GaffeCamera {
             if(cameraIdForFrontFacing.equals("")){
                 Toast.makeText(context, "BACK CAMERA", Toast.LENGTH_SHORT).show();
                 cameraIdForFrontFacing = manager.getCameraIdList()[0];
-            }
+            }*/
+
+
             // Choose the sizes for camera preview and video recording
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraIdForFrontFacing);
 
