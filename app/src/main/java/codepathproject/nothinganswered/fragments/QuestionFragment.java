@@ -3,20 +3,17 @@ package codepathproject.nothinganswered.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
@@ -47,6 +44,8 @@ public class QuestionFragment extends DialogFragment {
     @Bind(R.id.tvCharacterCount) TextView tvCharacterCount;
     @Bind(R.id.ivSendImage) RoundedImageView ivSendImage;
     @Bind(R.id.tvSendName) TextView tvSendName;
+    @Bind(R.id.cancelButton) ImageButton btnCancelButton;
+
 
     public ArrayAdapter<String> adapter;
     public QuestionFragment() {
@@ -62,13 +61,14 @@ public class QuestionFragment extends DialogFragment {
 
         ButterKnife.bind(this, view);
 
-        //Getting the toolbar
-        Toolbar toolbar =  (Toolbar) view.findViewById(R.id.send_question_toolbar);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
-        setHasOptionsMenu(true);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        activity.getSupportActionBar().setTitle("Ask your friends");
+
+        //Cancel Button
+        btnCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                  getActivity().finish();
+            }
+        });
 
         //Image
         ivSendImage.setImageResource(0);
@@ -112,21 +112,6 @@ public class QuestionFragment extends DialogFragment {
     }
 
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.miCompose).setVisible(false);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                dismiss();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
