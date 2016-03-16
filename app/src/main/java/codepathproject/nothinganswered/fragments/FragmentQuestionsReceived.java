@@ -112,6 +112,7 @@ public class FragmentQuestionsReceived extends TimelineFragment {
             public ParseQuery<Question> create() {
                 ParseQuery<Question> query = ParseQuery.getQuery(Question.class);
                 query.whereEqualTo(Question.RECIPIENT_ID, Friends.myId);
+                query.whereEqualTo(Question.RESPONDED, "false");
                 query.orderByDescending("createdAt");
 
                 //-24 hours Date object
@@ -141,12 +142,16 @@ public class FragmentQuestionsReceived extends TimelineFragment {
                     public void onClick(View v) {
 
                         if (mIsRecordingVideo) {
+                            if (mTimer != null) {
+                                mTimer.cancel();
+                                mTimer = null;
+                            }
+                            tvTimer.setVisibility(View.GONE);
+                            mButtonVideo.setVisibility(View.GONE);
                             stopRecordingVideo(position);
-                            tvTimer.setVisibility(View.INVISIBLE);
                         } else {
                             startRecordingVideo();
                             mButtonVideo.setImageResource(R.drawable.stoprecord);
-                            //mButtonVideo.setVisibility(View.VISIBLE);
                             tvTimer.setVisibility(View.VISIBLE);
                             mTimer = new CountDownTimer(5000, 1000) {
                                 @Override
@@ -156,8 +161,11 @@ public class FragmentQuestionsReceived extends TimelineFragment {
 
                                 @Override
                                 public void onFinish() {
+                                    mTimer = null;
+                                    tvTimer.setVisibility(View.GONE);
+                                    mButtonVideo.setVisibility(View.GONE);
+                                    ibsendVideo.setVisibility(View.GONE);
                                     stopRecordingVideo(position);
-                                    ibsendVideo.setVisibility(View.VISIBLE);
                                 }
                             }.start();
                         }
@@ -170,12 +178,6 @@ public class FragmentQuestionsReceived extends TimelineFragment {
 
                         Question question = questionAdapter.getItem(position);
 
-                        //Upload Video
-                        parseClient = NothingAnsweredApplication.getParseClient();
-                        File file = new File(question.get(Question.LOCALVIDEOURL).toString());
-                        parseClient.sendVideoResponse(Friends.myId, question.get(Question.QUESTION).toString(), file);
-
-                        Toast.makeText(getActivity(), question.get(Question.QUESTION).toString(), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -540,8 +542,8 @@ public class FragmentQuestionsReceived extends TimelineFragment {
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mMediaRecorder.setOutputFile(getVideoFile(activity).getAbsolutePath());
-        mMediaRecorder.setVideoEncodingBitRate(10000000);
-        mMediaRecorder.setVideoFrameRate(30);
+        mMediaRecorder.setVideoEncodingBitRate(100000);
+        mMediaRecorder.setVideoFrameRate(15);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
@@ -576,20 +578,26 @@ public class FragmentQuestionsReceived extends TimelineFragment {
         mMediaRecorder.stop();
         mMediaRecorder.reset();
 
-        Question question = questionAdapter.getItem(position);
-        //question.put(Question.THUMBMAIL, mTextureView.getBitmap()); //TODO
-
-        Activity activity = getActivity();
-        if (null != activity) {
-            Toast.makeText(activity, "Video saved: " + getVideoFile(activity),
-                    Toast.LENGTH_SHORT).show();
-        }
-        question.put(Question.LOCALVIDEOURL, Uri.fromFile(getVideoFile(activity)));
-
-        //startPreview();
         closeCamera();
         stopBackgroundThread();
         setScrolling(true);
+
+        Question question = questionAdapter.getItem(position);
+        updateQuestion(question);
+        uploadVideo(question);
+    }
+
+    public void updateQuestion(Question question) {
+        question.put(Question.LOCALVIDEOURL, getVideoFile(getActivity()).getAbsolutePath());
+        question.put(Question.RESPONDED, "true");
+        question.saveInBackground();
+    }
+    public void uploadVideo(Question question) {
+        //Upload video
+        parseClient = NothingAnsweredApplication.getParseClient();
+        File file = new File(question.get(Question.LOCALVIDEOURL).toString());
+        parseClient.sendVideoResponse(question.get(Question.SENDER_ID).toString(), question.get(Question.QUESTION).toString(), file);
+        Toast.makeText(getActivity(), question.get(Question.QUESTION).toString(), Toast.LENGTH_SHORT).show();
     }
 
 
