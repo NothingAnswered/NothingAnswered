@@ -7,13 +7,13 @@ Time spent: **X** hours spent in total
 
 Spring 2 Gifs 
 
-1st gif shows user can login, can see fragments question answered and video response and can compose a question to one of facebook friends 
+## 1st gif shows user can login, can see fragments question answered and video response and can compose a question to one of facebook friends 
 <a href="http://imgur.com/ZpkDk4e"><img src="http://i.imgur.com/ZpkDk4e.gif" title="source: imgur.com" /></a>
 
-2nd gif contains that user can view the video response in the video response fragment
+## 2nd gif contains that user can view the video response in the video response fragment
 <a href="http://imgur.com/XZ7m4RK"><img src="http://i.imgur.com/XZ7m4RK.gif" title="source: imgur.com" /></a>
 
-3rd gif shows a user is responding to a question that was asked 
+## 3rd gif shows a user is responding to a question that was asked 
 
 
 
