@@ -5,6 +5,18 @@ NothingAnswered is an fun Q & A android app that allows a user to ask their frie
 
 Time spent: **X** hours spent in total
 
+Spring 2 Gifs 
+
+## Compose
+<a href="http://imgur.com/2tYoRV7"><img src="http://i.imgur.com/2tYoRV7.gif" title="source: imgur.com" /></a>
+
+## Create Response
+[Response Video recording](https://youtu.be/duNyDmDO4iU)
+
+## View Response
+<a href="http://imgur.com/vNvUzCa"><img src="http://i.imgur.com/vNvUzCa.gif" title="source: imgur.com" /></a>
+
+
 ## User Stories
 
 The following **required** functionality is completed:
