@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class TinderPagerAdapter extends FragmentPagerAdapter {
 
-    final int PAGE_COUNT = 2;
+    final int PAGE_COUNT = 1;
     private String tabTitles[] = new String[] {"Questions Received", "Video Response"};
 
     public TinderPagerAdapter (FragmentManager fm)
@@ -24,9 +24,9 @@ public class TinderPagerAdapter extends FragmentPagerAdapter {
         {
             return FragmentTinderQuestionsTimeline.newInstance(position);
         }
-        if (position == 1) {
+        /*if (position == 1) {
             return FragmentTinderVideosTimeline.newInstance(position);
-        }
+        }*/
         else
         {
             return null;

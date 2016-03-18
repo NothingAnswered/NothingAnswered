@@ -36,7 +36,8 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
     ImageButton mButtonVideo;
 
     private SwipeFlingAdapterView flingContainer;
-    private TinderQuestionAdapter questionAdapter;
+    private ParseListQueryAdapter questionAdapter;
+    //private TinderQuestionAdapter questionAdapter;
 
     public static FragmentTinderQuestionsTimeline newInstance (int page)
     {
@@ -62,11 +63,14 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
         al.add(new Data("This is a second question"));
         al.add(new Data("This is a third question"));
 
-        questionAdapter = new TinderQuestionAdapter(al, this.getContext());
+        questionAdapter = new ParseListQueryAdapter(this.getContext());
 
         flingContainer = (SwipeFlingAdapterView) view.findViewById(R.id.frame);
 
         flingContainer.setAdapter(questionAdapter);
+        questionAdapter.notifyDataSetChanged();
+        questionAdapter.setPaginationEnabled(true);
+        questionAdapter.loadObjects();
 
         questionAdapter.notifyDataSetChanged();
 
@@ -78,7 +82,7 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                al.remove(0);
+                //al.remove(0);
                 questionAdapter.notifyDataSetChanged();
                 //Do something on the left!
                 //You also have access to the original object.
@@ -92,7 +96,7 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
                 //Data data = al.remove(0);
                 //al.add(data);
                 //al.set(lastIndex, data);
-                al.remove(0);
+                //al.remove(0);
                 questionAdapter.notifyDataSetChanged();
             }
 

@@ -66,16 +66,6 @@ public class TinderQuestionAdapter extends BaseAdapter{
             viewHolder.mOpenCamera = (ImageButton)rowView.findViewById(R.id.openCamera);
             viewHolder.mTimeStamp = (TextView) rowView.findViewById(R.id.tvQuestionTimeStamp);
 
-           /* viewHolder.mOpenCamera.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if(listener != null) {
-                        listener.onRecordButtonClick(rowView, position);
-                    }
-                }
-            });*/
-
             rowView.setTag(viewHolder);
 
         } else {
