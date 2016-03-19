@@ -83,7 +83,4 @@ public class ParseListQueryAdapter extends ParseQueryAdapter<ParseObject> {
         return super.getItem(index);
     }
 
-
-
-
 }

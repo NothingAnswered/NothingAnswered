@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -82,6 +85,15 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
 
             @Override
             public void onLeftCardExit(Object dataObject) {
+
+                try {
+                    ParseObject object = questionAdapter.getItem(0);
+                    object.delete();
+                    questionAdapter.loadObjects();
+                    questionAdapter.notifyDataSetChanged();
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }
                 //al.remove(0);
                 questionAdapter.notifyDataSetChanged();
                 //Do something on the left!
@@ -94,6 +106,7 @@ public class FragmentTinderQuestionsTimeline extends Fragment implements FlingCa
             public void onRightCardExit(Object dataObject) {
 
                 //Data data = al.remove(0);
+
                 //al.add(data);
                 //al.set(lastIndex, data);
                 //al.remove(0);
