@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -26,8 +23,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         //Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
         // Get the viewpager
         vpPager = (ViewPager) findViewById(R.id.viewpager);
@@ -42,7 +39,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
     }
 
-    // Menu icons are inflated just as they were with actionbar
+    /*// Menu icons are inflated just as they were with actionbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -55,7 +52,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             }
         });
         return true;
-    }
+    }*/
 
     public void showQuestionDialog() {
         QuestionFragment questionFragment = new QuestionFragment();

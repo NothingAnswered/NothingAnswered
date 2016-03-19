@@ -7,9 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.ParseQueryAdapter;
 import com.squareup.picasso.Picasso;
@@ -27,7 +27,6 @@ import codepathproject.nothinganswered.models.Question;
  */
 public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, ParseQuestionAdapter.GaffeItemHolder> {
     Context context;
-    private RecordActionListener listener;
     private Friends friends;
 
     public ParseQuestionAdapter(boolean hasStableIds) {
@@ -38,16 +37,12 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
         super(factory, hasStableIds);
     }
 
-    public void setRecordActionListener(RecordActionListener listener){
-        this.listener = listener;
-    }
-
     @Override
     public GaffeItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         friends = Friends.getInstance();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_gaffecard, parent, false);
+        View view = inflater.inflate(R.layout.item_gaffecard_beautiful, parent, false);
         GaffeItemHolder gaffeItemHolder = new GaffeItemHolder(view);
         return gaffeItemHolder;
     }
@@ -60,44 +55,22 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
     }
 
     public class GaffeItemHolder extends RecyclerView.ViewHolder {
-        private TextView mQuestionTitle;
-        private TextView mUsername;
-        private ImageButton mOpenCamera;
-        private TextView mTimeStamp;
-        private ImageView ivPlay;
-        private ImageView ivVideoThumbnail;
-        private TextView tvTimer;
 
+        private TextView mQuestionTitle;
+        private ImageView ivOpenCamera;
         private ImageView mProfileImage;
 
         public GaffeItemHolder(final View itemView) {
             super(itemView);
 
             mQuestionTitle = (TextView)itemView.findViewById(R.id.gaffeCardQuestion);
-            //mUsername = (TextView)itemView.findViewById(R.id.gaffeCardProfileName);
-            mOpenCamera = (ImageButton)itemView.findViewById(R.id.openCamera);
-            mTimeStamp = (TextView) itemView.findViewById(R.id.tvQuestionTimeStamp);
-            ivPlay = (ImageView)itemView.findViewById(R.id.ivPlayIcon);
-            ivVideoThumbnail = (ImageView)itemView.findViewById(R.id.ivVideoImage);
-            tvTimer = (TextView) itemView.findViewById(R.id.tvTimer);
-
-            mOpenCamera.setOnClickListener(new View.OnClickListener() {
+            ivOpenCamera = (ImageView)itemView.findViewById(R.id.ivOpenCamera);
+            ivOpenCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if(listener != null) {
-                        listener.onRecordButtonClick(itemView, getLayoutPosition());
-                    }
-                }
-            });
-
-            ivPlay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null) {
-                        listener.onPlayButtonClick(itemView, getLayoutPosition());
-                    }
-
+                    //Start camera activity here
+                    Toast.makeText(context, "Start camera activity now", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -108,38 +81,13 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
         public void loadDataIntoView(Context context, Question question) {
             //Question
             mQuestionTitle.setText(question.get(Question.QUESTION).toString());
-            //TimeStamp
-            mTimeStamp.setText(getFormattedTimeStamp(question.getCreatedAt().toString()));
-            //Sender
+
             String sender = question.get(Question.SENDER_ID).toString();
-            Log.i("DEBUG", sender);
             Log.i("DEBUG", friends.getNameFromId(sender));
-            //mUsername.setText(friends.getNameFromId(sender));
-            //Profile Image
+
             mProfileImage.setImageResource(0);
             String profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
             Picasso.with(context).load(profilePicUrl).placeholder(R.drawable.ic_launcher).into(mProfileImage);
-
-            ivVideoThumbnail.setImageResource(R.drawable.ic_launcher);
-
-            if(question.get(Question.RESPONDED).toString().equals("true")){
-                //display video playback view
-                ivPlay.setVisibility(View.VISIBLE);
-                ivVideoThumbnail.setVisibility(View.VISIBLE);
-
-                //autoFitTextureView.setVisibility(View.INVISIBLE);
-                mOpenCamera.setVisibility(View.INVISIBLE);
-                tvTimer.setVisibility((View.INVISIBLE));
-
-            }else{
-                //display video recorder view
-                ivPlay.setVisibility(View.INVISIBLE);
-                ivVideoThumbnail.setVisibility(View.INVISIBLE);
-
-                //autoFitTextureView.setVisibility(View.VISIBLE);
-                mOpenCamera.setVisibility(View.VISIBLE);
-                tvTimer.setVisibility((View.VISIBLE));
-            }
         }
 
         public String getFormattedTimeStamp(String timeStamp) {
