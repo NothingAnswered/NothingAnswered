@@ -1,94 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/compose_screen_rounded_corners"
-    android:paddingBottom="32dp"
-    android:paddingRight="16dp"
-    android:paddingLeft="16dp"
-    android:paddingTop="5dp"
-
-
-    >
+    android:layout_height="wrap_content"
+    android:background="@color/orange">
 
     <MultiAutoCompleteTextView
         android:id="@+id/etRecipient"
-        android:background="@drawable/rounded_corner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:textStyle="italic"
         android:layout_marginTop="25dp"
-        android:hint="To:Friends"
-        android:layout_below="@+id/ivSendImage"
-        android:layout_alignEnd="@+id/tvCharacterCount" />
-
-
-    <com.makeramen.roundedimageview.RoundedImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="3dp"
-        android:id="@+id/ivSendImage"
-        android:src="@mipmap/ic_launcher"
-        android:scaleType="fitCenter"
-        app:riv_corner_radius="30dip"
-        app:riv_mutate_background="true"
-        app:riv_tile_mode="repeat"
-        app:riv_oval="false"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="First Name"
-        android:id="@+id/tvSendName"
-        android:layout_marginLeft="5dp"
-        android:gravity="center"
-        android:layout_above="@+id/etRecipient"
-        android:layout_toEndOf="@+id/ivSendImage" />
+        android:hint="To: Friends"
+        android:layout_marginLeft="10dp"
+        android:textColorHint="@color/white"
+        android:layout_alignParentTop="true" />
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="400dp"
         android:id="@+id/etSendQuestion"
+        android:layout_marginLeft="10dp"
         android:gravity="top|left"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        android:textColor="@color/white"
+        android:textAllCaps="true"
         android:maxLength="@string/max_char_count"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/rounded_corner"
         android:layout_below="@+id/etRecipient"
         android:layout_alignParentStart="true"
-        android:hint="Ask a question..." />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SEND"
-        android:id="@+id/btnSend"
-        android:background="@drawable/compose_button"
-        android:layout_alignTop="@+id/tvCharacterCount"
-        android:layout_toStartOf="@+id/tvCharacterCount" />
-
-
+        android:hint="Ask a question..."
+        android:textColorHint="@color/white"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0/100"
+        android:text="128"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="italic"
+        android:layout_margin="10dp"
         android:id="@+id/tvCharacterCount"
-        android:layout_below="@+id/etSendQuestion"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignBottom="@id/etSendQuestion"
+        android:layout_alignRight="@id/etSendQuestion"/>
 
-    <ImageButton
+    <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:id="@+id/cancelButton"
         android:src="@drawable/ic_x_mark"
-        android:background="#fe0202"
         android:layout_marginLeft="20dp"
-        android:layout_alignBottom="@+id/btnSend"
-        android:layout_toEndOf="@+id/ivSendImage"
-        android:layout_alignStart="@+id/ivSendImage" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"/>
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="SEND"
+        android:id="@+id/btnSend"
+        android:layout_below="@id/tvCharacterCount"
+        android:layout_alignParentEnd="true"
+        />
+
+    <ImageView
+        android:id="@+id/ivCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_camera"
+        android:layout_alignParentLeft="true"
+        android:layout_alignLeft="@+id/btnSend"
+        android:layout_below="@id/etSendQuestion"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_gif"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/ivCamera"
+        android:layout_below="@id/etSendQuestion"
+        android:layout_marginTop="10dp"
+        android:layout_alignBottom="@+id/ivCamera" />
 
 </RelativeLayout>

@@ -17,9 +17,6 @@ import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
-import com.makeramen.roundedimageview.RoundedImageView;
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -42,8 +39,6 @@ public class QuestionFragment extends DialogFragment {
     @Bind(R.id.etRecipient) MultiAutoCompleteTextView etRecipient;
     @Bind(R.id.btnSend) Button btnSend;
     @Bind(R.id.tvCharacterCount) TextView tvCharacterCount;
-    @Bind(R.id.ivSendImage) RoundedImageView ivSendImage;
-    @Bind(R.id.tvSendName) TextView tvSendName;
     @Bind(R.id.cancelButton) ImageButton btnCancelButton;
 
 
@@ -70,11 +65,6 @@ public class QuestionFragment extends DialogFragment {
             }
         });
 
-        //Image
-        ivSendImage.setImageResource(0);
-        Picasso.with(getContext()).load(Friends.profileImage).placeholder(R.drawable.ic_launcher).into(ivSendImage);
-        //TextViews
-        tvSendName.setText(Friends.firstName + " " + Friends.lastName);
         etSendQuestion.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

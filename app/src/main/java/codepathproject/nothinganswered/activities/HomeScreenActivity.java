@@ -59,6 +59,4 @@ public class HomeScreenActivity extends AppCompatActivity {
         questionFragment.show(fragmentManager, "fragment_send_question");
     }
 
-
-
 }
