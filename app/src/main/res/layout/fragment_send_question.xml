@@ -1,89 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/orange">
+    android:background="@color/orange"
+    android:orientation="vertical">
 
-    <MultiAutoCompleteTextView
-        android:id="@+id/etRecipient"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:textStyle="italic"
-        android:layout_marginTop="25dp"
-        android:hint="To: Friends"
-        android:layout_marginLeft="10dp"
-        android:textColorHint="@color/white"
-        android:layout_alignParentTop="true" />
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:orientation="horizontal">
+
+        <MultiAutoCompleteTextView
+            android:id="@+id/etRecipient"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textStyle="italic"
+            android:layout_marginTop="25dp"
+            android:hint="To: Friends"
+            android:textColorHint="@color/white"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancelButton"
+            android:src="@drawable/ic_x_mark"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.2"/>
+
+    </LinearLayout>
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
         android:id="@+id/etSendQuestion"
         android:layout_marginLeft="10dp"
         android:gravity="top|left"
         android:textSize="24sp"
         android:textStyle="bold|italic"
         android:textColor="@color/white"
-        android:textAllCaps="true"
-        android:maxLength="@string/max_char_count"
-        android:layout_below="@+id/etRecipient"
-        android:layout_alignParentStart="true"
         android:hint="Ask a question..."
-        android:textColorHint="@color/white"/>
+        android:textColorHint="@color/white"
+        android:layout_alignParentBottom="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="128"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="italic"
-        android:layout_margin="10dp"
-        android:id="@+id/tvCharacterCount"
-        android:layout_alignBottom="@id/etSendQuestion"
-        android:layout_alignRight="@id/etSendQuestion"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3">
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/cancelButton"
-        android:src="@drawable/ic_x_mark"
-        android:layout_marginLeft="20dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="128"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="italic"
+            android:layout_margin="5dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/tvCharacterCount" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SEND"
+            android:id="@+id/btnSend"
+            android:layout_below="@id/tvCharacterCount"
+            android:layout_alignParentEnd="true"
+            />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:text="SEND"
-        android:id="@+id/btnSend"
-        android:layout_below="@id/tvCharacterCount"
-        android:layout_alignParentEnd="true"
-        />
+        <ImageView
+            android:id="@+id/ivCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_camera"
+            android:layout_margin="10dp"
+            android:layout_below="@id/tvCharacterCount"
+            />
 
-    <ImageView
-        android:id="@+id/ivCamera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/icon_camera"
-        android:layout_alignParentLeft="true"
-        android:layout_alignLeft="@+id/btnSend"
-        android:layout_below="@id/etSendQuestion"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:src="@drawable/icon_gif"
+            android:layout_below="@id/tvCharacterCount"
+            android:layout_toRightOf="@+id/ivCamera"
+            android:layout_margin="10dp"
+            />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/icon_gif"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/ivCamera"
-        android:layout_below="@id/etSendQuestion"
-        android:layout_marginTop="10dp"
-        android:layout_alignBottom="@+id/ivCamera" />
+    </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>
