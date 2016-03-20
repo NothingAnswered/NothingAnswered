@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
+        android:id="@+id/ivVideoThumbnail"
         android:src="@drawable/ivbackgroundcat"/>
 
     <TextView
@@ -43,6 +44,7 @@
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:id="@+id/gaffeCardLike"
         android:src="@drawable/heart"
         android:layout_alignBottom="@+id/gaffeCardProfilePictureUrl"
         android:layout_alignStart="@+id/gaffeCardProfilePictureUrl" />

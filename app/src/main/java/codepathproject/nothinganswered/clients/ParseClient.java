@@ -147,7 +147,11 @@ public class ParseClient {
         // Create the ParseFile
         ParseFile file = new ParseFile(name, blob);
         // Upload the image into Parse Cloud
-        file.saveInBackground();
+        try {
+            file.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return file;
     }
 
@@ -226,6 +230,10 @@ public class ParseClient {
 
     public ParseFile videoToParseFile(File video) {
         byte[] bFile = new byte[(int) video.length()];
+        Log.i("VIDEO", "Length " + video.length());
+        if (video.exists()) {
+            Log.i("VIDEO", "file exists " + video);
+        }
 
         try {
             //convert file into array of bytes

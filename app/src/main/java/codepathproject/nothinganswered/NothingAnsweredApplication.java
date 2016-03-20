@@ -2,6 +2,8 @@ package codepathproject.nothinganswered;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Environment;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.parse.Parse;
@@ -9,6 +11,8 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.interceptors.ParseLogInterceptor;
+
+import java.io.File;
 
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
@@ -70,4 +74,19 @@ public class NothingAnsweredApplication extends Application {
         return "https://graph.facebook.com/" + id + "/picture?type=large";
     }
 
+    public static String getVideosFolder() {
+        if (!isExternalStorageAvailable()) {
+            Toast.makeText(context, "External Storage not available", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        File saveFolder = new File(context.getExternalFilesDir(null), "MaterialCameraVideos");
+        if (!saveFolder.exists() && !saveFolder.mkdirs())
+            throw new RuntimeException("Unable to create save directory, make sure WRITE_EXTERNAL_STORAGE permission is granted.");
+        return saveFolder.getPath() + File.separator;
+    }
+
+    public static boolean isExternalStorageAvailable() {
+        String state = Environment.getExternalStorageState();
+        return state.equals(Environment.MEDIA_MOUNTED);
+    }
 }

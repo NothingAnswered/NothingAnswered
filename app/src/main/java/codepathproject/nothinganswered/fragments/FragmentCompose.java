@@ -1,6 +1,5 @@
 package codepathproject.nothinganswered.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,9 +63,9 @@ public class FragmentCompose extends Fragment {
         tvCharacterCount = (TextView)view.findViewById(R.id.tvCharacterCount);
         btnCancelButton = (ImageView) view.findViewById(R.id.cancelButton);
 
-        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imgr.showSoftInput(etSendQuestion, 0);
-        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        //InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        //imgr.showSoftInput(etSendQuestion, 0);
+        //imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         btnCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
 

@@ -110,15 +110,8 @@ public class FragmentVideoResponse extends Fragment {
 
         return view;
     }
+
     public void loadObjects() {
-
         videoAdapter.loadObjects();
-
     }
-
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-        mVideoPlayerManager.resetMediaPlayer();
-    }*/
 }

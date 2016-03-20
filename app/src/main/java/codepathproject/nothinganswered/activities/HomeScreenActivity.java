@@ -1,5 +1,6 @@
 package codepathproject.nothinganswered.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -9,7 +10,7 @@ import com.astuetz.PagerSlidingTabStrip;
 
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.adapters.GaffeFragmentPagerAdapter;
-import codepathproject.nothinganswered.fragments.QuestionFragment;
+import codepathproject.nothinganswered.fragments.FragmentQuestionsReceived;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
@@ -17,19 +18,18 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     private ViewPager vpPager;
     private FragmentManager fragmentManager;
+    private GaffeFragmentPagerAdapter gaffeFragmentPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-        //Toolbar
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         // Get the viewpager
         vpPager = (ViewPager) findViewById(R.id.viewpager);
+        gaffeFragmentPagerAdapter = new GaffeFragmentPagerAdapter(getSupportFragmentManager());
         // set the viewpager adapter for the pager
-        vpPager.setAdapter(new GaffeFragmentPagerAdapter(getSupportFragmentManager()));
+        vpPager.setAdapter(gaffeFragmentPagerAdapter);
         // find the pager sliding tabs
         PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         // Attach the tabstrip to the viewpager
@@ -39,24 +39,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
     }
 
-    /*// Menu icons are inflated just as they were with actionbar
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem composeQuestion = (MenuItem) menu.findItem(R.id.miCompose);
-        composeQuestion.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                showQuestionDialog();
-                return true;
-            }
-        });
-        return true;
-    }*/
-
-    public void showQuestionDialog() {
-        QuestionFragment questionFragment = new QuestionFragment();
-        questionFragment.show(fragmentManager, "fragment_send_question");
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FragmentQuestionsReceived.CAMERA_RQ) {
+            FragmentQuestionsReceived fragmentQuestionsReceived = (FragmentQuestionsReceived) gaffeFragmentPagerAdapter.fragmentRef[0];
+            fragmentQuestionsReceived.onActivityResult(requestCode, resultCode, data);
+        }
     }
-
 }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.parse.ParseQueryAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -19,6 +20,7 @@ import java.text.SimpleDateFormat;
 
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.fragments.FragmentQuestionsReceived;
 import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.Question;
 
@@ -28,6 +30,7 @@ import codepathproject.nothinganswered.models.Question;
 public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, ParseQuestionAdapter.GaffeItemHolder> {
     Context context;
     private Friends friends;
+    private FragmentQuestionsReceived fragmentQuestionsReceived;
 
     public ParseQuestionAdapter(boolean hasStableIds) {
         super(Question.class, hasStableIds);
@@ -35,6 +38,10 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
 
     public ParseQuestionAdapter(ParseQueryAdapter.QueryFactory<Question> factory, boolean hasStableIds) {
         super(factory, hasStableIds);
+    }
+
+    public void setParentFragment(FragmentQuestionsReceived fragmentQuestionsReceived) {
+        this.fragmentQuestionsReceived = fragmentQuestionsReceived;
     }
 
     @Override
@@ -55,39 +62,55 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
     }
 
     public class GaffeItemHolder extends RecyclerView.ViewHolder {
-
-        private TextView mQuestionTitle;
-        private ImageView ivOpenCamera;
-        private ImageView mProfileImage;
+        TextView gaffeCardQuestion;
+        RoundedImageView gaffeCardProfilePictureUrl;
+        ImageView gaffeCardLike;
+        ImageView ivOpenCamera;
+        ImageView ivVideoThumbnail;
 
         public GaffeItemHolder(final View itemView) {
             super(itemView);
 
-            mQuestionTitle = (TextView)itemView.findViewById(R.id.gaffeCardQuestion);
-            ivOpenCamera = (ImageView)itemView.findViewById(R.id.ivOpenCamera);
+            gaffeCardQuestion = (TextView) itemView.findViewById(R.id.gaffeCardQuestion);
+            gaffeCardProfilePictureUrl = (RoundedImageView) itemView.findViewById(R.id.gaffeCardProfilePictureUrl);
+            gaffeCardLike = (ImageView) itemView.findViewById(R.id.gaffeCardLike);
+            ivOpenCamera = (ImageView) itemView.findViewById(R.id.ivOpenCamera);
+            ivVideoThumbnail = (ImageView) itemView.findViewById(R.id.ivVideoThumbnail);
+
             ivOpenCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    //Start camera activity here
-                    Toast.makeText(context, "Start camera activity now", Toast.LENGTH_SHORT).show();
+                    fragmentQuestionsReceived.startMaterialCamera(itemView, getLayoutPosition());
                 }
             });
 
-            mProfileImage = (ImageView) itemView.findViewById(R.id.gaffeCardProfilePictureUrl);
+            ivVideoThumbnail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Question question = getItem(getLayoutPosition());
+                    if (question.get(Question.RESPONDED).toString().equals("true")) {
+                        Toast.makeText(context, "Make new activity with " + question.get(Question.LOCALVIDEOURL).toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
         }
 
         public void loadDataIntoView(Context context, Question question) {
             //Question
-            mQuestionTitle.setText(question.get(Question.QUESTION).toString());
+            gaffeCardQuestion.setText(question.get(Question.QUESTION).toString());
 
             String sender = question.get(Question.SENDER_ID).toString();
             Log.i("DEBUG", friends.getNameFromId(sender));
 
-            mProfileImage.setImageResource(0);
+            gaffeCardProfilePictureUrl.setImageResource(0);
             String profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
-            Picasso.with(context).load(profilePicUrl).placeholder(R.drawable.ic_launcher).into(mProfileImage);
+            Picasso.with(context).load(profilePicUrl).placeholder(R.drawable.ic_launcher).into(gaffeCardProfilePictureUrl);
+
+            if (question.get(Question.RESPONDED).toString().equals("true")) {
+                ivOpenCamera.setVisibility(View.INVISIBLE);
+                //Load video thumbnail - TODO
+            }
         }
 
         public String getFormattedTimeStamp(String timeStamp) {
