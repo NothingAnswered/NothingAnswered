@@ -205,6 +205,14 @@ public class ParseClient {
         return query;
     }
 
+    public ParseQuery<Video> getVideoQuery(String question) {
+        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
+        query.whereEqualTo(Video.SENDER_ID, Friends.myId);
+        query.whereEqualTo(Video.QUESTION, question);
+        query.orderByDescending("createdAt");
+        return query;
+    }
+
     public ParseQuery<Question> getQuestionTimeline(String facebookId, int limit) {
         ParseQuery<Question> query = ParseQuery.getQuery(Question.class);
         if (facebookId != null) {
