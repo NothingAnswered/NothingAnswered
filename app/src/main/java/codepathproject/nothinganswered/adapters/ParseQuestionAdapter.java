@@ -11,7 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.parse.GetCallback;
+import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.squareup.picasso.Picasso;
 import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
@@ -24,9 +28,11 @@ import java.text.SimpleDateFormat;
 
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.clients.ParseClient;
 import codepathproject.nothinganswered.fragments.FragmentQuestionsReceived;
 import codepathproject.nothinganswered.models.Friends;
 import codepathproject.nothinganswered.models.Question;
+import codepathproject.nothinganswered.models.Video;
 
 /**
  * Created by gpalem on 3/12/16.
@@ -34,6 +40,7 @@ import codepathproject.nothinganswered.models.Question;
 public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, ParseQuestionAdapter.GaffeItemHolder> {
     Context context;
     private Friends friends;
+    private ParseClient parseClient;
     private FragmentQuestionsReceived fragmentQuestionsReceived;
     private VideoPlayerManager videoPlayerManager;
 
@@ -44,6 +51,7 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
     public ParseQuestionAdapter(ParseQueryAdapter.QueryFactory<Question> factory, boolean hasStableIds) {
         super(factory, hasStableIds);
         videoPlayerManager = NothingAnsweredApplication.mVideoPlayerManager;
+        parseClient = NothingAnsweredApplication.getParseClient();
     }
 
     public void setParentFragment(FragmentQuestionsReceived fragmentQuestionsReceived) {
@@ -124,6 +132,16 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
                             videoPlayerManager.playNewVideo(null, vpVideoTexture, file.getAbsolutePath());
                         }
                         else {
+                            ParseQuery<Video> query = parseClient.getVideoQuery(question.get(Question.QUESTION).toString());
+                            query.getFirstInBackground(new GetCallback<Video>() {
+                                @Override
+                                public void done(Video object, com.parse.ParseException e) {
+                                    if (e == null) {
+                                        Log.i("VIDEO LOAD", "PARSE");
+                                        videoPlayerManager.playNewVideo(null, vpVideoTexture, ((ParseFile) object.get(Video.VIDEO)).getUrl());
+                                    }
+                                }
+                            });
                             Toast.makeText(context, "Load from Parse", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -132,7 +150,7 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
 
         }
 
-        public void loadDataIntoView(Context context, Question question) {
+        public void loadDataIntoView(final Context context, Question question) {
             //Question
             gaffeCardQuestion.setText(question.get(Question.QUESTION).toString());
 
@@ -145,7 +163,23 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
 
             if (question.get(Question.RESPONDED).toString().equals("true")) {
                 ivOpenCamera.setVisibility(View.INVISIBLE);
-                //Load video thumbnail - TODO
+                ParseQuery<Video> query = parseClient.getVideoQuery(question.get(Question.QUESTION).toString());
+                query.getFirstInBackground(new GetCallback<Video>() {
+                    @Override
+                    public void done(Video object, com.parse.ParseException e) {
+                        ivVideoThumbnail.setImageResource(0);
+                        if (e == null) {
+                            try {
+                                Glide.with(context).load(((ParseFile) object.get(Video.VIDEO)).getFile()).into(ivVideoThumbnail);
+                            } catch (com.parse.ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        else {
+                            ivVideoThumbnail.setImageResource(R.drawable.ivbackgroundcat);
+                        }
+                    }
+                });
             }
         }
 
