@@ -1,6 +1,8 @@
 package codepathproject.nothinganswered.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,8 +51,8 @@ public class FragmentCompose extends Fragment {
     //@Bind(R.id.cancelButton)
     ImageView btnCancelButton;
 
-
     public ArrayAdapter<String> adapter;
+
 
     @Nullable
     @Override
@@ -63,14 +66,15 @@ public class FragmentCompose extends Fragment {
         tvCharacterCount = (TextView)view.findViewById(R.id.tvCharacterCount);
         btnCancelButton = (ImageView) view.findViewById(R.id.cancelButton);
 
-        //InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        //imgr.showSoftInput(etSendQuestion, 0);
-        //imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imgr.showSoftInput(etSendQuestion, 0);
+        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         btnCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
 
             public void onClick(View v) {
-                getActivity().finish();
+                closeKeyboard(getActivity(), etSendQuestion.getWindowToken());
+                getParentFragment().getFragmentManager().popBackStack();
             }
         });
 
@@ -81,7 +85,7 @@ public class FragmentCompose extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-               // tvCharacterCount.setText(String.valueOf(s.length()) + "/100");
+                tvCharacterCount.setText(String.valueOf(s.length()) + "/100");
             }
 
             @Override
@@ -102,14 +106,22 @@ public class FragmentCompose extends Fragment {
                         parseClient.sendQuestionNotification(question, facebookId);
                     }
                 }
+
+                closeKeyboard(getActivity(), etSendQuestion.getWindowToken());
                 Log.i(TAG, question);
                 Log.i(TAG, recipientStr);
+                closeKeyboard(getActivity(), etSendQuestion.getWindowToken());
+                getParentFragment().getFragmentManager().popBackStack();
+
             }
         });
         return view;
     }
 
-
+    public static void closeKeyboard(Context c, IBinder windowToken) {
+        InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(windowToken, 0);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
