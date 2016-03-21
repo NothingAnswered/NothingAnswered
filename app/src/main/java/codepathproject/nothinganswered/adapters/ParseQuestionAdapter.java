@@ -14,7 +14,11 @@ import android.widget.Toast;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.parse.ParseQueryAdapter;
 import com.squareup.picasso.Picasso;
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
+import com.volokh.danylo.video_player_manager.ui.SimpleMainThreadMediaPlayerListener;
+import com.volokh.danylo.video_player_manager.ui.VideoPlayerView;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -31,6 +35,7 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
     Context context;
     private Friends friends;
     private FragmentQuestionsReceived fragmentQuestionsReceived;
+    private VideoPlayerManager videoPlayerManager;
 
     public ParseQuestionAdapter(boolean hasStableIds) {
         super(Question.class, hasStableIds);
@@ -38,6 +43,7 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
 
     public ParseQuestionAdapter(ParseQueryAdapter.QueryFactory<Question> factory, boolean hasStableIds) {
         super(factory, hasStableIds);
+        videoPlayerManager = NothingAnsweredApplication.mVideoPlayerManager;
     }
 
     public void setParentFragment(FragmentQuestionsReceived fragmentQuestionsReceived) {
@@ -64,18 +70,18 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
     public class GaffeItemHolder extends RecyclerView.ViewHolder {
         TextView gaffeCardQuestion;
         RoundedImageView gaffeCardProfilePictureUrl;
-        ImageView gaffeCardLike;
         ImageView ivOpenCamera;
         ImageView ivVideoThumbnail;
+        VideoPlayerView vpVideoTexture;
 
         public GaffeItemHolder(final View itemView) {
             super(itemView);
 
             gaffeCardQuestion = (TextView) itemView.findViewById(R.id.gaffeCardQuestion);
             gaffeCardProfilePictureUrl = (RoundedImageView) itemView.findViewById(R.id.gaffeCardProfilePictureUrl);
-            gaffeCardLike = (ImageView) itemView.findViewById(R.id.gaffeCardLike);
             ivOpenCamera = (ImageView) itemView.findViewById(R.id.ivOpenCamera);
             ivVideoThumbnail = (ImageView) itemView.findViewById(R.id.ivVideoThumbnail);
+            vpVideoTexture = (VideoPlayerView) itemView.findViewById(R.id.vpVideoTexture);
 
             ivOpenCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,12 +90,42 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
                 }
             });
 
+            vpVideoTexture.addMediaPlayerListener(new SimpleMainThreadMediaPlayerListener() {
+                @Override
+                public void onVideoPreparedMainThread() {
+                    gaffeCardQuestion.setVisibility(View.INVISIBLE);
+                    gaffeCardProfilePictureUrl.setVisibility(View.INVISIBLE);
+                    ivVideoThumbnail.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onVideoCompletionMainThread() {
+                    gaffeCardQuestion.setVisibility(View.VISIBLE);
+                    gaffeCardProfilePictureUrl.setVisibility(View.VISIBLE);
+                    ivVideoThumbnail.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onVideoStoppedMainThread() {
+                    gaffeCardQuestion.setVisibility(View.VISIBLE);
+                    gaffeCardProfilePictureUrl.setVisibility(View.VISIBLE);
+                    ivVideoThumbnail.setVisibility(View.VISIBLE);
+                }
+            });
+
             ivVideoThumbnail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Question question = getItem(getLayoutPosition());
                     if (question.get(Question.RESPONDED).toString().equals("true")) {
-                        Toast.makeText(context, "Make new activity with " + question.get(Question.LOCALVIDEOURL).toString(), Toast.LENGTH_SHORT).show();
+                        final File file = new File(question.get(Question.LOCALVIDEOURL).toString());
+                        videoPlayerManager.resetMediaPlayer();
+                        if (file.exists()) {
+                            videoPlayerManager.playNewVideo(null, vpVideoTexture, file.getAbsolutePath());
+                        }
+                        else {
+                            Toast.makeText(context, "Load from Parse", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });

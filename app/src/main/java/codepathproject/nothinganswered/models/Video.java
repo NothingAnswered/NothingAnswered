@@ -12,4 +12,5 @@ public class Video extends ParseObject {
     public static final String QUESTION = "question";
     public static final String VIDEO = "video";
     public static final String RECIPIENT_ID = "recipientId";
+    public static final String LIKED = "liked";
 }

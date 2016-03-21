@@ -132,6 +132,7 @@ public class ParseClient {
         rObject.put(Video.QUESTION, question);
         rObject.put(Video.VIDEO, videoToParseFile(video));
         rObject.put(Video.RECIPIENT_ID, recipientId);
+        rObject.put(Video.LIKED, "false");
         Log.i("VIDEO", Friends.myId + " " + recipientId + " " + question);
         rObject.saveInBackground(new SaveCallback() {
             @Override
