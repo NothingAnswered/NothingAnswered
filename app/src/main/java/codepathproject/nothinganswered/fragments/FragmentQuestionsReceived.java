@@ -123,7 +123,9 @@ public class FragmentQuestionsReceived extends TimelineFragment {
 
     private void updateQuestionView(File video) {
         ImageView ivVideoThumbnail = (ImageView) currLayoutView.findViewById(R.id.ivVideoThumbnail);
+        ImageView ivOpenCamera = (ImageView) currLayoutView.findViewById(R.id.ivOpenCamera);
         Glide.with(getContext()).load(video.getAbsolutePath()).into(ivVideoThumbnail);
+        ivOpenCamera.setVisibility(View.INVISIBLE);
     }
 
     private void dealWithParse(File video) {
