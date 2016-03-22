@@ -78,6 +78,7 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
     public class GaffeItemHolder extends RecyclerView.ViewHolder {
         TextView gaffeCardQuestion;
         RoundedImageView gaffeCardProfilePictureUrl;
+        ImageView gaffeCardLike;
         ImageView ivOpenCamera;
         ImageView ivVideoThumbnail;
         VideoPlayerView vpVideoTexture;
@@ -87,6 +88,7 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
 
             gaffeCardQuestion = (TextView) itemView.findViewById(R.id.gaffeCardQuestion);
             gaffeCardProfilePictureUrl = (RoundedImageView) itemView.findViewById(R.id.gaffeCardProfilePictureUrl);
+            gaffeCardLike = (ImageView) itemView.findViewById(R.id.gaffeCardLike);
             ivOpenCamera = (ImageView) itemView.findViewById(R.id.ivOpenCamera);
             ivVideoThumbnail = (ImageView) itemView.findViewById(R.id.ivVideoThumbnail);
             vpVideoTexture = (VideoPlayerView) itemView.findViewById(R.id.vpVideoTexture);
@@ -130,8 +132,7 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
                         videoPlayerManager.resetMediaPlayer();
                         if (file.exists()) {
                             videoPlayerManager.playNewVideo(null, vpVideoTexture, file.getAbsolutePath());
-                        }
-                        else {
+                        } else {
                             ParseQuery<Video> query = parseClient.getVideoQuery(question.get(Question.QUESTION).toString());
                             query.getFirstInBackground(new GetCallback<Video>() {
                                 @Override
@@ -161,7 +162,8 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
             String profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
             Picasso.with(context).load(profilePicUrl).placeholder(R.drawable.ic_launcher).into(gaffeCardProfilePictureUrl);
 
-            if (question.get(Question.RESPONDED).toString().equals("true")) {
+            gaffeCardLike.setVisibility(View.INVISIBLE);
+            if (question.get(Question.RESPONDED) != null && question.get(Question.RESPONDED).toString().equals("true")) {
                 ivOpenCamera.setVisibility(View.INVISIBLE);
                 ParseQuery<Video> query = parseClient.getVideoQuery(question.get(Question.QUESTION).toString());
                 query.getFirstInBackground(new GetCallback<Video>() {
@@ -174,10 +176,14 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
                             } catch (com.parse.ParseException e1) {
                                 e1.printStackTrace();
                             }
+                            if (object.get(Video.LIKED) != null && object.get(Video.LIKED).toString().equals("true")) {
+                                gaffeCardLike.setVisibility(View.VISIBLE);
+                            }
                         }
                         else {
                             ivVideoThumbnail.setImageResource(R.drawable.ivbackgroundcat);
                         }
+
                     }
                 });
             }

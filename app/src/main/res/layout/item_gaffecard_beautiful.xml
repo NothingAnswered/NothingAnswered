@@ -57,4 +57,12 @@
         android:layout_alignParentRight="true"
         android:layout_margin="30dp"/>
 
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/gaffeCardLike"
+        android:src="@drawable/heart"
+        android:layout_alignBottom="@+id/gaffeCardProfilePictureUrl"
+        android:layout_alignStart="@+id/gaffeCardProfilePictureUrl" />
+
 </RelativeLayout>

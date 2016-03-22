@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NothingAnswered</string>
+    <string name="app_name">#Bounce</string>
     <string name="app_id">nothinganswered</string>
     <string name="facebook_app_id">1724056447876596</string>
     <string name="max_video_duration">20</string>
