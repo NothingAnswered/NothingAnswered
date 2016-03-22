@@ -137,7 +137,7 @@ public class FragmentCompose extends Fragment {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /*String question = etSendQuestion.getText().toString();
+               String question = etSendQuestion.getText().toString();
                 String recipientStr = etRecipient.getText().toString();
                 String[] recipients = recipientStr.split(",");
                 for (String recipient : recipients) {
@@ -150,7 +150,7 @@ public class FragmentCompose extends Fragment {
                 }
 
                 Log.i(TAG, question);
-                Log.i(TAG, recipientStr);*/
+                Log.i(TAG, recipientStr);
 
 
                 closeKeyboard(getActivity(), etSendQuestion.getWindowToken());
