@@ -5,14 +5,17 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 
 import codepathproject.nothinganswered.R;
 import codepathproject.nothinganswered.adapters.GaffeFragmentPagerAdapter;
+import codepathproject.nothinganswered.fragments.FragmentCompose;
 import codepathproject.nothinganswered.fragments.FragmentQuestionsReceived;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity implements FragmentCompose.ComposeFragmentActionListener {
 
     private static String TAG = HomeScreenActivity.class.getSimpleName();
 
@@ -41,9 +44,23 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Toast.makeText(this, "Result Code = " + resultCode + ", Request Code = " + requestCode, Toast.LENGTH_LONG).show();
+
         if (requestCode == FragmentQuestionsReceived.CAMERA_RQ) {
             FragmentQuestionsReceived fragmentQuestionsReceived = (FragmentQuestionsReceived) gaffeFragmentPagerAdapter.fragmentRef[0];
             fragmentQuestionsReceived.onActivityResult(requestCode, resultCode, data);
+        }else{
+
+            FragmentCompose fragmentCompose = (FragmentCompose) gaffeFragmentPagerAdapter.fragmentRef[2];
+            fragmentCompose.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Override
+    public void onFragmentExit(int position) {
+
+        vpPager.setCurrentItem(0);
+    }
+
 }

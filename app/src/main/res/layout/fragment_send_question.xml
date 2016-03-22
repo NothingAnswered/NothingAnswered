@@ -45,6 +45,16 @@
         android:background="@drawable/edit_test_shape"
         android:layout_alignParentBottom="true" />
 
+    <ImageView
+        android:id="@+id/ivBgImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:background="@drawable/card_bg"
+        android:layout_above="@+id/rlFooter"
+        />
+
     <RelativeLayout
         android:id="@+id/rlFooter"
         android:layout_width="match_parent"
