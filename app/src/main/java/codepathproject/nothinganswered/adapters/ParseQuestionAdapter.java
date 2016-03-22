@@ -162,6 +162,7 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
             String profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
             Picasso.with(context).load(profilePicUrl).placeholder(R.drawable.ic_launcher).into(gaffeCardProfilePictureUrl);
 
+            ivVideoThumbnail.setImageResource(R.drawable.ivbackgroundcat);
             gaffeCardLike.setVisibility(View.INVISIBLE);
             if (question.get(Question.RESPONDED) != null && question.get(Question.RESPONDED).toString().equals("true")) {
                 ivOpenCamera.setVisibility(View.INVISIBLE);
