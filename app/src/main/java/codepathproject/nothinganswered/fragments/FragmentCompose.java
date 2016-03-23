@@ -30,6 +30,7 @@ import java.util.ArrayList;
 
 import codepathproject.nothinganswered.NothingAnsweredApplication;
 import codepathproject.nothinganswered.R;
+import codepathproject.nothinganswered.activities.HomeScreenActivity;
 import codepathproject.nothinganswered.clients.FacebookClient;
 import codepathproject.nothinganswered.clients.ParseClient;
 import codepathproject.nothinganswered.models.Friends;
@@ -110,7 +111,7 @@ public class FragmentCompose extends Fragment {
 
             public void onClick(View v) {
                 closeKeyboard(getActivity(), etSendQuestion.getWindowToken());
-                getParentFragment().getFragmentManager().popBackStack();
+                ((HomeScreenActivity)getActivity()).vpPager.setCurrentItem(0);
             }
         });
 
@@ -156,11 +157,25 @@ public class FragmentCompose extends Fragment {
 
                 closeKeyboard(getActivity(), etSendQuestion.getWindowToken());
                 listener = (ComposeFragmentActionListener) getActivity();
-                if(listener != null) {
-                   listener.onFragmentExit(mPosition);
+                if (listener != null) {
+                    listener.onFragmentExit(mPosition);
                 }
             }
         });
+
+        etRecipient.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                etRecipient.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(etRecipient, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+        etRecipient.setFocusableInTouchMode(true);
         return view;
     }
 
@@ -179,7 +194,6 @@ public class FragmentCompose extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Toast.makeText(getActivity(), "Done!" + requestCode, Toast.LENGTH_SHORT).show();
         super.onActivityResult(requestCode, resultCode, data);
 
 
@@ -190,7 +204,6 @@ public class FragmentCompose extends Fragment {
 
                         bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
 
-                        Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
                         ivBgImage.setVisibility(View.VISIBLE);
                         ivBgImage.setImageBitmap(bitmap);
 
@@ -208,11 +221,15 @@ public class FragmentCompose extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-       setAutoCompleteAdapter();
+        setAutoCompleteAdapter();
+        etRecipient.requestFocus();
+    }
 
-        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imgr.showSoftInput(etSendQuestion, 0);
-        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause");
+        closeKeyboard(getActivity(), etSendQuestion.getWindowToken());
     }
 
     public void setAutoCompleteAdapter() {
