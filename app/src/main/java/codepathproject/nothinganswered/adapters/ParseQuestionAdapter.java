@@ -162,8 +162,6 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
             String profilePicUrl = NothingAnsweredApplication.getProfileImage(sender);
             Picasso.with(context).load(profilePicUrl).placeholder(R.drawable.ic_launcher).into(gaffeCardProfilePictureUrl);
 
-            ivVideoThumbnail.setImageResource(R.drawable.ivbackgroundcat);
-            gaffeCardLike.setVisibility(View.INVISIBLE);
             if (question.get(Question.RESPONDED) != null && question.get(Question.RESPONDED).toString().equals("true")) {
                 ivOpenCamera.setVisibility(View.INVISIBLE);
                 ParseQuery<Video> query = parseClient.getVideoQuery(question.get(Question.QUESTION).toString());
@@ -187,6 +185,21 @@ public class ParseQuestionAdapter extends ParseRecyclerQueryAdapter<Question, Pa
 
                     }
                 });
+            }
+            else {
+                ivOpenCamera.setVisibility(View.VISIBLE);
+                ivVideoThumbnail.setImageResource(0);
+                if (question.get(Question.THUMBMAIL) != null) {
+                    try {
+                        Glide.with(context).load(((ParseFile) question.get(Question.THUMBMAIL)).getFile()).into(ivVideoThumbnail);
+                    } catch (com.parse.ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    ivVideoThumbnail.setImageResource(R.drawable.ivbackgroundcat);
+                }
+                gaffeCardLike.setVisibility(View.INVISIBLE);
             }
         }
 

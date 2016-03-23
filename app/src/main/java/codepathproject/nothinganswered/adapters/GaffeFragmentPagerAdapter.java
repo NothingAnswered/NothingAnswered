@@ -13,7 +13,7 @@ import codepathproject.nothinganswered.fragments.FragmentVideoResponse;
 public class GaffeFragmentPagerAdapter extends android.support.v4.app.FragmentPagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
 
     final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[] {"Questions Received", "Video Response", "Compose Question"};
+    private String tabTitles[] = new String[] {"Video Response", "Questions Received", "Compose Question"};
     private int tabIcons[] = {R.drawable.icon_questions, R.drawable.icon_videos, R.drawable.icon_compose};
     public Fragment fragmentRef[] = new Fragment[PAGE_COUNT];
 
@@ -28,10 +28,10 @@ public class GaffeFragmentPagerAdapter extends android.support.v4.app.FragmentPa
             return null;
 
         if (position == 0) {
-            fragmentRef[position] = FragmentQuestionsReceived.newInstance(position);
+            fragmentRef[position] = FragmentVideoResponse.newInstance(position);
         }
         if (position == 1) {
-            fragmentRef[position] = FragmentVideoResponse.newInstance(position);
+            fragmentRef[position] = FragmentQuestionsReceived.newInstance(position);
         }
         if (position == 2) {
             fragmentRef[position] = FragmentCompose.newInstance(position);

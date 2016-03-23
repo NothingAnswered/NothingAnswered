@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -48,7 +47,7 @@ public class HomeScreenActivity extends AppCompatActivity implements FragmentCom
         Toast.makeText(this, "Result Code = " + resultCode + ", Request Code = " + requestCode, Toast.LENGTH_LONG).show();
 
         if (requestCode == FragmentQuestionsReceived.CAMERA_RQ) {
-            FragmentQuestionsReceived fragmentQuestionsReceived = (FragmentQuestionsReceived) gaffeFragmentPagerAdapter.fragmentRef[0];
+            FragmentQuestionsReceived fragmentQuestionsReceived = (FragmentQuestionsReceived) gaffeFragmentPagerAdapter.fragmentRef[1];
             fragmentQuestionsReceived.onActivityResult(requestCode, resultCode, data);
         }else{
 

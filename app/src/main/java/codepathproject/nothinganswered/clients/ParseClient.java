@@ -1,6 +1,7 @@
 package codepathproject.nothinganswered.clients;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.parse.GetCallback;
@@ -14,6 +15,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SendCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -156,13 +158,26 @@ public class ParseClient {
         return file;
     }
 
-    public void sendQuestionObject(String question, String recipient) {
+    public ParseFile createQuestionThumbNail(Bitmap thumbNail) {
+        if (thumbNail == null) return null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress image to lower quality scale 1 - 100
+        thumbNail.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] image = stream.toByteArray();
+        ParseFile parseFile = new ParseFile("bgImage", image);
+        parseFile.saveInBackground();
+        return parseFile;
+    }
+
+    public void sendQuestionObject(String question, String recipient, ParseFile thumbNail) {
         ParseObject qObject = ParseObject.create("Question");
         qObject.put(Question.SENDER_ID, Friends.myId);
         qObject.put(Question.QUESTION, question);
         qObject.put(Question.RECIPIENT_ID, recipient);
         qObject.put(Question.RESPONDED, "false");
-        qObject.put(Question.THUMBMAIL, "");
+        if (thumbNail != null) {
+            qObject.put(Question.THUMBMAIL, thumbNail);
+        }
         qObject.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
