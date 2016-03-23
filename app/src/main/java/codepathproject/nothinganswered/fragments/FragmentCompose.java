@@ -88,9 +88,7 @@ public class FragmentCompose extends Fragment {
         ivCamera = (ImageView) view.findViewById(R.id.ivCamera);
         ivBgImage = (ImageView)view.findViewById(R.id.ivBgImage);
 
-        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imgr.showSoftInput(etSendQuestion, 0);
-        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
 
         ivCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,6 +209,10 @@ public class FragmentCompose extends Fragment {
     public void onResume() {
         super.onResume();
        setAutoCompleteAdapter();
+
+        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imgr.showSoftInput(etSendQuestion, 0);
+        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     public void setAutoCompleteAdapter() {
