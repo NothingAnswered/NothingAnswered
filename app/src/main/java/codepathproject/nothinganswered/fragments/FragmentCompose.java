@@ -23,6 +23,8 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseFile;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -44,7 +46,7 @@ public class FragmentCompose extends Fragment {
 
     private ComposeFragmentActionListener listener;
 
-    String TAG = QuestionFragment.class.getSimpleName();
+    String TAG = FragmentCompose.class.getSimpleName();
     private ParseClient parseClient;
     private FacebookClient facebookClient;
 
@@ -70,6 +72,7 @@ public class FragmentCompose extends Fragment {
 
     private int mPosition;
 
+    Bitmap bitmap;
 
     @Nullable
     @Override
@@ -137,15 +140,15 @@ public class FragmentCompose extends Fragment {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               String question = etSendQuestion.getText().toString();
-                String recipientStr = etRecipient.getText().toString();
+                final String question = etSendQuestion.getText().toString();
+                final String recipientStr = etRecipient.getText().toString();
                 String[] recipients = recipientStr.split(",");
+                ParseFile imageFile = parseClient.createQuestionThumbNail(bitmap);
                 for (String recipient : recipients) {
                     Log.i(TAG, recipient.trim());
                     String facebookId = Friends.getInstance().getIdFromName(recipient.trim());
                     if (facebookId != null) {
-                        parseClient.sendQuestionObject(question, facebookId);
-                        parseClient.sendQuestionNotification(question, facebookId);
+                        parseClient.sendQuestionObject(question, facebookId, imageFile);
                     }
                 }
 
@@ -156,11 +159,8 @@ public class FragmentCompose extends Fragment {
                 closeKeyboard(getActivity(), etSendQuestion.getWindowToken());
                 listener = (ComposeFragmentActionListener) getActivity();
                 if(listener != null) {
-                    listener.onFragmentExit(mPosition);
+                   listener.onFragmentExit(mPosition);
                 }
-
-                //getParentFragment().getFragmentManager().popBackStack();
-
             }
         });
         return view;
@@ -190,7 +190,7 @@ public class FragmentCompose extends Fragment {
                 if (data != null) {
                     try {
 
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
+                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
 
                         Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
                         ivBgImage.setVisibility(View.VISIBLE);
